@@ -123,6 +123,19 @@
     aiIndustry: document.getElementById("aiIndustry"),
     aiRunBtn: document.getElementById("aiRunBtn"),
     aiRunStatus: document.getElementById("aiRunStatus"),
+    historyList: document.getElementById("historyList"),
+    historyRefreshBtn: document.getElementById("historyRefreshBtn"),
+    historyDetailCard: document.getElementById("historyDetailCard"),
+    historyDetailTitle: document.getElementById("historyDetailTitle"),
+    historyDetailClose: document.getElementById("historyDetailClose"),
+    historyMessages: document.getElementById("historyMessages"),
+    assistantLog: document.getElementById("aiChatLog"),
+    assistantDocChips: document.getElementById("aiDocChips"),
+    assistantInput: document.getElementById("aiChatInput"),
+    assistantSendBtn: document.getElementById("aiSendBtn"),
+    assistantDocBtn: document.getElementById("aiDocBtn"),
+    assistantDocInput: document.getElementById("aiDocInput"),
+    assistantClearBtn: document.getElementById("aiChatClear"),
   };
 
   function esc(s) { return String(s || "").replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;"); }
@@ -5161,6 +5174,328 @@
       chats = [];
     }
   }
+
+  /* ───────── history view ───────── */
+  function fmtChatDate(iso) {
+    try {
+      const d = new Date(iso);
+      if (isNaN(d.getTime())) return "";
+      return (
+        d.toLocaleDateString(undefined, { month: "short", day: "numeric", year: "numeric" }) +
+        " · " +
+        d.toLocaleTimeString(undefined, { hour: "2-digit", minute: "2-digit" })
+      );
+    } catch {
+      return "";
+    }
+  }
+
+  async function deleteChat(id) {
+    try {
+      await api("/api/chats/" + encodeURIComponent(id), { method: "DELETE" });
+    } catch {}
+    if (assistantChatId === id) resetAssistantConversation();
+    await loadChats();
+    renderHistory();
+    toast("Conversation deleted");
+  }
+
+  function renderHistory() {
+    const list = els.historyList;
+    if (!list) return;
+    list.innerHTML = "";
+    if (!chats.length) {
+      const empty = document.createElement("p");
+      empty.className = "history-empty";
+      empty.textContent = "No conversations yet. Start one from the AI Assistant page.";
+      list.appendChild(empty);
+      return;
+    }
+    chats.forEach((c) => {
+      const item = document.createElement("div");
+      item.className = "history-item";
+      item.innerHTML =
+        '<span class="history-item-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/><path d="M8 9h8"/><path d="M8 13h5"/></svg></span>' +
+        '<span class="history-item-main"><p class="history-item-title"></p><p class="history-item-meta"></p></span>' +
+        '<button type="button" class="icon-btn history-item-delete" aria-label="Delete conversation"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M3 6h18"/><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6"/><path d="M8 6V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/></svg></button>';
+      item.querySelector(".history-item-title").textContent = c.title || "New conversation";
+      item.querySelector(".history-item-meta").textContent = fmtChatDate(c.updatedAt || c.createdAt);
+      item.querySelector(".history-item-delete").addEventListener("click", (e) => {
+        e.stopPropagation();
+        deleteChat(c.id);
+      });
+      item.addEventListener("click", () => openHistoryDetail(c.id));
+      list.appendChild(item);
+    });
+  }
+
+  async function openHistoryDetail(id) {
+    let chat = null;
+    try {
+      const res = await api("/api/chats/" + encodeURIComponent(id));
+      chat = await res.json();
+    } catch {}
+    if (!chat || !Array.isArray(chat.messages)) {
+      toast("Could not load this conversation.");
+      return;
+    }
+    els.historyDetailTitle.textContent = chat.title || "New conversation";
+    const box = els.historyMessages;
+    box.innerHTML = "";
+    chat.messages.forEach((m) => {
+      const wrap = document.createElement("div");
+      wrap.className = "history-msg";
+      const role = document.createElement("p");
+      role.className = "history-msg-role";
+      role.textContent = m.role === "user" ? "You" : "Assistant";
+      const body = document.createElement("p");
+      body.className = "history-msg-content";
+      body.textContent = m.content || "";
+      wrap.append(role, body);
+      box.appendChild(wrap);
+    });
+    els.historyDetailCard.classList.remove("hidden");
+    box.scrollTop = box.scrollHeight;
+  }
+
+  function closeHistoryDetail() {
+    if (!els.historyDetailCard) return;
+    els.historyDetailCard.classList.add("hidden");
+  }
+
+  els.historyRefreshBtn.addEventListener("click", async () => {
+    closeHistoryDetail();
+    await loadChats();
+    renderHistory();
+  });
+  els.historyDetailClose.addEventListener("click", closeHistoryDetail);
+
+  /* ───────── assistant view ───────── */
+  const ASSISTANT_MAX_DOCS = 5;
+  let assistantChatId = null;
+  let assistantMessages = [];
+  let assistantStagedDocs = [];
+  let assistantBusy = false;
+
+  function resetAssistantConversation() {
+    assistantChatId = null;
+    assistantMessages = [];
+    assistantStagedDocs = [];
+    paintAssistantDocs();
+    paintAssistantLog();
+  }
+
+  function assistantBubble(role, content) {
+    const row = document.createElement("div");
+    row.className = "chat-msg " + (role === "user" ? "user" : "bot");
+    const bubble = document.createElement("div");
+    bubble.className = "bubble";
+    bubble.textContent = content || "";
+    row.appendChild(bubble);
+    return row;
+  }
+
+  function scrollAssistant() {
+    const log = els.assistantLog;
+    if (log && settings.autoScroll !== false) log.scrollTop = log.scrollHeight;
+  }
+
+  function paintAssistantLog() {
+    const log = els.assistantLog;
+    if (!log) return;
+    log.innerHTML = "";
+    if (!assistantMessages.length) {
+      log.appendChild(
+        assistantBubble(
+          "bot",
+          "Hi! Ask me anything about regulatory compliance, or attach a document to ask questions about its contents."
+        )
+      );
+    }
+    assistantMessages.forEach((m) => log.appendChild(assistantBubble(m.role, m.content)));
+    scrollAssistant();
+  }
+
+  function paintAssistantDocs() {
+    const chips = els.assistantDocChips;
+    if (!chips) return;
+    chips.innerHTML = "";
+    assistantStagedDocs.forEach((d, i) => {
+      const chip = document.createElement("button");
+      chip.type = "button";
+      chip.className = "assistant-doc-chip";
+      chip.title = "Click to remove " + d.name;
+      chip.textContent = d.name + "  ×";
+      chip.setAttribute("aria-label", "Remove document " + d.name);
+      chip.addEventListener("click", () => {
+        assistantStagedDocs.splice(i, 1);
+        paintAssistantDocs();
+      });
+      chips.appendChild(chip);
+    });
+  }
+
+  function renderAssistant() {
+    paintAssistantDocs();
+    paintAssistantLog();
+  }
+
+  async function ensureAssistantChat() {
+    if (assistantChatId) {
+      if (assistantStagedDocs.length) {
+        const docs = assistantStagedDocs;
+        assistantStagedDocs = [];
+        try {
+          await api("/api/chats/" + encodeURIComponent(assistantChatId) + "/documents", {
+            method: "POST",
+            headers: jsonHeaders,
+            body: JSON.stringify({ documents: docs }),
+          });
+        } catch {
+          assistantStagedDocs = docs.concat(assistantStagedDocs);
+          throw new Error("Could not attach documents.");
+        }
+      }
+      return assistantChatId;
+    }
+    const docs = assistantStagedDocs;
+    assistantStagedDocs = [];
+    try {
+      const res = await api("/api/chats", {
+        method: "POST",
+        headers: jsonHeaders,
+        body: JSON.stringify({ documents: docs }),
+      });
+      const chat = await res.json();
+      assistantChatId = chat.id;
+      return chat.id;
+    } catch (err) {
+      assistantStagedDocs = docs.concat(assistantStagedDocs);
+      throw err;
+    }
+  }
+
+  async function sendAssistantMessage() {
+    const input = els.assistantInput;
+    const text = (input && input.value.trim()) || "";
+    if (!text || assistantBusy) return;
+    if (input) input.value = "";
+    assistantMessages.push({ role: "user", content: text });
+    paintAssistantLog();
+
+    assistantBusy = true;
+    if (els.assistantSendBtn) els.assistantSendBtn.disabled = true;
+    const reply = { role: "assistant", content: "" };
+    assistantMessages.push(reply);
+    const liveBubble = assistantBubble("assistant", "");
+    els.assistantLog.appendChild(liveBubble);
+    const liveText = liveBubble.querySelector(".bubble");
+    liveText.textContent = "…";
+    scrollAssistant();
+
+    try {
+      const chatId = await ensureAssistantChat();
+      const res = await fetch("/api/chats/" + encodeURIComponent(chatId) + "/messages", {
+        method: "POST",
+        headers: { ...(await authHeaders()), ...jsonHeaders },
+        body: JSON.stringify({ content: text }),
+      });
+      if (!res.ok) {
+        let msg = "HTTP " + res.status;
+        try {
+          msg = (await res.json()).error || msg;
+        } catch {}
+        throw new Error(msg);
+      }
+      const reader = res.body.getReader();
+      const decoder = new TextDecoder();
+      let buffer = "";
+      while (true) {
+        const { done, value } = await reader.read();
+        if (done) break;
+        buffer += decoder.decode(value, { stream: true });
+        const parts = buffer.split("\n\n");
+        buffer = parts.pop();
+        for (const part of parts) {
+          const line = part.trim();
+          if (!line.startsWith("data:")) continue;
+          let evt;
+          try {
+            evt = JSON.parse(line.slice(5).trim());
+          } catch {
+            continue;
+          }
+          if (evt.type === "delta" && evt.content) {
+            reply.content += evt.content;
+            liveText.textContent = reply.content;
+            scrollAssistant();
+          } else if (evt.type === "done" && evt.content && !reply.content) {
+            /* buffered transports deliver everything at the end */
+            reply.content = evt.content;
+            liveText.textContent = reply.content;
+          } else if (evt.type === "error") {
+            reply.content = reply.content || "The assistant could not complete this reply. Please try again.";
+            liveText.textContent = reply.content;
+          }
+        }
+      }
+      if (!reply.content) reply.content = "(No response)";
+    } catch (err) {
+      reply.content =
+        reply.content || "Sorry — the assistant is unavailable right now. Please try again in a moment.";
+    } finally {
+      assistantBusy = false;
+      if (els.assistantSendBtn) els.assistantSendBtn.disabled = false;
+      paintAssistantLog();
+      loadChats().then(renderHistory);
+    }
+  }
+
+  els.assistantSendBtn.addEventListener("click", sendAssistantMessage);
+  els.assistantInput.addEventListener("keydown", (e) => {
+    if (e.key === "Enter" && !e.shiftKey && settings.enterToSend !== false) {
+      e.preventDefault();
+      sendAssistantMessage();
+    }
+  });
+
+  els.assistantDocBtn.addEventListener("click", () => els.assistantDocInput.click());
+  els.assistantDocInput.addEventListener("change", async () => {
+    const files = Array.from(els.assistantDocInput.files || []);
+    els.assistantDocInput.value = "";
+    for (const f of files) {
+      if (assistantStagedDocs.length >= ASSISTANT_MAX_DOCS) {
+        toast("Max " + ASSISTANT_MAX_DOCS + " documents per conversation.");
+        break;
+      }
+      let text = "";
+      if (f.size <= 512 * 1024) {
+        try {
+          text = await f.text();
+        } catch {}
+      }
+      if (!text.trim()) {
+        toast('"' + f.name + '" has no readable text.');
+        continue;
+      }
+      assistantStagedDocs.push({ name: f.name, text });
+    }
+    paintAssistantDocs();
+  });
+
+  els.assistantClearBtn.addEventListener("click", async () => {
+    if (assistantBusy) return;
+    const id = assistantChatId;
+    resetAssistantConversation();
+    if (id) {
+      try {
+        await api("/api/chats/" + encodeURIComponent(id), { method: "DELETE" });
+      } catch {}
+      await loadChats();
+      renderHistory();
+    }
+    toast("Chat cleared");
+  });
 
   async function syncServerSettings() {
     let serverSettings = null;
