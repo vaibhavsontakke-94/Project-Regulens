@@ -7,6 +7,7 @@ import * as auth from "./lib/auth.js";
 import { migratePasswordUser } from "./lib/migrate.js";
 import { toPublicError } from "./lib/errors.js";
 import { nextAnalysisId, logAnalysisEvent } from "./lib/analysis-log.js";
+import { createVercelRouter } from "./lib/vercel-routes.js";
 
 /* Shared deterministic engines — ONE source of truth (also served to the browser).
    Static imports so serverless bundlers (Vercel NFT) always trace them. */
@@ -1311,6 +1312,9 @@ Return a JSON object with this exact structure (no markdown fencing):
     res.status(502).json({ error: "Report generation failed" });
   }
 });
+
+/* ───────── Vercel deployment integration (Settings → Deployment) ───────── */
+app.use("/api/vercel", createVercelRouter({ tokenFrom, userFromIdToken: auth.userFromIdToken }));
 
 if (process.env.NETLIFY || process.env.VERCEL) {
   /* Running as a serverless Function (Netlify or Vercel) — the platform

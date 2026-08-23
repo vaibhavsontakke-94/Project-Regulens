@@ -1273,6 +1273,41 @@
               <button class="btn btn-danger-outline" id="clearMemoryBtn" data-i18n="settings.clearMemory">Clear memory</button>
             </div>
           </div>
+
+          <div class="card">
+            <div class="card-head"><h3 class="card-title">Deployment</h3></div>
+            <div class="set-row">
+              <span class="set-label">Vercel account</span>
+              <span class="vd-status"><span class="vd-dot" id="vdDot"></span><span class="set-muted" id="vdAccount">Not connected</span></span>
+            </div>
+            <div class="set-row">
+              <span class="set-label">Vercel project</span>
+              <select class="select vd-select" id="vdProjectSelect" disabled><option value="">—</option></select>
+            </div>
+            <div class="set-row" id="vdNewRow" hidden>
+              <span class="set-label">New project name</span>
+              <input class="set-input vd-input" id="vdNewName" placeholder="my-regulens-app" maxlength="100" autocomplete="off" spellcheck="false" />
+            </div>
+            <div class="set-row">
+              <button class="btn btn-ghost" id="vdConnectBtn">Connect Vercel</button>
+              <button class="btn btn-danger-outline" id="vdDisconnectBtn" hidden>Disconnect</button>
+              <button class="btn btn-primary" id="vdDeployBtn" hidden>Deploy to Vercel</button>
+            </div>
+            <div class="set-row" id="vdProgressRow" hidden>
+              <span class="vd-progress"><span class="vd-spinner" id="vdSpinner"></span><span class="set-muted" id="vdProgressText"></span></span>
+            </div>
+            <div class="set-row" id="vdResultRow" hidden>
+              <span class="set-label">Live URL</span>
+              <span class="vd-result">
+                <a class="link-btn" id="vdResultLink" href="#" target="_blank" rel="noopener noreferrer">—</a>
+                <button class="btn btn-primary-sm" id="vdOpenBtn">Open Website</button>
+                <button class="btn btn-ghost" id="vdRedeployBtn">Redeploy</button>
+              </span>
+            </div>
+            <div class="set-row" id="vdErrorRow" hidden>
+              <span class="vd-error" id="vdErrorText"></span>
+            </div>
+          </div>
         </div>
       </section>
 
@@ -1551,5 +1586,6 @@
 <script src="government.js?v=2"></script>
           <script src="regulens.js?v=45"></script>
           <script src="landing.js?v=1"></script>
+<script src="vercel-deploy.js?v=1"></script>
 </body>
 </html>

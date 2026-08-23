@@ -4930,3 +4930,77 @@ summary:focus-visible {
   text-overflow: ellipsis;
 }
 
+/* ────────────────────────────────────────────────────────────────
+   Vercel deployment card (Settings) — scoped additions only
+   ──────────────────────────────────────────────────────────────── */
+.vd-status {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  min-width: 0;
+}
+
+.vd-dot {
+  width: 8px;
+  height: 8px;
+  flex: none;
+  border-radius: 999px;
+  background: var(--text-4);
+}
+
+.vd-dot.ok { background: var(--green); }
+.vd-dot.busy { background: var(--blue); }
+.vd-dot.err { background: var(--red); }
+
+.vd-select {
+  min-width: 220px;
+}
+
+.vd-input {
+  min-width: 220px;
+}
+
+.vd-progress {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  width: 100%;
+}
+
+.vd-spinner {
+  width: 14px;
+  height: 14px;
+  flex: none;
+  border-radius: 999px;
+  border: 2px solid var(--primary-border);
+  border-top-color: var(--primary);
+  animation: vd-spin 0.8s linear infinite;
+}
+
+@keyframes vd-spin {
+  to { transform: rotate(360deg); }
+}
+
+.vd-result {
+  display: inline-flex;
+  align-items: center;
+  gap: 12px;
+  flex-wrap: wrap;
+  min-width: 0;
+}
+
+.vd-result .link-btn {
+  font-family: var(--font-mono);
+  font-size: var(--t4);
+}
+
+.vd-error {
+  color: var(--red);
+  font-size: var(--t4);
+  width: 100%;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .vd-spinner { animation-duration: 1.6s; }
+}
+
