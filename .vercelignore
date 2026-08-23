@@ -1,0 +1,9 @@
+node_modules
+data
+.env
+.env.*
+*.log
+server_*.txt
+netlify
+.vercel
+.git
