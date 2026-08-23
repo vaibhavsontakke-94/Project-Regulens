@@ -1,0 +1,1 @@
+{"ts":"2026-08-23T02:08:46.583Z","ref":"ERR-187DBD","type":"NOT_CONFIGURED","endpoint":"/api/chats","requestId":"","cause":"Chat history is not configured. Set SUPABASE_URL and SUPABASE_SERVICE_ROLE_KEY in .env"}

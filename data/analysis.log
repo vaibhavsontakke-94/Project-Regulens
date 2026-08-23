@@ -1,0 +1,3 @@
+{"ts":"2026-08-23T07:56:10.699Z","analysisId":"ANL-2026-00015","event":"analysis_completed","mode":"demo","readiness":0,"canLaunch":"NOT_READY","counts":{"regulations":1,"requirements":1,"gaps":1,"risks":4,"actions":1}}
+{"ts":"2026-08-23T07:56:15.640Z","analysisId":"ANL-2026-00016","event":"analysis_completed","mode":"demo","readiness":0,"canLaunch":"NOT_READY","counts":{"regulations":1,"requirements":1,"gaps":1,"risks":4,"actions":1}}
+{"ts":"2026-08-23T07:56:51.463Z","analysisId":"ANL-2026-00017","event":"analysis_completed","mode":"demo","readiness":0,"canLaunch":"NOT_READY","counts":{"regulations":4,"requirements":10,"gaps":10,"risks":4,"actions":10}}
