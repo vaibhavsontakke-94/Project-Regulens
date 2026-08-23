@@ -52,6 +52,43 @@ npm run dev      # dev with auto-reload
 
 Open http://localhost:3000
 
+## Deploy to Vercel
+
+The app is Vercel-ready: `public/` is served statically (configured via
+`outputDirectory` in `vercel.json`) and every `/api/*` route runs in a
+serverless function that wraps the Express app (`api/index.js`).
+
+1. Push this repo to GitHub, then import it in Vercel (framework preset
+   **Other** — zero config, `vercel.json` handles the rest).
+2. In Vercel (Project → Settings → Environment Variables), add every key from
+   your local `.env` for Production + Preview.
+3. Run `supabase/schema.sql` in your Supabase SQL editor (creates
+   `chat_history` and `profiles` tables) if you haven't already.
+4. After the first deploy, copy the deployment URL (e.g.
+   `https://<project>.vercel.app`) and add it in Firebase console →
+   Authentication → Settings → **Authorized domains** so sign-in works.
+5. Redeploy — the site is served at `https://<project>.vercel.app`.
+
+Environment variables (never commit these):
+
+| Group | Variables | Purpose |
+| ----- | --------- | ------- |
+| Groq (required) | `GROQ_API_KEY`, `GROQ_MODEL`, `GROQ_MODEL_VISION`, `GROQ_MODEL_WHISPER` | Chat, vision, translation, voice, transcription, analysis pipeline |
+| Groq (optional) | `GROQ_MODEL_TTS`, `GROQ_MODEL_TTS_AR`, `GROQ_BASE_URL` | TTS model overrides |
+| Firebase (for auth) | `FIREBASE_API_KEY`, `FIREBASE_AUTH_DOMAIN`, `FIREBASE_PROJECT_ID`, `FIREBASE_STORAGE_BUCKET`, `FIREBASE_MESSAGING_SENDER_ID`, `FIREBASE_APP_ID`, `FIREBASE_MEASUREMENT_ID` | Sign in/sign up, account sync |
+| Supabase (for persistence) | `SUPABASE_URL`, `SUPABASE_SERVICE_ROLE_KEY` | Chat history + user profiles (server-side only) |
+
+Notes:
+
+- **Secrets are server-side only.** The frontend never sees Groq or Supabase
+  keys; Firebase config is served to the browser via `/api/firebase-config`.
+- Never commit `node_modules/`, `data/`, or `.env` (already in `.gitignore`)
+  — Vercel installs dependencies itself and the filesystem is read-only at
+  runtime.
+- SSE replies arrive buffered on serverless platforms (one complete response,
+  no token-by-token streaming); the frontend already handles this. Function
+  limit is set to 60s (`maxDuration` in `vercel.json`).
+
 ## Deploy to Netlify
 
 The app is Netlify-ready: static assets are published from `public/` and every

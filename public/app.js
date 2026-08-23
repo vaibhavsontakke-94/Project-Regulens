@@ -4680,18 +4680,23 @@
       const networkFail = /failed to fetch|networkerror|load failed|econnrefused/i.test(String(err.message || ""));
       const failedStage = ANALYSIS_STAGES.find((s) => analysisProgress[s.key] === "running") ||
                           ANALYSIS_STAGES.find((s) => analysisProgress[s.key] !== "done");
+      const localBackend = location.protocol === "file:" || /^(localhost|127\.0\.0\.1|\[::1\])$/.test(location.hostname);
       analysisErrorObj = {
         stage: failedStage ? failedStage.key : "",
         stageLabel: failedStage ? failedStage.label : "Analysis",
         errorCode: p.errorCode || (networkFail ? "SERVER_UNREACHABLE" : "REQUEST_FAILED"),
         message: networkFail
-          ? "The ReguLens backend is not reachable. Start it with \u201Cnpm start\u201D and open the app at http://localhost:3000."
+          ? (localBackend
+            ? "The ReguLens backend is not reachable. Start it with \u201Cnpm start\u201D and open the app at http://localhost:3000."
+            : "The ReguLens backend is temporarily unreachable. Please retry in a moment.")
           : (p.message || "The analysis service could not be reached."),
         retryable: true,
         recommendedAction: networkFail
           ? (location.protocol === "file:"
             ? "You opened this page as a local file. Run \u201Cnpm start\u201D in the project folder and open http://localhost:3000 instead."
-            : "Run \u201Cnpm start\u201D, wait for \u201CSynora server\u201D in the terminal, then reload this page and retry.")
+            : localBackend
+              ? "Run \u201Cnpm start\u201D, wait for \u201CSynora server\u201D in the terminal, then reload this page and retry."
+              : "Please retry the analysis. If it keeps failing, the service may be temporarily down.")
           : "Please retry the analysis. If it keeps failing, verify the server is running and reachable.",
         details: p.details || (err.message || "unknown error"),
       };

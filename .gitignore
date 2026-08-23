@@ -5,3 +5,8 @@ node_modules/
 dist/
 build/
 *.log
+data/
+server_*.txt
+.vercel
+.DS_Store
+Thumbs.db

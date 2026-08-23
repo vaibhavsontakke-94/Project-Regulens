@@ -7,11 +7,11 @@ import * as auth from "./lib/auth.js";
 import { migratePasswordUser } from "./lib/migrate.js";
 import { toPublicError } from "./lib/errors.js";
 import { nextAnalysisId, logAnalysisEvent } from "./lib/analysis-log.js";
-import { createRequire } from "node:module";
 
-/* Shared deterministic engines — ONE source of truth (also served to the browser). */
-const core = createRequire(import.meta.url)("./lib/regulens-core.cjs");
-const gov = createRequire(import.meta.url)("./lib/gov-engine.cjs");
+/* Shared deterministic engines — ONE source of truth (also served to the browser).
+   Static imports so serverless bundlers (Vercel NFT) always trace them. */
+import core from "./lib/regulens-core.cjs";
+import gov from "./lib/gov-engine.cjs";
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 
