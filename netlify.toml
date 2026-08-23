@@ -1,0 +1,36 @@
+# Netlify deployment config for Synora (Express app).
+# Static assets are served from /public; all /api/* routes run in a
+# serverless function wrapping the Express app (netlify/functions/api.js).
+
+[build]
+  command = "npm run build"
+  publish = "public"
+
+[functions]
+  directory = "netlify/functions"
+  node_bundler = "zisi"
+  node_version = "20.x"
+
+# Rewrite API requests to the Express function so route params keep working.
+[[redirects]]
+  from = "/api/*"
+  to = "/.netlify/functions/api/:splat"
+  status = 200
+  force = true
+
+# ─────────────────────────────────────────────────────────────────────────────
+# Environment variables — add these in the Netlify dashboard (Site settings →
+# Environment variables). Never commit them to the repo.
+#
+# Required for chat/translation/voice:
+#   GROQ_API_KEY, GROQ_MODEL, GROQ_MODEL_VISION, GROQ_MODEL_WHISPER
+# Optional: GROQ_MODEL_TTS, GROQ_MODEL_TTS_AR, GROQ_BASE_URL
+#
+# Required for authentication (Firebase) + account sync:
+#   FIREBASE_API_KEY, FIREBASE_AUTH_DOMAIN, FIREBASE_PROJECT_ID,
+#   FIREBASE_STORAGE_BUCKET, FIREBASE_MESSAGING_SENDER_ID, FIREBASE_APP_ID
+#
+# Required for persistent chat history + user profiles (Supabase). Run
+# supabase/schema.sql in your Supabase SQL editor first.
+#   SUPABASE_URL, SUPABASE_SERVICE_ROLE_KEY
+# ─────────────────────────────────────────────────────────────────────────────

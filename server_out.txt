@@ -1,0 +1,1 @@
+Synora server on http://localhost:3001 — AI connected
