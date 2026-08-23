@@ -12,6 +12,7 @@
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
   <link rel="stylesheet" href="style.css?v=45" />
 <link rel="stylesheet" href="styles-gov.css?v=1" />
+  <link rel="stylesheet" href="modules.css?v=1" />
   <script src="languages.js?v=1"></script>
 </head>
 <body>
@@ -209,95 +210,42 @@
         <span data-i18n="nav.dashboard">Dashboard</span>
       </button>
 
-      <button class="nav-item" data-view="history">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
-        <span data-i18n="nav.history">History</span>
-      </button>
-      <button class="nav-item" data-view="assistant">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/><path d="M8 9h8"/><path d="M8 13h5"/></svg>
-        <span data-i18n="nav.assistant">AI Assistant</span>
-      </button>
-
-      <span class="nav-label" data-i18n="nav.group.analyze">ANALYZE</span>
-      <button class="nav-item" data-view="can-i-launch">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M4.5 16.5c-1.5 1.26-2 5-2 5s3.74-.5 5-2c.71-.84.7-2.13-.09-2.91a2.18 2.18 0 0 0-2.91-.09z"/><path d="m12 15-3-3a22 22 0 0 1 2-3.95A12.88 12.88 0 0 1 22 2c0 2.72-.78 7.5-6 11a22.35 22.35 0 0 1-4 2z"/><path d="M9 12H4s.55-3.03 2-4c1.62-1.08 5 0 5 0"/><path d="M12 15v5s3.03-.55 4-2c1.08-1.62 0-5 0-5"/></svg>
-        <span data-i18n="nav.canILaunch">Can I Launch?</span>
-      </button>
-      <button class="nav-item" data-view="agent-intelligence">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2a4 4 0 0 0-4 4v2H6a2 2 0 0 0-2 2v2c0 1.1.9 2 2 2h2v2a4 4 0 0 0 8 0v-2h2a2 2 0 0 0 2-2v-2a2 2 0 0 0-2-2h-2V6a4 4 0 0 0-4-4z"/><circle cx="9" cy="10" r="1" fill="currentColor" stroke="none"/><circle cx="15" cy="10" r="1" fill="currentColor" stroke="none"/></svg>
-        <span data-i18n="nav.agentIntel">Agent Intelligence</span>
-      </button>
-      <button class="nav-item" data-view="requirements">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M9 5H7a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V7a2 2 0 0 0-2-2h-2"/><rect x="9" y="3" width="6" height="4" rx="1"/><path d="m9 14 2 2 4-4"/></svg>
-        <span data-i18n="nav.requirements">Requirements</span>
-      </button>
-      <button class="nav-item" data-view="gap-analysis">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="7"/><line x1="21" y1="21" x2="16.2" y2="16.2"/><path d="m8.5 11 1.8 1.8 3.2-3.6"/></svg>
-        <span data-i18n="nav.gapAnalysis">Gap Analysis</span>
-      </button>
-      <button class="nav-item" data-view="action-plan">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><line x1="8" y1="6" x2="21" y2="6"/><line x1="8" y1="12" x2="21" y2="12"/><line x1="8" y1="18" x2="21" y2="18"/><line x1="3" y1="6" x2="3.01" y2="6"/><line x1="3" y1="12" x2="3.01" y2="12"/><line x1="3" y1="18" x2="3.01" y2="18"/></svg>
-        <span data-i18n="nav.actionPlan">Action Plan</span>
-      </button>
-      <button class="nav-item" data-view="cost-estimator">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="1" x2="12" y2="23"/><path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/></svg>
-        <span data-i18n="nav.costEstimator">Cost Estimator</span>
-      </button>
-      <button class="nav-item" data-view="document-library">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M22 19a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5l2 3h9a2 2 0 0 1 2 2z"/></svg>
-        <span data-i18n="nav.docLibrary">Document Library</span>
-      </button>
-
-      <span class="nav-label" data-i18n="nav.group.monitor">MONITOR</span>
-      <button class="nav-item" data-view="regulation-watch">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M2 12a10 10 0 0 1 10-10"/><path d="M2 12a10 10 0 0 0 10 10"/><path d="M2 12h4"/><path d="M2 12h3"/><path d="M22 12a10 10 0 0 1-10 10"/><path d="M22 12H14"/></svg>
-        <span data-i18n="nav.regWatch">Regulation Watch</span>
-      </button>
-      <button class="nav-item" data-view="updates">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 0 1-3.46 0"/></svg>
-        <span data-i18n="nav.updates">Updates</span>
-      </button>
-      <button class="nav-item" data-view="impact-analysis">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><polyline points="23 6 13.5 15.5 8.5 10.5 1 18"/><polyline points="17 6 23 6 23 12"/></svg>
-        <span data-i18n="nav.impactAnalysis">Impact Analysis</span>
-      </button>
-
-      <span class="nav-label" data-i18n="nav.government">GOVERNMENT</span>
-      <button class="nav-item" data-view="gov-analyzer">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><path d="M14 2v6h6"/><circle cx="11.5" cy="14.5" r="2.5"/><path d="m13.3 16.3 3 3"/></svg>
-        <span data-i18n="gov.nav.analyzer">Policy Analyzer</span>
-      </button>
-      <button class="nav-item" data-view="policy-simulator">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><line x1="4" y1="21" x2="4" y2="14"/><line x1="4" y1="10" x2="4" y2="3"/><line x1="12" y1="21" x2="12" y2="12"/><line x1="12" y1="8" x2="12" y2="3"/><line x1="20" y1="21" x2="20" y2="16"/><line x1="20" y1="12" x2="20" y2="3"/><line x1="1" y1="14" x2="7" y2="14"/><line x1="9" y1="8" x2="15" y2="8"/><line x1="17" y1="16" x2="23" y2="16"/></svg>
-        <span data-i18n="gov.nav.simulator">Impact Simulator</span>
-      </button>
-      <button class="nav-item" data-view="gov-stakeholders">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
-        <span data-i18n="gov.nav.stakeholders">Who Is Affected</span>
-      </button>
-      <button class="nav-item" data-view="gov-outcomes">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg>
-        <span data-i18n="gov.nav.outcomes">What Could Happen</span>
-      </button>
-      <button class="nav-item" data-view="industry-impact">
+      <span class="nav-label" data-i18n="nav.group.business">BUSINESS</span>
+      <button class="nav-item" data-module="market">
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="7" width="20" height="14" rx="2"/><path d="M16 21V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v16"/></svg>
-        <span data-i18n="gov.nav.industry">Industry Impact</span>
+        <span data-i18n="nav.module.market">Market Intelligence</span>
       </button>
-      <button class="nav-item" data-view="compare-scenarios">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><circle cx="18" cy="18" r="3"/><circle cx="6" cy="6" r="3"/><path d="M13 6h3a2 2 0 0 1 2 2v7"/><line x1="6" y1="9" x2="6" y2="21"/></svg>
-        <span data-i18n="gov.nav.compare">Compare Scenarios</span>
+      <button class="nav-item" data-module="compliance">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M9 5H7a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V7a2 2 0 0 0-2-2h-2"/><rect x="9" y="3" width="6" height="4" rx="1"/><path d="m9 14 2 2 4-4"/></svg>
+        <span data-i18n="nav.module.compliance">Compliance Center</span>
       </button>
-      <button class="nav-item" data-view="gov-scenario">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg>
-        <span data-i18n="gov.nav.scenario">Scenario Simulator</span>
+      <button class="nav-item" data-module="risk">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/><path d="m9 12 2 2 4-4"/></svg>
+        <span data-i18n="nav.module.risk">Risk &amp; Business Health</span>
       </button>
-      <button class="nav-item" data-view="gov-copilot">
+      <button class="nav-item" data-module="growth">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><circle cx="9" cy="7" r="4"/><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/></svg>
+        <span data-i18n="nav.module.growth">Growth &amp; Global Network</span>
+      </button>
+
+      <span class="nav-label" data-i18n="nav.group.intelligence">INTELLIGENCE</span>
+      <button class="nav-item" data-module="policy">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><line x1="3" y1="22" x2="21" y2="22"/><line x1="6" y1="18" x2="6" y2="11"/><line x1="10" y1="18" x2="10" y2="11"/><line x1="14" y1="18" x2="14" y2="11"/><line x1="18" y1="18" x2="18" y2="11"/><polygon points="12 2 20 7 4 7"/></svg>
+        <span data-i18n="nav.module.policy">Policy Intelligence</span>
+      </button>
+      <button class="nav-item" data-module="impact">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><polyline points="23 6 13.5 15.5 8.5 10.5 1 18"/><polyline points="17 6 23 6 23 12"/></svg>
+        <span data-i18n="nav.module.impact">Impact &amp; Scenarios</span>
+      </button>
+      <button class="nav-item" data-module="copilot">
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/><path d="M8 9h8"/><path d="M8 13h5"/></svg>
-        <span data-i18n="gov.nav.copilot">Gov Copilot</span>
+        <span data-i18n="nav.module.copilot">AI Copilot</span>
       </button>
-      <button class="nav-item" data-view="gov-consultations">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><polyline points="22 12 16 12 14 15 10 15 8 12 2 12"/><path d="M5.45 5.11 2 12v6a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2v-6l-3.45-6.89A2 2 0 0 0 16.76 4H7.24a2 2 0 0 0-1.79 1.11z"/></svg>
-        <span data-i18n="gov.nav.consultations">Consultations</span>
+
+      <span class="nav-label" data-i18n="nav.group.workspace">WORKSPACE</span>
+      <button class="nav-item" data-module="documents">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M22 19a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5l2 3h9a2 2 0 0 1 2 2z"/></svg>
+        <span data-i18n="nav.module.documents">Documents &amp; Evidence</span>
       </button>
     </nav>
 
@@ -649,6 +597,244 @@
               <button class="btn btn-primary" id="aiRunBtn">Analyze</button>
               <span class="t-status" id="aiRunStatus"></span>
             </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- ───────────── FEASIBILITY ANALYZER ───────────── -->
+      <section class="view hidden" id="view-feasibility">
+        <div class="page-head">
+          <div class="page-head-left">
+            <nav class="crumbs"><a href="#" class="crumb" data-goto="dashboard">Dashboard</a><span class="crumb-sep">/</span><span class="crumb crumb-current" data-i18n="crumb.feasibility">Feasibility Analyzer</span></nav>
+            <h1 class="page-title" data-i18n="feas.title">Business Feasibility Analyzer</h1>
+            <p class="page-desc" data-i18n="feas.desc">Describe your business idea and get an honest feasibility evaluation for your target market.</p>
+          </div>
+        </div>
+
+        <div class="card">
+          <div class="card-head"><h3 class="card-title" data-i18n="feas.formTitle">Your Business Idea</h3></div>
+          <div class="analysis-form">
+            <div class="set-row">
+              <span class="set-label" data-i18n="feas.company">Company</span>
+              <input class="set-input" id="fbCompany" data-i18n-ph="feas.companyPh" placeholder="Your company name" />
+            </div>
+            <div class="set-row">
+              <span class="set-label" data-i18n="feas.product">Product / Idea</span>
+              <input class="set-input" id="fbProduct" data-i18n-ph="feas.productPh" placeholder="What are you building?" />
+            </div>
+            <div class="set-row">
+              <span class="set-label" data-i18n="feas.origin">Origin Country</span>
+              <select class="select" id="fbOrigin">
+                <option value="" disabled selected data-i18n="feas.selectCountry">Select country…</option>
+                <option value="India">India</option>
+                <option value="China">China</option>
+                <option value="United States">United States</option>
+                <option value="European Union">European Union</option>
+                <option value="Other">Other</option>
+              </select>
+            </div>
+            <div class="set-row">
+              <span class="set-label" data-i18n="feas.target">Target Market</span>
+              <select class="select" id="fbTarget"></select>
+            </div>
+            <div class="set-row">
+              <span class="set-label" data-i18n="feas.industry">Industry</span>
+              <select class="select" id="fbIndustry"></select>
+            </div>
+            <div class="set-row">
+              <span class="set-label" data-i18n="feas.notes">Notes (optional)</span>
+              <textarea class="set-input" id="fbNotes" rows="3" data-i18n-ph="feas.notesPh" placeholder="Anything else the analyst should know — budget, team, timeline…"></textarea>
+            </div>
+            <div class="sim-actions">
+              <button class="btn btn-primary" id="fbRunBtn" data-i18n="feas.run">Evaluate Feasibility</button>
+              <span class="t-status" id="fbRunStatus"></span>
+            </div>
+          </div>
+        </div>
+
+        <div class="empty-state hidden" id="fbEmptyState">
+          <div class="empty-icon">📊</div>
+          <h3 data-i18n="feas.emptyTitle">No feasibility report yet</h3>
+          <p data-i18n="feas.emptyText">Fill in the form above and run the analyzer to see whether your idea is viable in the selected market.</p>
+        </div>
+
+        <div class="hidden" id="fbResultWrap">
+          <div class="fb-verdict" id="fbVerdictBanner">
+            <div class="fb-verdict-head">
+              <span class="chip" id="fbVerdictBadge"></span>
+              <span class="fb-mode-badge" id="fbMode"></span>
+            </div>
+            <p class="fb-summary" id="fbSummary"></p>
+          </div>
+
+          <div class="fb-grid">
+            <div class="card fb-gauge-card">
+              <canvas id="fbGaugeCanvas" height="150" aria-hidden="true"></canvas>
+              <p class="fb-gauge-label" data-i18n="feas.fitScore">Market fit score</p>
+            </div>
+            <div class="card fb-stats-card">
+              <div class="fb-stat"><span class="fb-stat-label" data-i18n="feas.competition">Competition</span><span class="fb-stat-value" id="fbCompetition">—</span></div>
+              <div class="fb-stat"><span class="fb-stat-label" data-i18n="feas.capital">Estimated capital</span><span class="fb-stat-value" id="fbCapital">—</span></div>
+              <div class="fb-stat"><span class="fb-stat-label" data-i18n="feas.timeline">Time to launch</span><span class="fb-stat-value" id="fbTimeline">—</span></div>
+            </div>
+          </div>
+
+          <div class="fb-cols">
+            <div class="card">
+              <div class="card-head"><h3 class="card-title" data-i18n="feas.strengths">Strengths</h3></div>
+              <ul class="fb-list fb-list-check" id="fbStrengths"></ul>
+            </div>
+            <div class="card">
+              <div class="card-head"><h3 class="card-title" data-i18n="feas.concerns">Concerns</h3></div>
+              <ul class="fb-list fb-list-x" id="fbConcerns"></ul>
+            </div>
+          </div>
+
+          <div class="card">
+            <div class="card-head"><h3 class="card-title" data-i18n="feas.risks">Key Risks</h3></div>
+            <div class="fb-risk-chips" id="fbRisks"></div>
+          </div>
+
+          <div class="card">
+            <div class="card-head"><h3 class="card-title" data-i18n="feas.recommendations">Recommendations</h3></div>
+            <ol class="fb-recs" id="fbRecs"></ol>
+            <p class="fb-disclaimer" data-i18n="feas.disclaimer">Estimates are directional guidance, not financial or legal advice.</p>
+          </div>
+        </div>
+      </section>
+
+      <!-- ───────────── SETUP GUIDE ───────────── -->
+      <section class="view hidden" id="view-setup-guide">
+        <div class="page-head">
+          <div class="page-head-left">
+            <nav class="crumbs"><a href="#" class="crumb" data-goto="dashboard">Dashboard</a><span class="crumb-sep">/</span><span class="crumb crumb-current" data-i18n="crumb.setupGuide">Setup Guide</span></nav>
+            <h1 class="page-title" data-i18n="guide.title">Step-by-Step Setup Guide</h1>
+            <p class="page-desc" data-i18n="guide.desc">Your launch path as a sequential checklist, generated from your analysis. Progress is saved locally.</p>
+          </div>
+          <div class="guide-progress">
+            <canvas id="guideGauge" height="120" aria-hidden="true"></canvas>
+            <span class="guide-progress-label" id="guideProgressLabel">0/0</span>
+            <button class="btn btn-outline btn-sm" id="guideResetBtn" data-i18n="guide.reset">Reset progress</button>
+          </div>
+        </div>
+
+        <div class="empty-state hidden" id="guideEmptyState">
+          <div class="empty-icon">🧭</div>
+          <h3 data-i18n="guide.emptyTitle">No setup plan available yet</h3>
+          <p data-i18n="guide.emptyText">Run a market analysis first — the setup guide builds itself from your action plan.</p>
+          <button class="btn btn-primary" data-goto="dashboard" data-i18n="guide.emptyCta">Run an analysis</button>
+        </div>
+
+        <div class="hidden" id="guideWrap">
+          <div id="guidePhases"></div>
+        </div>
+      </section>
+
+      <!-- ───────────── POLICY CHECKER ───────────── -->
+      <section class="view hidden" id="view-policy-checker">
+        <div class="page-head">
+          <div class="page-head-left">
+            <nav class="crumbs"><a href="#" class="crumb" data-goto="dashboard">Dashboard</a><span class="crumb-sep">/</span><span class="crumb crumb-current" data-i18n="crumb.policyChecker">Policy Checker</span></nav>
+            <h1 class="page-title" data-i18n="pc.title">AI Country Policy Checker</h1>
+            <p class="page-desc" data-i18n="pc.desc">Ask a concrete policy or compliance question about a target market and get a grounded answer.</p>
+          </div>
+        </div>
+
+        <div class="card">
+          <div class="card-head"><h3 class="card-title" data-i18n="pc.formTitle">Your Question</h3></div>
+          <div class="analysis-form">
+            <div class="set-row">
+              <span class="set-label" data-i18n="pc.target">Target Market</span>
+              <select class="select" id="pcTarget"></select>
+            </div>
+            <div class="set-row">
+              <span class="set-label" data-i18n="pc.industry">Industry (optional)</span>
+              <select class="select" id="pcIndustry"></select>
+            </div>
+            <div class="set-row">
+              <span class="set-label" data-i18n="pc.product">Product Context (optional)</span>
+              <input class="set-input" id="pcProduct" data-i18n-ph="pc.productPh" placeholder="e.g. mobile app processing health data" />
+            </div>
+            <div class="set-row">
+              <span class="set-label" data-i18n="pc.question">Question</span>
+              <textarea class="set-input" id="pcQuestion" rows="3" data-i18n-ph="pc.questionPh" placeholder="e.g. Can customer data be transferred from this market to our servers abroad?"></textarea>
+            </div>
+            <div class="sim-actions">
+              <button class="btn btn-primary" id="pcRunBtn" data-i18n="pc.run">Check Policy</button>
+              <span class="t-status" id="pcRunStatus"></span>
+            </div>
+          </div>
+        </div>
+
+        <div class="empty-state hidden" id="pcEmptyState">
+          <div class="empty-icon">🏛️</div>
+          <h3 data-i18n="pc.emptyTitle">No policy check yet</h3>
+          <p data-i18n="pc.emptyText">Ask about licensing, data transfers, employment rules, taxes — anything policy-related for your target market.</p>
+        </div>
+
+        <div class="hidden" id="pcResultWrap">
+          <div class="fb-verdict tone-conditional pc-answer-block">
+            <div class="fb-verdict-head">
+              <span class="chip chip-blue" id="pcTopic"></span>
+              <span class="fb-mode-badge" id="pcMode"></span>
+            </div>
+            <p class="fb-summary pc-answer" id="pcAnswer"></p>
+          </div>
+          <div class="fb-cols">
+            <div class="card">
+              <div class="card-head"><h3 class="card-title" data-i18n="pc.obligations">Obligations</h3></div>
+              <ul class="fb-list fb-list-check" id="pcObligations"></ul>
+            </div>
+            <div class="card">
+              <div class="card-head"><h3 class="card-title" data-i18n="pc.watchouts">Watch-outs</h3></div>
+              <ul class="fb-list fb-list-x" id="pcWatchouts"></ul>
+            </div>
+          </div>
+          <div class="card">
+            <div class="card-head"><h3 class="card-title" data-i18n="pc.followUp">Suggested follow-ups</h3></div>
+            <ol class="fb-recs" id="pcFollowUp"></ol>
+            <p class="fb-disclaimer" data-i18n="pc.disclaimer">Answers are guidance only — confirm with official sources before acting.</p>
+          </div>
+        </div>
+      </section>
+
+      <!-- ───────────── BUSINESS HEALTH ───────────── -->
+      <section class="view hidden" id="view-business-health">
+        <div class="page-head">
+          <div class="page-head-left">
+            <nav class="crumbs"><a href="#" class="crumb" data-goto="dashboard">Dashboard</a><span class="crumb-sep">/</span><span class="crumb crumb-current" data-i18n="crumb.businessHealth">Business Health</span></nav>
+            <h1 class="page-title" data-i18n="bh.title">Business Health Monitor</h1>
+            <p class="page-desc" data-i18n="bh.desc">A live scorecard computed from your compliance progress, gaps, risks and documentation — plus integrity signals.</p>
+          </div>
+          <div class="guide-progress">
+            <canvas id="bhGaugeCanvas" height="130" aria-hidden="true"></canvas>
+            <span class="chip" id="bhGrade"></span>
+            <span class="guide-progress-label" id="bhStatusLabel"></span>
+          </div>
+        </div>
+
+        <div class="empty-state hidden" id="bhEmptyState">
+          <div class="empty-icon">🩺</div>
+          <h3 data-i18n="bh.emptyTitle">No health data yet</h3>
+          <p data-i18n="bh.emptyText">The health monitor reads your analysis, requirement statuses and document library. Run an analysis to activate it.</p>
+          <button class="btn btn-primary" data-goto="dashboard" data-i18n="bh.emptyCta">Run an analysis</button>
+        </div>
+
+        <div class="hidden" id="bhWrap">
+          <div class="stats-row" id="bhStatsRow"></div>
+
+          <div class="card">
+            <div class="card-head"><h3 class="card-title" data-i18n="bh.components">Health components</h3></div>
+            <div id="bhBars"></div>
+          </div>
+
+          <div class="card">
+            <div class="card-head">
+              <h3 class="card-title" data-i18n="bh.signals">Integrity &amp; fraud signals</h3>
+              <button class="btn btn-outline btn-sm" id="bhRefreshBtn" data-i18n="bh.refresh">Re-scan</button>
+            </div>
+            <div id="bhSignals"></div>
+            <p class="fb-disclaimer" data-i18n="bh.disclaimer">Signals are rule-based checks over your own project data — they highlight anomalies, not proven fraud.</p>
           </div>
         </div>
       </section>
@@ -1217,6 +1403,190 @@
           </table>
         </div>
         <div id="conSummaryBody"></div>
+        </div>
+      </section>
+
+      <!-- ───────────── RISK MATRIX (Risk & Business Health) ───────────── -->
+      <section class="view hidden" id="view-risk-matrix">
+        <div class="page-head">
+          <div class="page-head-left">
+            <nav class="crumbs"><a href="#" class="crumb" data-goto="dashboard">Dashboard</a><span class="crumb-sep">/</span><span class="crumb crumb-current" data-i18n="crumb.riskMatrix">Risk Matrix</span></nav>
+            <h1 class="page-title" data-i18n="risk.title">Risk Matrix</h1>
+          </div>
+        </div>
+        <p class="page-desc" data-i18n="risk.desc">Probability and impact of every risk identified by the analysis agents.</p>
+
+        <div class="empty-state hidden" id="riskEmptyState">
+          <div class="empty-icon" aria-hidden="true">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
+          </div>
+          <h3 data-i18n="risk.empty.title">No risk data yet</h3>
+          <p data-i18n="risk.empty.text">Run a regulatory analysis and the Risk Agent findings will appear here automatically.</p>
+          <button class="btn btn-primary" data-goto="dashboard" data-i18n="risk.empty.cta">Start an Analysis</button>
+        </div>
+
+        <div id="riskDataWrap" class="hidden">
+          <div class="stats-row" id="riskStatsRow"></div>
+          <div class="grid grid-2">
+            <div class="card chart-card">
+              <div class="card-head"><h3 class="card-title" data-i18n="risk.matrix.title">Probability × Impact</h3></div>
+              <div class="chart-box tall"><canvas id="riskMatrixCanvas"></canvas></div>
+            </div>
+            <div class="card chart-card">
+              <div class="card-head"><h3 class="card-title" data-i18n="risk.dist.title">Severity Distribution</h3></div>
+              <div class="chart-box tall"><canvas id="riskDistCanvas"></canvas></div>
+            </div>
+          </div>
+          <div class="card table-card">
+            <div class="card-head"><h3 class="card-title" data-i18n="risk.register.title">Risk Register</h3></div>
+            <table class="req-table">
+              <thead><tr><th data-i18n="risk.col.risk">Risk</th><th data-i18n="risk.col.category">Category</th><th data-i18n="risk.col.severity">Severity</th><th data-i18n="risk.col.probability">P</th><th data-i18n="risk.col.impact">I</th><th data-i18n="risk.col.status">Status</th></tr></thead>
+              <tbody id="riskTbody"></tbody>
+            </table>
+          </div>
+        </div>
+      </section>
+
+      <!-- ───────────── GROWTH & GLOBAL NETWORK ───────────── -->
+      <section class="view hidden" id="view-network">
+        <div class="page-head">
+          <div class="page-head-left">
+            <nav class="crumbs"><a href="#" class="crumb" data-goto="dashboard">Dashboard</a><span class="crumb-sep">/</span><span class="crumb crumb-current" data-i18n="crumb.network">Growth &amp; Global Network</span></nav>
+            <h1 class="page-title" data-i18n="growth.title">Growth &amp; Global Network</h1>
+            <p class="page-desc" data-i18n="growth.desc">Find co-founders, partners and investors aligned with your target market and industry.</p>
+          </div>
+        </div>
+
+        <div class="fb-cols">
+          <div class="card net-card">
+            <div class="card-head"><h3 class="card-title" data-i18n="growth.cfCard">Co-Founder Finder</h3></div>
+            <p class="net-card-text" data-i18n="growth.cfText">See which roles your launch actually needs — derived from your analysis — and copy a ready-to-send search brief.</p>
+            <button class="btn btn-primary" data-goto="co-founder" data-i18n="growth.cfCta">Open Co-Founder Finder</button>
+          </div>
+          <div class="card net-card">
+            <div class="card-head"><h3 class="card-title" data-i18n="growth.ihCard">Investor Readiness</h3></div>
+            <p class="net-card-text" data-i18n="growth.ihText">Check how investable your project looks today and generate a one-pager draft from your real numbers.</p>
+            <button class="btn btn-primary" data-goto="investor-hub" data-i18n="growth.ihCta">Open Investor Readiness</button>
+          </div>
+        </div>
+
+        <div class="empty-state">
+          <div class="empty-icon" aria-hidden="true">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="9" cy="7" r="4"/><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/></svg>
+          </div>
+          <h3 data-i18n="growth.empty.title">Network matching is being prepared</h3>
+          <p data-i18n="growth.empty.text">Direct founder-to-founder and investor matching needs a community pool — it is on our roadmap. Meanwhile, the two tools above work from your own analysis.</p>
+        </div>
+      </section>
+
+      <!-- ───────────── DOC CHECKLIST ───────────── -->
+      <section class="view hidden" id="view-doc-checklist">
+        <div class="page-head">
+          <div class="page-head-left">
+            <nav class="crumbs"><a href="#" class="crumb" data-goto="dashboard">Dashboard</a><span class="crumb-sep">/</span><span class="crumb crumb-current" data-i18n="crumb.docChecklist">Evidence Checklist</span></nav>
+            <h1 class="page-title" data-i18n="dc.title">Document Checklist &amp; Templates</h1>
+            <p class="page-desc" data-i18n="dc.desc">The evidence your requirements imply — with starting-point templates for each document type.</p>
+          </div>
+          <div class="guide-progress">
+            <canvas id="dcGaugeCanvas" height="120" aria-hidden="true"></canvas>
+            <span class="guide-progress-label" id="dcCoverageLabel"></span>
+            <button class="btn btn-outline btn-sm" data-goto="document-library" data-i18n="dc.openLibrary">Open library</button>
+          </div>
+        </div>
+
+        <div class="empty-state hidden" id="dcEmptyState">
+          <div class="empty-icon">📋</div>
+          <h3 data-i18n="dc.emptyTitle">No checklist yet</h3>
+          <p data-i18n="dc.emptyText">Run an analysis first — the checklist maps each requirement to the documents that prove compliance.</p>
+          <button class="btn btn-primary" data-goto="dashboard" data-i18n="dc.emptyCta">Run an analysis</button>
+        </div>
+
+        <div class="hidden" id="dcWrap">
+          <div id="dcRows"></div>
+        </div>
+
+        <div class="modal-overlay hidden" id="dcTemplateModal" role="dialog" aria-modal="true">
+          <div class="modal dc-template-box">
+            <button class="icon-btn auth-close" id="dcTplClose" aria-label="Close">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+            </button>
+            <div class="doc-modal-head">
+              <h3 id="dcTplTitle">Template</h3>
+              <p class="set-muted" id="dcTplMode"></p>
+            </div>
+            <pre class="dc-tpl-pre" id="dcTplPre"></pre>
+            <div class="modal-actions">
+              <button class="btn btn-outline" id="dcTplCopy" data-i18n="dc.copy">Copy text</button>
+              <button class="btn btn-primary" id="dcTplOk">OK</button>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- ───────────── CO-FOUNDER FINDER ───────────── -->
+      <section class="view hidden" id="view-co-founder">
+        <div class="page-head">
+          <div class="page-head-left">
+            <nav class="crumbs"><a href="#" class="crumb" data-goto="dashboard">Dashboard</a><span class="crumb-sep">/</span><span class="crumb crumb-current" data-i18n="crumb.coFounder">Co-Founder Finder</span></nav>
+            <h1 class="page-title" data-i18n="cf.title">Co-Founder Finder</h1>
+            <p class="page-desc" data-i18n="cf.desc">Your analysis, translated into the team you need. Role priorities are computed from your real project signals.</p>
+          </div>
+          <div class="guide-progress">
+            <button class="btn btn-primary" id="cfCopyBrief" data-i18n="cf.copyBrief">Copy search brief</button>
+          </div>
+        </div>
+
+        <div class="empty-state hidden" id="cfEmptyState">
+          <div class="empty-icon">🤝</div>
+          <h3 data-i18n="cf.emptyTitle">No team profile yet</h3>
+          <p data-i18n="cf.emptyText">Run an analysis first — role priorities are derived from your requirements, risks and cost profile.</p>
+          <button class="btn btn-primary" data-goto="dashboard" data-i18n="cf.emptyCta">Run an analysis</button>
+        </div>
+
+        <div class="hidden" id="cfWrap">
+          <div class="fb-cols" id="cfRoles"></div>
+          <p class="fb-disclaimer" data-i18n="cf.note">Priorities are heuristic guidance from your own project data — not a substitute for your judgement.</p>
+        </div>
+      </section>
+
+      <!-- ───────────── INVESTOR READINESS ───────────── -->
+      <section class="view hidden" id="view-investor-hub">
+        <div class="page-head">
+          <div class="page-head-left">
+            <nav class="crumbs"><a href="#" class="crumb" data-goto="dashboard">Dashboard</a><span class="crumb-sep">/</span><span class="crumb crumb-current" data-i18n="crumb.investorHub">Investor Readiness</span></nav>
+            <h1 class="page-title" data-i18n="ih.title">Investor Readiness</h1>
+            <p class="page-desc" data-i18n="ih.desc">How fundable your project looks today, what investors will probe, and a one-pager draft built from your numbers.</p>
+          </div>
+          <div class="guide-progress">
+            <canvas id="ihGaugeCanvas" height="120" aria-hidden="true"></canvas>
+            <button class="btn btn-primary" id="ihGenBrief" data-i18n="ih.generate">Generate one-pager draft</button>
+            <span class="t-status" id="ihStatus"></span>
+          </div>
+        </div>
+
+        <div class="empty-state hidden" id="ihEmptyState">
+          <div class="empty-icon">📈</div>
+          <h3 data-i18n="ih.emptyTitle">Not enough data yet</h3>
+          <p data-i18n="ih.emptyText">Run an analysis first — investor readiness is scored from your compliance, risk and documentation state.</p>
+          <button class="btn btn-primary" data-goto="dashboard" data-i18n="ih.emptyCta">Run an analysis</button>
+        </div>
+
+        <div class="hidden" id="ihWrap">
+          <div class="stats-row" id="ihStatsRow"></div>
+          <div class="card">
+            <div class="card-head"><h3 class="card-title" data-i18n="ih.asks">What investors will ask</h3></div>
+            <div id="ihAsks"></div>
+          </div>
+          <div class="card hidden" id="ihBriefCard">
+            <div class="card-head">
+              <h3 class="card-title" data-i18n="ih.briefTitle">One-pager draft</h3>
+              <span class="fb-mode-badge" id="ihBriefMode"></span>
+            </div>
+            <pre class="dc-tpl-pre" id="ihBriefPre"></pre>
+            <div class="sim-actions">
+              <button class="btn btn-outline" id="ihBriefCopy" data-i18n="dc.copy">Copy text</button>
+            </div>
+          </div>
         </div>
       </section>
 

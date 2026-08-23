@@ -1312,6 +1312,469 @@ Return a JSON object with this exact structure (no markdown fencing):
   }
 });
 
+/* ───────── business feasibility analyzer ─────────
+   AI evaluation of a business idea for a target market. When the AI
+   provider is unavailable, falls back to a deterministic estimate built
+   from the shared regulatory knowledge engine (clearly labelled "demo"
+   in the response so the UI never presents it as AI output). */
+
+function clampNum(n, lo, hi) {
+  return Math.max(lo, Math.min(hi, n));
+}
+
+function normalizeFeasibility(f) {
+  if (!f || typeof f !== "object") return null;
+  const score = parseInt(f.marketFitScore, 10);
+  const verdict = ["Proceed", "Conditional", "Delay"].includes(f.verdict) ? f.verdict : null;
+  if (!Number.isFinite(score) || !verdict) return null;
+  const strArr = (v, n) =>
+    Array.isArray(v) ? v.map((s) => sanitizeStr(s, 240)).filter(Boolean).slice(0, n) : [];
+  const risks = strArr(f.risks, 6)
+    .map((r) =>
+      r && typeof r === "object"
+        ? {
+            title: sanitizeStr(r.title, 160),
+            severity: ["Low", "Medium", "High"].includes(r.severity) ? r.severity : "Medium",
+          }
+        : null
+    )
+    .filter((r) => r && r.title);
+  return {
+    marketFitScore: clampNum(score, 0, 100),
+    verdict,
+    summary: sanitizeStr(f.summary, 900),
+    competitionLevel: ["Low", "Medium", "High"].includes(f.competitionLevel) ? f.competitionLevel : "Medium",
+    capitalEstimate: sanitizeStr(f.capitalEstimate, 80),
+    timeline: sanitizeStr(f.timeline, 80),
+    strengths: strArr(f.strengths, 5),
+    concerns: strArr(f.concerns, 5),
+    risks,
+    recommendations: strArr(f.recommendations, 6),
+  };
+}
+
+function feasibilityFromAnalysis(a) {
+  const stats = a.stats || {};
+  const critical = stats.critical || 0;
+  const important = stats.important || 0;
+  const total = stats.total || 0;
+  const regs = Array.isArray(a.regulations) ? a.regulations : [];
+
+  const ii = a.industryImpact || {};
+  const readiness = Number.isFinite(ii.marketReadiness) ? ii.marketReadiness : 50;
+  const penalty = critical * 8 + important * 3;
+  const fitScore = clampNum(Math.round(readiness - penalty), 5, 95);
+
+  const verdict = fitScore >= 65 ? "Proceed" : fitScore >= 40 ? "Conditional" : "Delay";
+  const competitionLevel = regs.length > 6 ? "High" : regs.length > 3 ? "Medium" : "Low";
+
+  const cost = Number(a.estimatedCost) || 0;
+  const days = Number(a.estimatedDays) || 0;
+  const capitalEstimate =
+    "$" + Math.round(cost * 0.9).toLocaleString("en-US") +
+    " – $" + Math.round(cost * 1.25).toLocaleString("en-US");
+  const timeline = `${days} days (~${Math.max(1, Math.round(days / 30))} months)`;
+
+  const trends = Array.isArray(ii.industryTrends) ? ii.industryTrends.filter(Boolean).slice(0, 2) : [];
+  const strengths = [...trends];
+  if (readiness >= 60) {
+    strengths.push(`Market readiness is favorable given ${String(ii.complianceComplexity || "moderate").toLowerCase()} compliance complexity (${readiness}/100).`);
+  }
+
+  const concerns = [];
+  if (Array.isArray(ii.topRegulations)) {
+    ii.topRegulations.slice(0, 3).forEach((title) => concerns.push(`High-impact regulation: ${title}`));
+  }
+  if (critical > 0) concerns.push(`${critical} critical requirement${critical > 1 ? "s" : ""} must be closed before launch.`);
+  if (String(ii.complianceBurden || "").toLowerCase() === "heavy") {
+    concerns.push("Heavy compliance burden applies in this market.");
+  }
+
+  const ia = a.impactAnalysis || {};
+  const risks = Object.entries(ia)
+    .filter(([, v]) => v && typeof v.score === "number")
+    .sort((x, y) => y[1].score - x[1].score)
+    .slice(0, 4)
+    .map(([k, v]) => ({
+      title: k.charAt(0).toUpperCase() + k.slice(1),
+      severity: v.level === "Low" ? "Low" : v.level === "High" ? "High" : "Medium",
+    }));
+
+  const recs = [];
+  const seenTitles = new Set();
+  (a.requirements || [])
+    .filter((r) => r && r.priority === "critical" && r.actionTitle)
+    .forEach((r) => {
+      if (recs.length < 3 && !seenTitles.has(r.actionTitle)) {
+        seenTitles.add(r.actionTitle);
+        recs.push(r.actionTitle);
+      }
+    });
+  if (cost > 0) recs.push(`Budget ${capitalEstimate} for compliance and market-entry costs.`);
+  if (days > 0) recs.push(`Plan roughly ${timeline} from kickoff to a compliant launch.`);
+  recs.push("Run the full analysis to turn these estimates into a tracked action plan.");
+
+  const summary =
+    `Across ${regs.length} identified regulations and ${total} compliance requirements` +
+    ` (${critical} critical, ${important} important) for ${a.target}, the projected market fit score is ${fitScore}/100` +
+    ` with an estimated investment of ${capitalEstimate} over ${timeline}.`;
+
+  return {
+    marketFitScore: fitScore,
+    verdict,
+    summary,
+    competitionLevel,
+    capitalEstimate,
+    timeline,
+    strengths,
+    concerns,
+    risks,
+    recommendations: recs,
+  };
+}
+
+app.post("/api/feasibility", async (req, res) => {
+  const b = sanitizeObj(req.body || {}, ["company", "product", "origin", "target", "industry", "notes"], 600);
+  if (!b.company || !b.product) {
+    return res.status(400).json({ error: "company and product are required" });
+  }
+
+  let mode = ai.isConfigured() ? "ai" : "demo";
+  let feasibility = null;
+
+  if (mode === "ai") {
+    try {
+      const prompt = `Evaluate the business feasibility of this idea for the selected target market. Be realistic, specific, and conservative with numbers.
+
+Company: ${b.company}
+Product / Idea: ${b.product}
+Origin Country: ${b.origin || "unspecified"}
+Target Market: ${b.target || "unspecified"}
+Industry: ${b.industry || "general"}
+Founder Notes: ${b.notes || "none"}
+
+Return ONLY valid JSON with exactly this structure:
+{
+  "marketFitScore": <integer 0-100>,
+  "verdict": "Proceed|Conditional|Delay",
+  "summary": "<2-3 sentence feasibility summary>",
+  "competitionLevel": "Low|Medium|High",
+  "capitalEstimate": "<estimated capital range, e.g. '$25,000 - $60,000'>",
+  "timeline": "<realistic time to launch, e.g. '4-6 months'>",
+  "strengths": ["<strength 1>", "<strength 2>"],
+  "concerns": ["<concern 1>", "<concern 2>"],
+  "risks": [{"title": "<risk>", "severity": "Low|Medium|High"}],
+  "recommendations": ["<actionable recommendation 1>", "<recommendation 2>"]
+}`;
+      const text = await ai.complete({
+        messages: [
+          { role: "system", content: "You are a senior business feasibility analyst. Return ONLY valid JSON. No markdown fencing, no commentary." },
+          { role: "user", content: prompt },
+        ],
+        endpoint: "/api/feasibility",
+      });
+      feasibility = normalizeFeasibility(extractJSON(text));
+      if (!feasibility) mode = "demo";
+    } catch {
+      mode = "demo";
+      feasibility = null;
+    }
+  }
+
+  if (!feasibility) {
+    try {
+      const analysis = runDemoAnalysis({
+        company: b.company,
+        product: b.product,
+        origin: b.origin,
+        target: b.target || "us",
+        industry: b.industry || "general",
+      });
+      feasibility = feasibilityFromAnalysis(analysis);
+    } catch {
+      return res.status(500).json({ error: "Feasibility evaluation failed" });
+    }
+  }
+
+  try {
+    logAnalysisEvent({ event: "feasibility_run", mode, company: b.company, product: b.product, target: b.target, industry: b.industry });
+  } catch {}
+
+  res.json({ mode, feasibility });
+});
+
+/* ───────── AI country policy checker ─────────
+   Answers a concrete policy/compliance question about a target market.
+   AI mode when Groq is configured; otherwise a transparent keyword match
+   against the shared regulatory knowledge base ("demo" mode in response). */
+
+const PC_STOPWORDS = new Set(["the", "and", "for", "can", "may", "must", "with", "from", "into", "does", "need", "required", "what", "when", "how", "are", "is", "it", "to", "of", "in", "on", "my", "our", "we", "i", "a", "an", "do", "have", "has"]);
+
+function normalizePolicyCheck(c) {
+  if (!c || typeof c !== "object") return null;
+  const answer = sanitizeStr(c.answer, 2000);
+  if (!answer) return null;
+  const strArr = (v, n) =>
+    Array.isArray(v) ? v.map((s) => sanitizeStr(s, 300)).filter(Boolean).slice(0, n) : [];
+  return {
+    answer,
+    obligations: strArr(c.obligations, 6),
+    watchouts: strArr(c.watchouts, 6),
+    followUp: strArr(c.followUp, 4),
+  };
+}
+
+function policyCheckFromKnowledgeBase(targetName, industry, question) {
+  const tokens = String(question || "")
+    .toLowerCase()
+    .split(/[^a-z0-9]+/)
+    .filter((w) => w.length > 3 && !PC_STOPWORDS.has(w));
+  const analysis = runDemoAnalysis({
+    company: "Policy Check",
+    product: industry || "general",
+    origin: "",
+    target: targetName,
+    industry: industry || "general",
+  });
+  const regs = Array.isArray(analysis.regulations) ? analysis.regulations : [];
+
+  const scored = regs
+    .map((r) => {
+      const hay = [
+        String(r.title || "").toLowerCase(),
+        String(r.summary || "").toLowerCase(),
+        String(r.impactTitle || "").toLowerCase(),
+        String(r.code || "").toLowerCase(),
+      ];
+      let score = 0;
+      tokens.forEach((tkn) => {
+        if (hay[0].includes(tkn)) score += 3;
+        if (hay[1].includes(tkn)) score += 1;
+        if (hay[2].includes(tkn)) score += 2;
+        if (hay[3].includes(tkn)) score += 2;
+      });
+      return { reg: r, score };
+    })
+    .sort((a, b) => b.score - a.score);
+
+  const matched = scored.filter((s) => s.score > 0).slice(0, 5).map((s) => s.reg);
+  const pool = matched.length ? matched : regs.slice(0, 4);
+
+  const answer = matched.length
+    ? `Based on the regulatory knowledge base for ${targetName}, ${matched.length} regulation${matched.length > 1 ? "s" : ""} relate directly to your question. The most relevant: ${matched.slice(0, 2).map((r) => r.title).join("; ")}. Review the obligations below and confirm specifics with the local authority or counsel.`
+    : `No specific match was found in the ${targetName} knowledge base for this exact question. The generally applicable regulations for ${industry || "your"} businesses in ${targetName} are listed below — consult official sources or counsel for a definitive answer.`;
+
+  return {
+    answer,
+    obligations: pool.map((r) => `${r.title} (${r.authority}) — ${(r.summary || "").slice(0, 180)}`),
+    watchouts: regs
+      .filter((r) => r.impact === "high")
+      .slice(0, 3)
+      .map((r) => `${r.impactTitle || r.title}: ${(r.impactDesc || r.summary || "").slice(0, 180)}`),
+    followUp: [
+      `Verify current versions of these rules for ${targetName} before launch decisions.`,
+      "Ask a follow-up question to narrow down licensing or data-transfer specifics.",
+    ],
+  };
+}
+
+app.post("/api/policy-check", async (req, res) => {
+  const b = sanitizeObj(req.body || {}, ["target", "question", "industry", "product"], 800);
+  if (!b.target || !b.question) {
+    return res.status(400).json({ error: "target and question are required" });
+  }
+
+  let mode = ai.isConfigured() ? "ai" : "demo";
+  let check = null;
+
+  if (mode === "ai") {
+    try {
+      const prompt = `You are a regulatory policy analyst. Answer this concrete policy question about doing business in the specified target market. Be precise, practical, and cite the kind of authority/source generically (e.g., "the federal data protection authority"). If uncertain, say so plainly instead of inventing specifics.
+
+Target Market: ${b.target}
+Industry: ${b.industry || "general"}
+Product Context: ${b.product || "not provided"}
+Question: ${b.question}
+
+Return ONLY valid JSON with exactly this structure:
+{
+  "answer": "<3-6 sentence direct answer>",
+  "obligations": ["<concrete obligation 1>", "<obligation 2>"],
+  "watchouts": ["<pitfall or enforcement focus 1>", "<watchout 2>"],
+  "followUp": ["<suggested follow-up question 1>", "<follow-up 2>"]
+}`;
+      const text = await ai.complete({
+        messages: [
+          { role: "system", content: "You are a careful regulatory policy analyst. Return ONLY valid JSON. No markdown fencing." },
+          { role: "user", content: prompt },
+        ],
+        endpoint: "/api/policy-check",
+      });
+      check = normalizePolicyCheck(extractJSON(text));
+      if (!check) mode = "demo";
+    } catch {
+      mode = "demo";
+      check = null;
+    }
+  }
+
+  if (!check) {
+    try {
+      check = policyCheckFromKnowledgeBase(b.target, b.industry, b.question);
+    } catch {
+      return res.status(500).json({ error: "Policy check failed" });
+    }
+  }
+
+  try {
+    logAnalysisEvent({ event: "policy_check_run", mode, target: b.target, industry: b.industry });
+  } catch {}
+
+  res.json({ mode, check });
+});
+
+/* ───────── document template generator ─────────
+   Produces starting-point outlines for common compliance documents.
+   Deterministic skeletons below are always available; AI refines them
+   into tailored outlines when configured. Output is clearly a draft,
+   never legal advice. */
+
+const DOC_TEMPLATES = {
+  "privacy-policy": {
+    title: "Privacy Policy (outline)",
+    sections: [
+      { heading: "1. Who we are & scope", points: ["Identity and contact of ${company} as data controller", "Products and services covered (${product})", "Jurisdictions in scope (${target})"] },
+      { heading: "2. Data we collect", points: ["Account and identity data", "Usage and device data", "Any special-category data — state if none is collected"] },
+      { heading: "3. Legal bases for processing", points: ["Consent", "Contract performance", "Legitimate interests — documented balancing test"] },
+      { heading: "4. Data subject rights", points: ["Access, rectification, erasure, portability", "Objection and restriction of processing", "How to exercise rights and response timelines"] },
+      { heading: "5. Transfers & processors", points: ["List of processors and locations", "Safeguards for international transfers"] },
+      { heading: "6. Retention & security", points: ["Retention periods per data category", "Technical and organizational measures summary"] },
+    ],
+  },
+  dpagreement: {
+    title: "Data Processing Agreement (outline)",
+    sections: [
+      { heading: "1. Parties & scope", points: ["Controller and processor identification", "Subject matter and duration of processing"] },
+      { heading: "2. Instructions & compliance", points: ["Processing only on documented instructions", "Confidentiality commitments of personnel"] },
+      { heading: "3. Security measures", points: ["Encryption in transit and at rest", "Access controls and audit logging"] },
+      { heading: "4. Sub-processors", points: ["Prior authorization requirement", "Flow-down obligations list"] },
+      { heading: "5. Breach & assistance", points: ["Notification timeline to controller", "Assistance with data subject requests and DPIAs"] },
+      { heading: "6. Audits & termination", points: ["Audit rights and frequency", "Return or deletion of data on termination"] },
+    ],
+  },
+  "security-policy": {
+    title: "Information Security Policy (outline)",
+    sections: [
+      { heading: "1. Purpose & scope", points: ["Applies to all ${company} systems and staff handling ${product} data"] },
+      { heading: "2. Access control", points: ["Least privilege and role-based access", "Onboarding/offboarding access review steps"] },
+      { heading: "3. Data protection", points: ["Classification scheme", "Encryption standards for stored and transmitted data"] },
+      { heading: "4. Incident response", points: ["Detection and escalation path", "Customer/regulator notification criteria and owners"] },
+      { heading: "5. Continuity & review", points: ["Backup and restore expectations", "Annual policy review and sign-off owner"] },
+    ],
+  },
+  "compliance-register": {
+    title: "Compliance Obligations Register",
+    sections: [
+      { heading: "How to use this register", points: ["One row per obligation derived from your analysis requirements", "Update status weekly; keep evidence links per row"] },
+      { heading: "Register columns", points: ["Obligation / source regulation and authority", "Priority, owner, due date, status", "Evidence location and last reviewed date"] },
+      { heading: "Review cadence", points: ["Monthly review of critical items", "Quarterly full-register walkthrough with stakeholders"] },
+    ],
+  },
+  dpiachecklist: {
+    title: "DPIA Screening Checklist",
+    sections: [
+      { heading: "Processing description", points: ["What data, whose data, why (${product} context)"] },
+      { heading: "Necessity & proportionality", points: ["Could the goal be met with less data?", "Is each data field justified?"] },
+      { heading: "Risks to individuals", points: ["Identify top 3 risks and likelihood/severity", "Consider special-category or children's data exposure"] },
+      { heading: "Mitigations", points: ["Technical measures mapped to each risk", "Residual risk statement and sign-off line"] },
+    ],
+  },
+};
+
+app.post("/api/doc-template", async (req, res) => {
+  const b = sanitizeObj(req.body || {}, ["type", "company", "product", "target", "industry"]);
+  const tpl = DOC_TEMPLATES[b.type];
+  if (!tpl) {
+    return res.status(400).json({ error: "Unknown template type" });
+  }
+  const company = b.company || "your company";
+  const product = b.product || "your product";
+  const target = b.target || "the target market";
+
+  const interpolate = (t) =>
+    t.replaceAll("${company}", company).replaceAll("${product}", product).replaceAll("${target}", target);
+
+  let mode = ai.isConfigured() ? "ai" : "skeleton";
+  let result = null;
+
+  if (mode === "ai") {
+    try {
+      const prompt = `Produce a concise professional outline for a "${tpl.title}" document.
+
+Context:
+Company: ${company}
+Product: ${product}
+Target market: ${target}
+Industry: ${b.industry || "general"}
+
+Requirements:
+- 5-7 sections, each with a one-line heading and 2-4 bullet points
+- Bullets must be specific instructions about WHAT to fill in, not generic filler
+- Reference the company/product/market context where natural
+
+Return ONLY valid JSON:
+{ "title": "<document title>", "intro": "<1 sentence usage note>", "sections": [{"heading": "...", "points": ["...", "..."]}] }`;
+      const text = await ai.complete({
+        messages: [
+          { role: "system", content: "You are a senior compliance documentation specialist. Return ONLY valid JSON." },
+          { role: "user", content: prompt },
+        ],
+        endpoint: "/api/doc-template",
+      });
+      const parsed = extractJSON(text);
+      if (
+        parsed &&
+        sanitizeStr(parsed.title, 160) &&
+        Array.isArray(parsed.sections) &&
+        parsed.sections.length > 0
+      ) {
+        result = {
+          title: sanitizeStr(parsed.title, 160),
+          intro: sanitizeStr(parsed.intro, 400),
+          sections: parsed.sections
+            .slice(0, 9)
+            .map((s) => ({
+              heading: sanitizeStr(s && s.heading, 200),
+              points: Array.isArray(s && s.points)
+                ? s.points.map((p) => sanitizeStr(p, 300)).filter(Boolean).slice(0, 5)
+                : [],
+            }))
+            .filter((s) => s.heading),
+        };
+      } else {
+        mode = "skeleton";
+      }
+    } catch {
+      mode = "skeleton";
+      result = null;
+    }
+  }
+
+  if (!result) {
+    result = {
+      title: tpl.title.replace(/\s*\(outline\)$/, ""),
+      intro: "Starting-point outline generated from standard practice. Have it reviewed by qualified counsel before use.",
+      sections: tpl.sections.map((s) => ({ heading: interpolate(s.heading), points: s.points.map(interpolate) })),
+    };
+  }
+
+  try {
+    logAnalysisEvent({ event: "doc_template_run", mode, type: b.type });
+  } catch {}
+
+  res.json({ mode, template: result });
+});
+
 if (process.env.NETLIFY || process.env.VERCEL) {
   /* Running as a serverless Function (Netlify or Vercel) — the platform
      invokes the wrapped `app` instead of a long-lived server. */

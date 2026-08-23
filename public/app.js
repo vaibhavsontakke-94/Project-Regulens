@@ -123,6 +123,80 @@
     aiIndustry: document.getElementById("aiIndustry"),
     aiRunBtn: document.getElementById("aiRunBtn"),
     aiRunStatus: document.getElementById("aiRunStatus"),
+    fbCompany: document.getElementById("fbCompany"),
+    fbProduct: document.getElementById("fbProduct"),
+    fbOrigin: document.getElementById("fbOrigin"),
+    fbTarget: document.getElementById("fbTarget"),
+    fbIndustry: document.getElementById("fbIndustry"),
+    fbNotes: document.getElementById("fbNotes"),
+    fbRunBtn: document.getElementById("fbRunBtn"),
+    fbRunStatus: document.getElementById("fbRunStatus"),
+    fbEmptyState: document.getElementById("fbEmptyState"),
+    fbResultWrap: document.getElementById("fbResultWrap"),
+    fbVerdictBanner: document.getElementById("fbVerdictBanner"),
+    fbVerdictBadge: document.getElementById("fbVerdictBadge"),
+    fbMode: document.getElementById("fbMode"),
+    fbSummary: document.getElementById("fbSummary"),
+    fbCompetition: document.getElementById("fbCompetition"),
+    fbCapital: document.getElementById("fbCapital"),
+    fbTimeline: document.getElementById("fbTimeline"),
+    fbStrengths: document.getElementById("fbStrengths"),
+    fbConcerns: document.getElementById("fbConcerns"),
+    fbRisks: document.getElementById("fbRisks"),
+    fbRecs: document.getElementById("fbRecs"),
+    guideEmptyState: document.getElementById("guideEmptyState"),
+    guideWrap: document.getElementById("guideWrap"),
+    guidePhases: document.getElementById("guidePhases"),
+    guideResetBtn: document.getElementById("guideResetBtn"),
+    pcTarget: document.getElementById("pcTarget"),
+    pcIndustry: document.getElementById("pcIndustry"),
+    pcProduct: document.getElementById("pcProduct"),
+    pcQuestion: document.getElementById("pcQuestion"),
+    pcRunBtn: document.getElementById("pcRunBtn"),
+    pcRunStatus: document.getElementById("pcRunStatus"),
+    pcEmptyState: document.getElementById("pcEmptyState"),
+    pcResultWrap: document.getElementById("pcResultWrap"),
+    pcTopic: document.getElementById("pcTopic"),
+    pcMode: document.getElementById("pcMode"),
+    pcAnswer: document.getElementById("pcAnswer"),
+    pcObligations: document.getElementById("pcObligations"),
+    pcWatchouts: document.getElementById("pcWatchouts"),
+    pcFollowUp: document.getElementById("pcFollowUp"),
+    bhEmptyState: document.getElementById("bhEmptyState"),
+    bhWrap: document.getElementById("bhWrap"),
+    bhStatsRow: document.getElementById("bhStatsRow"),
+    bhBars: document.getElementById("bhBars"),
+    bhSignals: document.getElementById("bhSignals"),
+    bhGrade: document.getElementById("bhGrade"),
+    bhStatusLabel: document.getElementById("bhStatusLabel"),
+    bhRefreshBtn: document.getElementById("bhRefreshBtn"),
+    dcEmptyState: document.getElementById("dcEmptyState"),
+    dcWrap: document.getElementById("dcWrap"),
+    dcRows: document.getElementById("dcRows"),
+    dcGaugeCanvas: document.getElementById("dcGaugeCanvas"),
+    dcCoverageLabel: document.getElementById("dcCoverageLabel"),
+    dcTemplateModal: document.getElementById("dcTemplateModal"),
+    dcTplTitle: document.getElementById("dcTplTitle"),
+    dcTplMode: document.getElementById("dcTplMode"),
+    dcTplPre: document.getElementById("dcTplPre"),
+    dcTplCopy: document.getElementById("dcTplCopy"),
+    dcTplOk: document.getElementById("dcTplOk"),
+    dcTplClose: document.getElementById("dcTplClose"),
+    cfEmptyState: document.getElementById("cfEmptyState"),
+    cfWrap: document.getElementById("cfWrap"),
+    cfRoles: document.getElementById("cfRoles"),
+    cfCopyBrief: document.getElementById("cfCopyBrief"),
+    ihEmptyState: document.getElementById("ihEmptyState"),
+    ihWrap: document.getElementById("ihWrap"),
+    ihStatsRow: document.getElementById("ihStatsRow"),
+    ihAsks: document.getElementById("ihAsks"),
+    ihGaugeCanvas: document.getElementById("ihGaugeCanvas"),
+    ihGenBrief: document.getElementById("ihGenBrief"),
+    ihStatus: document.getElementById("ihStatus"),
+    ihBriefCard: document.getElementById("ihBriefCard"),
+    ihBriefMode: document.getElementById("ihBriefMode"),
+    ihBriefPre: document.getElementById("ihBriefPre"),
+    ihBriefCopy: document.getElementById("ihBriefCopy"),
     historyList: document.getElementById("historyList"),
     historyRefreshBtn: document.getElementById("historyRefreshBtn"),
     historyDetailCard: document.getElementById("historyDetailCard"),
@@ -2441,6 +2515,10 @@
       const key = el.dataset.i18nTitle;
       if (key) el.title = t(key);
     });
+    document.querySelectorAll("[data-i18n-ph]").forEach((el) => {
+      const key = el.dataset.i18nPh;
+      if (key) el.setAttribute("placeholder", t(key));
+    });
     document.querySelectorAll("[data-i18n-aria]").forEach((el) => {
       const key = el.dataset.i18nAria;
       if (key) el.setAttribute("aria-label", t(key));
@@ -2472,6 +2550,7 @@
     /* global language master fix: re-render language-sensitive dynamic surfaces */
     try { renderAgentIntelligence(); } catch {}
     try { populateAnalysisForm(); } catch {}
+    try { renderModuleBar(); } catch {}
     setTimeout(() => {
       try {
         if (document.getElementById("chartComplianceStatus")) renderDashboardCharts();
@@ -2479,6 +2558,26 @@
         if (document.getElementById("chartActions")) renderActionCharts();
         if (document.getElementById("planTimeline")) renderPlanTimeline();
       } catch {}
+      try { if (currentView === "risk-matrix") renderRiskMatrixView(); } catch {}
+      try {
+        if (currentView === "feasibility") {
+          populateFeasibilityForm();
+          const cached = loadCachedFeasibility();
+          if (cached) renderFeasibilityResult(cached);
+        }
+      } catch {}
+      try { if (currentView === "setup-guide") renderSetupGuide(); } catch {}
+      try {
+        if (currentView === "policy-checker") {
+          populatePolicyForm();
+          const pc = loadCachedPolicy();
+          if (pc) renderPolicyResult(pc);
+        }
+      } catch {}
+      try { if (currentView === "business-health") renderBusinessHealth(); } catch {}
+      try { if (currentView === "doc-checklist") renderDocChecklist(); } catch {}
+      try { if (currentView === "co-founder") renderCoFounder(); } catch {}
+      try { if (currentView === "investor-hub") renderInvestorHub(); } catch {}
     }, 0);
     if (window.ReguLensGov) window.ReguLensGov.refresh();
   }
@@ -2530,11 +2629,16 @@
     "assistant",
 
     "can-i-launch",
+    "feasibility",
+    "setup-guide",
     "requirements",
+    "policy-checker",
     "gap-analysis",
     "action-plan",
+    "business-health",
     "cost-estimator",
     "document-library",
+    "doc-checklist",
     "regulation-watch",
     "updates",
     "impact-analysis",
@@ -2548,9 +2652,115 @@
     "gov-copilot",
     "gov-consultations",
     "agent-intelligence",
+    "risk-matrix",
+    "business-health",
+    "network",
+    "co-founder",
+    "investor-hub",
     "settings",
     "profile",
   ];
+
+  /* ───────── consolidated modules ─────────
+     One sidebar item per business module; each module owns a set of
+     existing leaf views shown as internal tabs. Leaf ids, DOM sections,
+     renders and APIs stay untouched. */
+  const MODULES = {
+    market: {
+      labelKey: "nav.module.market",
+      defaultView: "can-i-launch",
+      views: ["can-i-launch", "feasibility", "setup-guide", "cost-estimator"],
+    },
+    compliance: {
+      labelKey: "nav.module.compliance",
+      defaultView: "requirements",
+      views: ["requirements", "policy-checker", "gap-analysis", "action-plan"],
+    },
+    risk: {
+      labelKey: "nav.module.risk",
+      defaultView: "risk-matrix",
+      views: ["risk-matrix", "business-health"],
+    },
+    growth: {
+      labelKey: "nav.module.growth",
+      defaultView: "network",
+      views: ["network", "co-founder", "investor-hub"],
+    },
+    policy: {
+      labelKey: "nav.module.policy",
+      defaultView: "regulation-watch",
+      views: [
+        "regulation-watch",
+        "updates",
+        "gov-analyzer",
+        "gov-stakeholders",
+        "gov-outcomes",
+        "gov-consultations",
+      ],
+    },
+    impact: {
+      labelKey: "nav.module.impact",
+      defaultView: "impact-analysis",
+      views: [
+        "impact-analysis",
+        "policy-simulator",
+        "industry-impact",
+        "compare-scenarios",
+        "gov-scenario",
+      ],
+    },
+    copilot: {
+      labelKey: "nav.module.copilot",
+      defaultView: "assistant",
+      views: ["assistant", "history", "gov-copilot", "agent-intelligence"],
+    },
+    documents: {
+      labelKey: "nav.module.documents",
+      defaultView: "doc-checklist",
+      views: ["doc-checklist", "document-library"],
+    },
+  };
+  Object.keys(MODULES).forEach((k) => { MODULES[k].lastView = null; });
+
+  const LEAF_TO_MODULE = {};
+  Object.keys(MODULES).forEach((m) => {
+    MODULES[m].views.forEach((v) => { LEAF_TO_MODULE[v] = m; });
+  });
+  let currentModule = null;
+
+  /* leaf view -> i18n key for its tab caption (fallback: TITLES) */
+  const LEAF_LABEL_KEYS = {
+    "can-i-launch": "nav.canILaunch",
+    feasibility: "nav.feasibility",
+    "setup-guide": "nav.setupGuide",
+    "cost-estimator": "nav.costEstimator",
+    requirements: "nav.requirements",
+    "policy-checker": "nav.policyChecker",
+    "gap-analysis": "nav.gapAnalysis",
+    "action-plan": "nav.actionPlan",
+    "regulation-watch": "nav.regWatch",
+    updates: "nav.updates",
+    "gov-analyzer": "gov.nav.analyzer",
+    "gov-stakeholders": "gov.nav.stakeholders",
+    "gov-outcomes": "gov.nav.outcomes",
+    "gov-consultations": "gov.nav.consultations",
+    "impact-analysis": "nav.impactAnalysis",
+    "policy-simulator": "gov.nav.simulator",
+    "industry-impact": "gov.nav.industry",
+    "compare-scenarios": "gov.nav.compare",
+    "gov-scenario": "gov.nav.scenario",
+    assistant: "nav.assistant",
+    history: "nav.history",
+    "gov-copilot": "gov.nav.copilot",
+    "agent-intelligence": "nav.agentIntel",
+    "document-library": "nav.docLibrary",
+    "doc-checklist": "nav.docChecklist",
+    "risk-matrix": "crumb.riskMatrix",
+    "business-health": "nav.businessHealth",
+    network: "crumb.network",
+    "co-founder": "nav.coFounder",
+    "investor-hub": "nav.investorHub",
+  };
 
   const TITLES = {
     dashboard: "Market Readiness Overview",
@@ -2558,12 +2768,20 @@
     assistant: "AI Assistant",
 
     "can-i-launch": "Can I Launch?",
+    feasibility: "Feasibility Analyzer",
+    "setup-guide": "Step-by-Step Setup Guide",
+    "policy-checker": "AI Country Policy Checker",
+    "business-health": "Business Health Monitor",
     "agent-intelligence": "Agent Intelligence",
     requirements: "Requirements",
     "gap-analysis": "Gap Analysis",
     "action-plan": "Action Plan",
     "cost-estimator": "Cost Estimator",
     "document-library": "Document Library",
+    "doc-checklist": "Document Checklist & Templates",
+    network: "Growth & Global Network",
+    "co-founder": "Co-Founder Finder",
+    "investor-hub": "Investor Readiness",
     "regulation-watch": "Regulation Watch",
     updates: "Updates",
     "impact-analysis": "Impact Analysis",
@@ -2576,6 +2794,8 @@
     "gov-scenario": "Scenario Simulator",
     "gov-copilot": "Government Copilot",
     "gov-consultations": "Consultations",
+    "risk-matrix": "Risk Matrix",
+    network: "Growth & Global Network",
     settings: t("settings.title"),
     profile: t("profile.title"),
   };
@@ -2586,10 +2806,77 @@
     els.views.forEach((v) => v.classList.add("hidden"));
     target.classList.remove("hidden");
     currentView = view;
-    els.navItems.forEach((i) => i.classList.toggle("active", i.dataset.view === view));
+    const modKey = LEAF_TO_MODULE[view] || null;
+    if (modKey && MODULES[modKey].views.includes(view)) MODULES[modKey].lastView = view;
+    setActiveModule(modKey);
+    els.navItems.forEach((i) =>
+      i.classList.toggle("active", i.dataset.view === view || (!!modKey && i.dataset.module === modKey))
+    );
     closeSidebar();
     window.scrollTo(0, 0);
     renderView(view);
+  }
+
+  /* ───────── module shell (sticky header + tab bar) ───────── */
+
+  function ensureModuleBar() {
+    const main = document.getElementById("main");
+    if (!main || document.getElementById("moduleBar")) return;
+    const bar = document.createElement("div");
+    bar.id = "moduleBar";
+    bar.className = "module-bar hidden";
+    const head = document.createElement("div");
+    head.className = "module-head";
+    const title = document.createElement("h2");
+    title.className = "module-title";
+    head.appendChild(title);
+    const tabs = document.createElement("div");
+    tabs.className = "module-tabs";
+    tabs.setAttribute("role", "tablist");
+    bar.appendChild(head);
+    bar.appendChild(tabs);
+    main.insertBefore(bar, main.firstChild);
+  }
+
+  function renderModuleBar() {
+    ensureModuleBar();
+    const bar = document.getElementById("moduleBar");
+    if (!bar) return;
+    const mod = currentModule ? MODULES[currentModule] : null;
+    if (!mod || !currentView || !mod.views.includes(currentView)) {
+      bar.classList.add("hidden");
+      return;
+    }
+    bar.classList.remove("hidden");
+    const titleEl = bar.querySelector(".module-title");
+    if (titleEl) titleEl.textContent = t(mod.labelKey);
+    const tabsEl = bar.querySelector(".module-tabs");
+    if (!tabsEl) return;
+    tabsEl.innerHTML = "";
+    mod.views.forEach((v) => {
+      const b = document.createElement("button");
+      b.type = "button";
+      b.className = "module-tab" + (v === currentView ? " active" : "");
+      b.setAttribute("role", "tab");
+      b.setAttribute("aria-selected", String(v === currentView));
+      const key = LEAF_LABEL_KEYS[v];
+      b.textContent = key ? t(key) : (TITLES[v] || v);
+      b.addEventListener("click", () => navigate(v));
+      tabsEl.appendChild(b);
+    });
+  }
+
+  function setActiveModule(moduleKey) {
+    currentModule = moduleKey || null;
+    renderModuleBar();
+  }
+
+  function navigateModule(moduleKey) {
+    const mod = MODULES[moduleKey];
+    if (!mod) return;
+    const target =
+      mod.lastView && mod.views.includes(mod.lastView) ? mod.lastView : mod.defaultView;
+    navigate(target);
   }
 
   function renderView(view) {
@@ -2599,17 +2886,25 @@
     }
     if (view === "dashboard") renderStats();
     else if (view === "can-i-launch") renderVerdict();
+    else if (view === "feasibility") renderFeasibility();
+    else if (view === "setup-guide") renderSetupGuide();
     else if (view === "requirements") renderRequirements();
+    else if (view === "policy-checker") renderPolicyChecker();
     else if (view === "gap-analysis") renderGaps();
     else if (view === "action-plan") renderActions();
+    else if (view === "business-health") renderBusinessHealth();
     else if (view === "cost-estimator") renderCosts();
     else if (view === "document-library") renderDocs();
+    else if (view === "doc-checklist") renderDocChecklist();
     else if (view === "regulation-watch") renderWatch();
     else if (view === "updates") renderUpdates();
     else if (view === "impact-analysis") renderImpact();
     else if (view === "agent-intelligence") renderAgentIntelligence();
     else if (view === "history") renderHistory();
     else if (view === "assistant") renderAssistant();
+    else if (view === "risk-matrix") renderRiskMatrixView();
+    else if (view === "co-founder") renderCoFounder();
+    else if (view === "investor-hub") renderInvestorHub();
 
   }
 
@@ -2642,7 +2937,10 @@
   els.overlay.addEventListener("click", () => setSidebar(false));
 
   els.navItems.forEach((item) => {
-    item.addEventListener("click", () => navigate(item.dataset.view));
+    item.addEventListener("click", () => {
+      if (item.dataset.view) navigate(item.dataset.view);
+      else if (item.dataset.module) navigateModule(item.dataset.module);
+    });
   });
 
   /* ───────── header menus ───────── */
@@ -4592,6 +4890,940 @@
     startAnalysis({ company, product, origin, target, industry });
   });
 
+  /* ───────── feasibility analyzer ─────────
+     Honest AI evaluation with a deterministic fallback. The response's
+     "mode" ("ai" | "demo") is always shown so demo estimates are never
+     presented as AI output. */
+  const FEAS_KEY = "regulens.feasibility.v1";
+  const FEAS_TONES = { Proceed: "tone-proceed", Conditional: "tone-conditional", Delay: "tone-delay" };
+
+  function loadCachedFeasibility() {
+    try {
+      const raw = localStorage.getItem(FEAS_KEY);
+      if (!raw) return null;
+      const data = JSON.parse(raw);
+      if (data && data.feasibility && data.feasibility.verdict) return data;
+    } catch {}
+    return null;
+  }
+
+  function populateFeasibilityForm() {
+    if (els.fbTarget && !els.fbTarget.options.length) {
+      const ph = document.createElement("option");
+      ph.value = "";
+      ph.disabled = true;
+      ph.selected = true;
+      ph.textContent = t("feas.selectMarket");
+      els.fbTarget.appendChild(ph);
+      TARGET_MARKETS.forEach((m) => {
+        const opt = document.createElement("option");
+        opt.value = m.id;
+        opt.textContent = m.name;
+        els.fbTarget.appendChild(opt);
+      });
+    }
+    if (els.fbIndustry && !els.fbIndustry.options.length) {
+      const ph = document.createElement("option");
+      ph.value = "";
+      ph.disabled = true;
+      ph.selected = true;
+      ph.textContent = t("feas.selectIndustry");
+      els.fbIndustry.appendChild(ph);
+      INDUSTRIES.forEach((ind) => {
+        const opt = document.createElement("option");
+        opt.value = ind.id;
+        opt.textContent = ind.name;
+        els.fbIndustry.appendChild(opt);
+      });
+    }
+    if (analysisData) {
+      if (!els.fbCompany.value) els.fbCompany.value = analysisData.company || "";
+      if (!els.fbProduct.value) els.fbProduct.value = analysisData.product || "";
+      if (analysisData.origin) {
+        for (const opt of els.fbOrigin.options) {
+          if (opt.value === analysisData.origin) { els.fbOrigin.value = analysisData.origin; break; }
+        }
+      }
+      if (analysisData.targetId) els.fbTarget.value = analysisData.targetId;
+      if (analysisData.industry) els.fbIndustry.value = analysisData.industry;
+    }
+  }
+
+  function renderFeasibilityResult(data) {
+    const f = data.feasibility || {};
+    els.fbEmptyState.classList.add("hidden");
+    els.fbResultWrap.classList.remove("hidden");
+
+    els.fbVerdictBanner.className = "fb-verdict " + (FEAS_TONES[f.verdict] || "tone-conditional");
+    els.fbVerdictBadge.textContent = f.verdict || "—";
+    els.fbMode.textContent = data.mode === "ai" ? t("feas.modeAi") : t("feas.modeDemo");
+    els.fbSummary.textContent = f.summary || "";
+    els.fbCompetition.textContent = f.competitionLevel || "—";
+    els.fbCapital.textContent = f.capitalEstimate || "—";
+    els.fbTimeline.textContent = f.timeline || "—";
+
+    const fillList = (ul, items) => {
+      ul.innerHTML = "";
+      (items || []).forEach((item) => {
+        const li = document.createElement("li");
+        li.textContent = item;
+        ul.appendChild(li);
+      });
+      ul.classList.toggle("hidden", !(items || []).length);
+    };
+    fillList(els.fbStrengths, f.strengths);
+    fillList(els.fbConcerns, f.concerns);
+
+    els.fbRisks.innerHTML = "";
+    (f.risks || []).forEach((r) => {
+      const chip = document.createElement("span");
+      chip.className = "sev-badge sev-" + String(r.severity || "Medium").toLowerCase();
+      chip.textContent = r.title + " · " + sevLabel(String(r.severity || "medium").toLowerCase());
+      els.fbRisks.appendChild(chip);
+    });
+
+    els.fbRecs.innerHTML = "";
+    (f.recommendations || []).forEach((rec) => {
+      const li = document.createElement("li");
+      li.textContent = rec;
+      els.fbRecs.appendChild(li);
+    });
+    els.fbRecs.classList.toggle("hidden", !(f.recommendations || []).length);
+
+    if (window.ReguLensCharts) {
+      chartGuard("fbGaugeCanvas", Number.isFinite(f.marketFitScore));
+      window.ReguLensCharts.createGaugeChart("fbGaugeCanvas", f.marketFitScore || 0, 100, t("feas.fitScore"));
+    }
+  }
+
+  async function runFeasibility() {
+    const company = (els.fbCompany.value || "").trim();
+    const product = (els.fbProduct.value || "").trim();
+    if (!company) { toast(t("feas.errCompany")); return; }
+    if (!product) { toast(t("feas.errProduct")); return; }
+
+    const btn = els.fbRunBtn;
+    btn.disabled = true;
+    btn.classList.add("loading");
+    btn.textContent = t("feas.running");
+    els.fbRunStatus.textContent = "";
+
+    try {
+      const res = await api("/api/feasibility", {
+        method: "POST",
+        headers: jsonHeaders,
+        body: JSON.stringify({
+          company,
+          product,
+          origin: els.fbOrigin.value || "",
+          target: els.fbTarget.value || "",
+          industry: els.fbIndustry.value || "",
+          notes: (els.fbNotes.value || "").trim(),
+        }),
+      });
+      const data = await res.json();
+      try { localStorage.setItem(FEAS_KEY, JSON.stringify(data)); } catch {}
+      renderFeasibilityResult(data);
+    } catch (err) {
+      els.fbRunStatus.textContent = err.message || t("feas.errFailed");
+    } finally {
+      btn.disabled = false;
+      btn.classList.remove("loading");
+      btn.textContent = t("feas.run");
+    }
+  }
+
+  function renderFeasibility() {
+    populateFeasibilityForm();
+    const cached = loadCachedFeasibility();
+    if (cached) renderFeasibilityResult(cached);
+    else {
+      els.fbResultWrap.classList.add("hidden");
+      els.fbEmptyState.classList.remove("hidden");
+    }
+  }
+
+  els.fbRunBtn.addEventListener("click", runFeasibility);
+
+  /* ───────── step-by-step setup guide ─────────
+     Sequential launch checklist derived from the analysis action plan.
+     Completion state is stored locally; no data is invented. */
+  const GUIDE_DONE_KEY = "regulens.guideDone.v1";
+  const guidePhaseKeys = ["guide.phase1", "guide.phase2", "guide.phase3", "guide.phase4"];
+  /* priority -> existing sev-badge tone class */
+  const GUIDE_PRIORITY_SEV = { critical: "critical", important: "medium", standard: "low" };
+
+  function guideDoneSet() {
+    try {
+      const arr = JSON.parse(localStorage.getItem(GUIDE_DONE_KEY) || "[]");
+      return new Set(Array.isArray(arr) ? arr : []);
+    } catch {
+      return new Set();
+    }
+  }
+
+  function saveGuideDone(set) {
+    try { localStorage.setItem(GUIDE_DONE_KEY, JSON.stringify([...set])); } catch {}
+  }
+
+  function guidePhaseOf(dueDays) {
+    if (dueDays <= 30) return { key: "guide.phase1", idx: 0 };
+    if (dueDays <= 90) return { key: "guide.phase2", idx: 1 };
+    if (dueDays <= 180) return { key: "guide.phase3", idx: 2 };
+    return { key: "guide.phase4", idx: 3 };
+  }
+
+  function renderSetupGuide() {
+    const actions = analysisData && Array.isArray(analysisData.actions) ? analysisData.actions : [];
+    if (!actions.length) {
+      els.guideWrap.classList.add("hidden");
+      els.guideEmptyState.classList.remove("hidden");
+      chartGuard("guideGauge", false);
+      return;
+    }
+    els.guideEmptyState.classList.add("hidden");
+    els.guideWrap.classList.remove("hidden");
+
+    const doneSet = guideDoneSet();
+    const steps = actions.map((a, i) => ({
+      id: a.reqId || "step-" + i,
+      title: a.title || a.name || "Step",
+      desc: a.description || "",
+      owner: a.owner || "",
+      dueDays: Number(a.dueDays) || 9999,
+      priority: a.priority || "standard",
+    }));
+    steps.sort((x, y) => x.dueDays - y.dueDays);
+
+    const phases = [[], [], [], []];
+    steps.forEach((s) => phases[guidePhaseOf(s.dueDays).idx].push(s));
+
+    els.guidePhases.innerHTML = "";
+    let doneCount = 0;
+
+    phases.forEach((phaseSteps, pi) => {
+      if (!phaseSteps.length) return;
+      const phaseDone = phaseSteps.filter((s) => doneSet.has(s.id)).length;
+      doneCount += phaseDone;
+
+      const phaseEl = document.createElement("div");
+      phaseEl.className = "guide-phase";
+      const head = document.createElement("div");
+      head.className = "guide-phase-head";
+      head.innerHTML =
+        '<span class="guide-phase-title">' + esc(t(guidePhaseKeys[pi])) + "</span>" +
+        '<span class="guide-phase-count">' + phaseDone + "/" + phaseSteps.length + "</span>";
+      phaseEl.appendChild(head);
+
+      phaseSteps.forEach((s, si) => {
+        const isDone = doneSet.has(s.id);
+        const row = document.createElement("label");
+        row.className = "guide-step" + (isDone ? " done" : "");
+        row.innerHTML =
+          '<input type="checkbox" ' + (isDone ? "checked" : "") + " />" +
+          '<span class="guide-step-num">' + (steps.indexOf(s) + 1) + "</span>" +
+          '<span class="guide-step-body"><span class="guide-step-title">' + esc(s.title) + "</span>" +
+          (s.desc ? '<span class="guide-step-desc">' + esc(s.desc) + "</span>" : "") +
+          "</span>" +
+          '<span class="guide-step-meta">' +
+          (s.owner ? '<span class="chip chip-gray">' + esc(s.owner) + "</span>" : "") +
+          '<span class="sev-badge sev-' + GUIDE_PRIORITY_SEV[s.priority] + '">' + sevLabel(s.priority) + "</span>" +
+          "</span>";
+
+        row.querySelector("input").addEventListener("change", (e) => {
+          const set = guideDoneSet();
+          if (e.target.checked) set.add(s.id);
+          else set.delete(s.id);
+          saveGuideDone(set);
+          renderSetupGuideProgress(steps.length, set.size);
+          row.classList.toggle("done", e.target.checked);
+        });
+        phaseEl.appendChild(row);
+      });
+      els.guidePhases.appendChild(phaseEl);
+    });
+
+    renderSetupGuideProgress(steps.length, doneCount);
+  }
+
+  function renderSetupGuideProgress(total, done) {
+    const label = document.getElementById("guideProgressLabel");
+    if (label) label.textContent = done + "/" + total;
+    const pct = total ? Math.round((done / total) * 100) : 0;
+    chartGuard("guideGauge", total > 0);
+    if (window.ReguLensCharts) {
+      window.ReguLensCharts.createGaugeChart("guideGauge", pct, 100, pct + "%");
+    }
+  }
+
+  els.guideResetBtn.addEventListener("click", () => {
+    saveGuideDone(new Set());
+    renderSetupGuide();
+  });
+
+  /* ───────── AI country policy checker ───────── */
+  const PC_KEY = "regulens.policyCheck.v1";
+
+  function loadCachedPolicy() {
+    try {
+      const raw = localStorage.getItem(PC_KEY);
+      if (!raw) return null;
+      const data = JSON.parse(raw);
+      if (data && data.check && data.check.answer) return data;
+    } catch {}
+    return null;
+  }
+
+  function populatePolicyForm() {
+    if (els.pcTarget && !els.pcTarget.options.length) {
+      const ph = document.createElement("option");
+      ph.value = "";
+      ph.disabled = true;
+      ph.selected = true;
+      ph.textContent = t("feas.selectMarket");
+      els.pcTarget.appendChild(ph);
+      TARGET_MARKETS.forEach((m) => {
+        const opt = document.createElement("option");
+        opt.value = m.id;
+        opt.textContent = m.name;
+        els.pcTarget.appendChild(opt);
+      });
+    }
+    if (els.pcIndustry && !els.pcIndustry.options.length) {
+      const any = document.createElement("option");
+      any.value = "";
+      any.textContent = t("pc.anyIndustry");
+      els.pcIndustry.appendChild(any);
+      INDUSTRIES.forEach((ind) => {
+        const opt = document.createElement("option");
+        opt.value = ind.id;
+        opt.textContent = ind.name;
+        els.pcIndustry.appendChild(opt);
+      });
+    }
+    if (analysisData) {
+      if (analysisData.targetId && !els.pcTarget.value) els.pcTarget.value = analysisData.targetId;
+      if (analysisData.industry && !els.pcIndustry.value) els.pcIndustry.value = analysisData.industry;
+      if (analysisData.product && !els.pcProduct.value) els.pcProduct.value = analysisData.product;
+    }
+  }
+
+  function renderPolicyResult(data) {
+    const c = data.check || {};
+    els.pcEmptyState.classList.add("hidden");
+    els.pcResultWrap.classList.remove("hidden");
+
+    els.pcMode.textContent = data.mode === "ai" ? t("feas.modeAi") : t("feas.modeDemo");
+    els.pcTopic.textContent = c.topic || "";
+    els.pcTopic.classList.toggle("hidden", !c.topic);
+    els.pcAnswer.textContent = c.answer || "";
+
+    const fillList = (ul, items, ordered) => {
+      ul.innerHTML = "";
+      (items || []).forEach((item) => {
+        const li = document.createElement("li");
+        li.textContent = item;
+        ul.appendChild(li);
+      });
+      ul.classList.toggle("hidden", !(items || []).length);
+    };
+    fillList(els.pcObligations, c.obligations);
+    fillList(els.pcWatchouts, c.watchouts);
+    fillList(els.pcFollowUp, c.followUp);
+  }
+
+  function renderPolicyChecker() {
+    populatePolicyForm();
+    const cached = loadCachedPolicy();
+    if (cached) renderPolicyResult(cached);
+    else {
+      els.pcResultWrap.classList.add("hidden");
+      els.pcEmptyState.classList.remove("hidden");
+    }
+  }
+
+  async function runPolicyCheck() {
+    const target = els.pcTarget.value || "";
+    const question = (els.pcQuestion.value || "").trim();
+    if (!target) { toast(t("pc.errMarket")); return; }
+    if (question.length < 8) { toast(t("pc.errQuestion")); return; }
+
+    const btn = els.pcRunBtn;
+    btn.disabled = true;
+    btn.classList.add("loading");
+    btn.textContent = t("pc.running");
+    els.pcRunStatus.textContent = "";
+
+    try {
+      const res = await api("/api/policy-check", {
+        method: "POST",
+        headers: jsonHeaders,
+        body: JSON.stringify({
+          target,
+          industry: els.pcIndustry.value || "",
+          product: (els.pcProduct.value || "").trim(),
+          question,
+        }),
+      });
+      const data = await res.json();
+      try { localStorage.setItem(PC_KEY, JSON.stringify(data)); } catch {}
+      renderPolicyResult(data);
+    } catch (err) {
+      els.pcRunStatus.textContent = err.message || t("pc.errFailed");
+    } finally {
+      btn.disabled = false;
+      btn.classList.remove("loading");
+      btn.textContent = t("pc.run");
+    }
+  }
+
+  els.pcRunBtn.addEventListener("click", runPolicyCheck);
+
+  /* ───────── business health monitor ─────────
+     Scorecard computed live from real project state: requirement
+     statuses, gap closure, risk register and document library. */
+  const BH_SEV_WEIGHTS = { Critical: 15, High: 10, Medium: 5, Low: 2 };
+
+  function computeBusinessHealth() {
+    if (!analysisData) return null;
+
+    const reqs = getAnalysisRequirements();
+    const counts = statusCounts();
+    const complianceScore = counts.total
+      ? Math.round(((counts.completed + counts.inProgress * 0.5) / counts.total) * 100)
+      : 0;
+
+    const gs = analysisData.gapStats || {};
+    const gapTotal = (gs.open || 0) + (gs.closed || 0) + (gs.inProgress || 0);
+    const gapScore = gapTotal
+      ? Math.round((((gs.closed || 0) + (gs.inProgress || 0) * 0.5) / gapTotal) * 100)
+      : null;
+
+    const risks = Array.isArray(analysisData.riskMatrix) ? analysisData.riskMatrix : [];
+    let riskPenalty = 0;
+    risks.forEach((r) => {
+      const w = BH_SEV_WEIGHTS[r.severity] != null ? BH_SEV_WEIGHTS[r.severity] : 3;
+      riskPenalty += r.status && r.status !== "Open" ? w * 0.3 : w;
+    });
+    const riskScore = risks.length ? Math.max(0, Math.min(100, Math.round(100 - riskPenalty))) : null;
+
+    const docsCount = Array.isArray(docs) ? docs.length : 0;
+    const docsTarget = Math.max(3, Math.min(10, Math.ceil(counts.total / 3)));
+    const docScore = Math.min(100, Math.round((docsCount / docsTarget) * 100));
+
+    const components = [
+      { key: "bh.comp.compliance", score: complianceScore },
+      gapScore !== null ? { key: "bh.comp.gaps", score: gapScore } : null,
+      riskScore !== null ? { key: "bh.comp.risk", score: riskScore } : null,
+      { key: "bh.comp.docs", score: docScore },
+    ].filter(Boolean);
+
+    const overall = Math.round(components.reduce((s, c) => s + c.score, 0) / components.length);
+    return { overall, components, reqs, counts, risks, docsCount };
+  }
+
+  function computeHealthSignals(h) {
+    const signals = [];
+
+    /* overdue / imminent critical requirements still pending */
+    const dueCritical = h.reqs.filter(
+      (r) => r.priority === "critical" && r.status !== "done" && Number(r.dueDays) <= 30
+    );
+    if (dueCritical.length >= 3) {
+      signals.push({ sev: "critical", key: "bh.sig.criticalDue", n: dueCritical.length });
+    } else if (dueCritical.length > 0) {
+      signals.push({ sev: "high", key: "bh.sig.criticalDueFew", n: dueCritical.length });
+    }
+
+    /* nothing moving while work piles up */
+    if (h.counts.pending > 0 && h.counts.inProgress === 0 && h.counts.completed === 0) {
+      signals.push({ sev: "medium", key: "bh.sig.stalled" });
+    }
+
+    /* action plan items without an owner */
+    const actions = Array.isArray(analysisData.actions) ? analysisData.actions : [];
+    const unowned = actions.filter((a) => !a.owner).length;
+    if (actions.length >= 4 && unowned / actions.length > 0.5) {
+      signals.push({ sev: "medium", key: "bh.sig.unowned", n: unowned });
+    }
+
+    /* timeline compression: many near-term deadlines at once */
+    const soonActions = actions.filter((a) => Number(a.dueDays) <= 30).length;
+    if (soonActions >= 5) {
+      signals.push({ sev: "high", key: "bh.sig.compression", n: soonActions });
+    }
+
+    /* thin documentation relative to scope */
+    if (h.counts.total >= 6 && h.docsCount < 3) {
+      signals.push({ sev: "medium", key: "bh.sig.thinDocs", n: h.docsCount });
+    }
+
+    /* elevated open-risk concentration */
+    const elevated = h.risks.filter(
+      (r) => (r.severity === "Critical" || r.severity === "High") && (!r.status || r.status === "Open")
+    ).length;
+    if (elevated >= 4) {
+      signals.push({ sev: "critical", key: "bh.sig.riskCluster", n: elevated });
+    }
+
+    return signals;
+  }
+
+  function bhBarRow(labelText, score) {
+    const row = document.createElement("div");
+    row.className = "bh-bar-row";
+    const tone = score >= 70 ? "good" : score >= 45 ? "warn" : "bad";
+    row.innerHTML =
+      '<span class="bh-bar-label"></span>' +
+      '<span class="bh-bar"><span class="bh-bar-fill tone-' + tone + '" style="width:' + Math.max(2, score) + '%"></span></span>' +
+      '<span class="bh-bar-value">' + score + "</span>";
+    row.querySelector(".bh-bar-label").textContent = labelText;
+    return row;
+  }
+
+  function renderBusinessHealth() {
+    const health = computeBusinessHealth();
+    if (!health) {
+      els.bhWrap.classList.add("hidden");
+      els.bhEmptyState.classList.remove("hidden");
+      chartGuard("bhGaugeCanvas", false);
+      return;
+    }
+    els.bhEmptyState.classList.add("hidden");
+    els.bhWrap.classList.remove("hidden");
+
+    /* grade + status */
+    const grade = health.overall >= 85 ? "A" : health.overall >= 70 ? "B" : health.overall >= 55 ? "C" : health.overall >= 40 ? "D" : "F";
+    els.bhGrade.textContent = grade;
+    els.bhGrade.className = "chip " + (grade === "A" || grade === "B" ? "chip-green" : grade === "C" ? "chip-orange" : "chip-red");
+
+    const statusKey = health.overall >= 70 ? "bh.status.healthy" : health.overall >= 45 ? "bh.status.attention" : "bh.status.critical";
+    els.bhStatusLabel.textContent = t(statusKey);
+
+    chartGuard("bhGaugeCanvas", true);
+    if (window.ReguLensCharts) {
+      window.ReguLensCharts.createGaugeChart("bhGaugeCanvas", health.overall, 100, t("bh.score"));
+    }
+
+    /* component bars */
+    els.bhBars.innerHTML = "";
+    health.components.forEach((c) => els.bhBars.appendChild(bhBarRow(t(c.key), c.score)));
+
+    /* headline stats */
+    els.bhStatsRow.innerHTML =
+      '<div class="risk-stat"><span class="risk-stat-value">' + esc(String(health.counts.completed)) + '</span><span class="risk-stat-label">' + esc(t("bh.stat.done")) + "</span></div>" +
+      '<div class="risk-stat"><span class="risk-stat-value">' + esc(String(health.counts.pending)) + '</span><span class="risk-stat-label">' + esc(t("bh.stat.pending")) + "</span></div>" +
+      '<div class="risk-stat"><span class="risk-stat-value">' + esc(String(health.risks.length)) + '</span><span class="risk-stat-label">' + esc(t("bh.stat.risks")) + "</span></div>" +
+      '<div class="risk-stat"><span class="risk-stat-value">' + esc(String(health.docsCount)) + '</span><span class="risk-stat-label">' + esc(t("bh.stat.docs")) + "</span></div>";
+
+    /* integrity & fraud-style signals */
+    const signals = computeHealthSignals(health);
+    els.bhSignals.innerHTML = "";
+    if (!signals.length) {
+      const ok = document.createElement("div");
+      ok.className = "bh-signal bh-signal-ok";
+      ok.innerHTML = '<span class="sev-badge low">' + esc(sevLabel("low")) + "</span><p></p>";
+      ok.querySelector("p").textContent = t("bh.sig.none");
+      els.bhSignals.appendChild(ok);
+    } else {
+      const sevClass = { critical: "critical", high: "high", medium: "medium" };
+      signals.forEach((sig) => {
+        const el = document.createElement("div");
+        el.className = "bh-signal";
+        el.innerHTML = '<span class="sev-badge ' + (sevClass[sig.sev] || "medium") + '">' + esc(sevLabel(sig.sev)) + "</span><p></p>";
+        el.querySelector("p").textContent = tf(sig.key, { n: sig.n });
+        els.bhSignals.appendChild(el);
+      });
+    }
+  }
+
+  els.bhRefreshBtn.addEventListener("click", renderBusinessHealth);
+
+  /* ───────── document checklist & templates ─────────
+     Maps each analysis requirement to the documents that evidence it,
+     and generates starting-point templates (AI when configured). */
+  const DC_SUGGESTION_MAP = [
+    { re: /(privacy|gdpr|ccpa|dpdp|personal data|data prot)/i, types: ["privacy-policy", "dpagreement"] },
+    { re: /(security|cyber|encryption|access control|nis)/i, types: ["security-policy"] },
+    { re: /(audit|record|register|reporting)/i, types: ["compliance-register"] },
+    { re: /(risk|impact assessment|dpia|assessment)/i, types: ["dpiachecklist"] },
+    { re: /(transfer|cross.border|international)/i, types: ["dpagreement"] },
+    { re: /(license|capital|registration|tax)/i, types: ["compliance-register"] },
+  ];
+  const DC_TYPE_LABELS = {
+    "privacy-policy": "Privacy Policy",
+    dpagreement: "DPA",
+    "security-policy": "Security Policy",
+    "compliance-register": "Compliance Register",
+    dpiachecklist: "DPIA Checklist",
+  };
+
+  function suggestDocTypes(req) {
+    const hay = [req.name || "", req.desc || "", req.actionTitle || ""].join(" ");
+    const found = [];
+    DC_SUGGESTION_MAP.forEach((m) => {
+      if (m.re.test(hay)) m.types.forEach((tp) => { if (!found.includes(tp)) found.push(tp); });
+    });
+    return found.length ? found.slice(0, 2) : ["compliance-register"];
+  }
+
+  function dcTemplateToText(tpl) {
+    let out = tpl.title + "\n" + "=".repeat(tpl.title.length) + "\n";
+    if (tpl.intro) out += "\n" + tpl.intro + "\n";
+    (tpl.sections || []).forEach((s) => {
+      out += "\n" + s.heading + "\n";
+      (s.points || []).forEach((p) => { out += "  - " + p + "\n"; });
+    });
+    return out;
+  }
+
+  async function openDocTemplate(type) {
+    els.dcTplTitle.textContent = DC_TYPE_LABELS[type] || type;
+    els.dcTplMode.textContent = t("dc.generating");
+    els.dcTplPre.textContent = "";
+    els.dcTemplateModal.classList.remove("hidden");
+    try {
+      const res = await api("/api/doc-template", {
+        method: "POST",
+        headers: jsonHeaders,
+        body: JSON.stringify({
+          type,
+          company: (analysisData && analysisData.company) || "",
+          product: (analysisData && analysisData.product) || "",
+          target: (analysisData && (analysisData.target || analysisData.targetId)) || "",
+          industry: (analysisData && analysisData.industry) || "",
+        }),
+      });
+      const data = await res.json();
+      els.dcTplMode.textContent = data.mode === "ai" ? t("feas.modeAi") : t("dc.modeSkeleton");
+      currentDocTplText = dcTemplateToText(data.template);
+      els.dcTplPre.textContent = currentDocTplText;
+    } catch (err) {
+      els.dcTplMode.textContent = "";
+      els.dcTplPre.textContent = err.message || t("dc.errFailed");
+    }
+  }
+  let currentDocTplText = "";
+
+  function renderDocChecklist() {
+    const reqs = analysisData && Array.isArray(analysisData.requirements) ? analysisData.requirements : [];
+    if (!reqs.length) {
+      els.dcWrap.classList.add("hidden");
+      els.dcEmptyState.classList.remove("hidden");
+      chartGuard("dcGaugeCanvas", false);
+      return;
+    }
+    els.dcEmptyState.classList.add("hidden");
+    els.dcWrap.classList.remove("hidden");
+
+    const docsCount = Array.isArray(docs) ? docs.length : 0;
+    const target = Math.max(3, reqs.length);
+    const coverage = Math.min(100, Math.round((docsCount / target) * 100));
+    chartGuard("dcGaugeCanvas", true);
+    if (window.ReguLensCharts) {
+      window.ReguLensCharts.createGaugeChart("dcGaugeCanvas", coverage, 100, coverage + "%");
+    }
+    els.dcCoverageLabel.textContent = tf("dc.coverage", { n: docsCount, m: target });
+
+    els.dcRows.innerHTML = "";
+    reqs.forEach((req) => {
+      const row = document.createElement("div");
+      row.className = "guide-phase";
+      const head = document.createElement("div");
+      head.className = "guide-phase-head";
+      head.innerHTML =
+        '<span class="guide-step-title">' + esc(req.name || req.id) + "</span>" +
+        '<span class="sev-badge sev-' + GUIDE_PRIORITY_SEV[req.priority] + '">' + esc(sevLabel(req.priority)) + "</span>";
+      row.appendChild(head);
+
+      const bodyEl = document.createElement("div");
+      bodyEl.className = "dc-row-body";
+      suggestDocTypes(req).forEach((tp) => {
+        const item = document.createElement("div");
+        item.className = "dc-suggest-row";
+        item.innerHTML =
+          '<span class="chip chip-blue">' + esc(DC_TYPE_LABELS[tp] || tp) + "</span>" +
+          '<button class="btn btn-outline btn-sm">' + esc(t("dc.template")) + "</button>";
+        item.querySelector("button").addEventListener("click", () => openDocTemplate(tp));
+        bodyEl.appendChild(item);
+      });
+      row.appendChild(bodyEl);
+      els.dcRows.appendChild(row);
+    });
+  }
+
+  els.dcTplClose.addEventListener("click", () => els.dcTemplateModal.classList.add("hidden"));
+  els.dcTplOk.addEventListener("click", () => els.dcTemplateModal.classList.add("hidden"));
+  els.dcTemplateModal.addEventListener("click", (e) => {
+    if (e.target === els.dcTemplateModal) els.dcTemplateModal.classList.add("hidden");
+  });
+
+  /* clipboard helper with fallback */
+  function copyText(text) {
+    const done = () => toast(t("copied"));
+    if (navigator.clipboard && navigator.clipboard.writeText) {
+      navigator.clipboard.writeText(text).then(done, () => fallbackCopy(text, done));
+    } else {
+      fallbackCopy(text, done);
+    }
+  }
+  function fallbackCopy(text, done) {
+    try {
+      const ta = document.createElement("textarea");
+      ta.value = text;
+      ta.style.position = "fixed";
+      ta.style.opacity = "0";
+      document.body.appendChild(ta);
+      ta.select();
+      document.execCommand("copy");
+      ta.remove();
+      done();
+    } catch {}
+  }
+  els.dcTplCopy.addEventListener("click", () => copyText(currentDocTplText));
+
+  /* ───────── co-founder finder ─────────
+     Role priorities derived from real project signals in the analysis. */
+  const CF_ROLES = {
+    complianceLead: {
+      labelKey: "cf.role.compliance",
+      lookFor: ["cf.look.compliance"],
+      venueKey: "cf.venue.compliance",
+    },
+    dpo: {
+      labelKey: "cf.role.dpo",
+      lookFor: ["cf.look.dpo"],
+      venueKey: "cf.venue.dpo",
+    },
+    localExpert: {
+      labelKey: "cf.role.local",
+      lookFor: ["cf.look.local", "cf.look.local2"],
+      venueKey: "cf.venue.local",
+    },
+    regAnalyst: {
+      labelKey: "cf.role.reganalyst",
+      lookFor: ["cf.look.reganalyst"],
+      venueKey: "cf.venue.reganalyst",
+    },
+    techLead: {
+      labelKey: "cf.role.tech",
+      lookFor: ["cf.look.tech"],
+      venueKey: "cf.venue.tech",
+    },
+    financeLead: {
+      labelKey: "cf.role.finance",
+      lookFor: ["cf.look.finance"],
+      venueKey: "cf.venue.finance",
+    },
+  };
+
+  function computeRoleNeeds() {
+    const counts = statusCounts();
+    const reqs = getAnalysisRequirements();
+    const ia = analysisData.impactAnalysis || {};
+    const privacyHits = reqs.filter((r) => /(privacy|data prot|gdpr|ccpa|dpdp)/i.test([r.name, r.desc].join(" "))).length;
+    const scores = {
+      complianceLead: (counts.critical || 0) * 18 + (counts.important || 0) * 6,
+      dpo: privacyHits * 22,
+      localExpert: 28 + ((analysisData.regulations || []).length) * 4,
+      regAnalyst: counts.total >= 10 ? 52 : counts.total * 5,
+      techLead: Number(ia.technical && ia.technical.score) || 0,
+      financeLead: Number(ia.financial && ia.financial.score) || 0,
+    };
+    return Object.entries(scores)
+      .map(([key, score]) => ({ key, score }))
+      .sort((a, b) => b.score - a.score)
+      .slice(0, 3);
+  }
+
+  function renderCoFounder() {
+    if (!analysisData) {
+      els.cfWrap.classList.add("hidden");
+      els.cfEmptyState.classList.remove("hidden");
+      return;
+    }
+    els.cfEmptyState.classList.add("hidden");
+    els.cfWrap.classList.remove("hidden");
+
+    const counts = statusCounts();
+    const roles = computeRoleNeeds();
+    els.cfRoles.innerHTML = "";
+
+    roles.forEach(({ key, score }) => {
+      const role = CF_ROLES[key];
+      const tier = score >= 55 ? "chip-red" : score >= 30 ? "chip-orange" : "chip-gray";
+      const tierKey = score >= 55 ? "cf.tier.high" : score >= 30 ? "cf.tier.medium" : "cf.tier.nice";
+      const card = document.createElement("div");
+      card.className = "card cf-role-card";
+      card.innerHTML =
+        '<div class="card-head"><h3 class="card-title">' + esc(t(role.labelKey)) + '</h3><span class="chip ' + tier + '">' + esc(t(tierKey)) + "</span></div>" +
+        '<p class="cf-why"></p>' +
+        '<ul class="fb-list fb-list-check cf-lookfor"></ul>' +
+        '<p class="cf-venue"></p>';
+      card.querySelector(".cf-why").textContent = tf("cf.why." + key, {
+        company: analysisData.company || "",
+        target: analysisData.target || "",
+        critical: counts.critical || 0,
+        total: counts.total || 0,
+        privacy: Math.min(9, getAnalysisRequirements().filter((r) => /(privacy|data prot|gdpr|ccpa|dpdp)/i.test([r.name, r.desc].join(" "))).length),
+        tech: Number(analysisData.impactAnalysis && analysisData.impactAnalysis.technical && analysisData.impactAnalysis.technical.score) || 0,
+        fin: Number(analysisData.impactAnalysis && analysisData.impactAnalysis.financial && analysisData.impactAnalysis.financial.score) || 0,
+      });
+      const ul = card.querySelector(".cf-lookfor");
+      role.lookFor.forEach((lk) => {
+        const li = document.createElement("li");
+        li.textContent = t(lk);
+        ul.appendChild(li);
+      });
+      card.querySelector(".cf-venue").textContent = t(role.venueKey);
+      els.cfRoles.appendChild(card);
+    });
+  }
+
+  els.cfCopyBrief.addEventListener("click", () => {
+    if (!analysisData) { toast(t("cf.emptyTitle")); return; }
+    const counts = statusCounts();
+    const lines = [
+      "Search brief — " + (analysisData.company || ""),
+      "Product: " + (analysisData.product || ""),
+      "Target market: " + (analysisData.target || "") + " · Industry: " + (analysisData.industry || ""),
+      "Status: " + (counts.total || 0) + " compliance requirements (" + (counts.critical || 0) + " critical), readiness " + (analysisData.readiness || 0) + "%.",
+      "",
+      "Looking for:",
+    ];
+    computeRoleNeeds().forEach(({ key, score }) => {
+      const role = CF_ROLES[key];
+      const tier = score >= 55 ? "[High priority]" : score >= 30 ? "[Medium]" : "[Nice to have]";
+      lines.push("- " + t(role.labelKey) + " " + tier);
+    });
+    copyText(lines.join("\n"));
+  });
+
+  /* ───────── investor readiness ───────── */
+  function computeInvestorReadiness() {
+    if (!analysisData) return null;
+    const h = computeBusinessHealth();
+    const comp = Object.fromEntries(h.components.map((c) => [c.key, c.score]));
+    const readiness = Number(analysisData.readiness) || 0;
+    const parts = [
+      readiness * 0.35,
+      (comp["bh.comp.compliance"] || 0) * 0.25,
+      (comp["bh.comp.risk"] != null ? comp["bh.comp.risk"] : 50) * 0.2,
+      (comp["bh.comp.docs"] || 0) * 0.2,
+    ];
+    return {
+      score: Math.round(parts.reduce((s, p) => s + p, 0)),
+      h,
+    };
+  }
+
+  function renderInvestorHub() {
+    const ir = computeInvestorReadiness();
+    if (!ir) {
+      els.ihWrap.classList.add("hidden");
+      els.ihEmptyState.classList.remove("hidden");
+      chartGuard("ihGaugeCanvas", false);
+      return;
+    }
+    els.ihEmptyState.classList.add("hidden");
+    els.ihWrap.classList.remove("hidden");
+
+    chartGuard("ihGaugeCanvas", true);
+    if (window.ReguLensCharts) {
+      window.ReguLensCharts.createGaugeChart("ihGaugeCanvas", ir.score, 100, ir.score + "%");
+    }
+
+    const counts = ir.h.counts;
+    els.ihStatsRow.innerHTML =
+      '<div class="risk-stat"><span class="risk-stat-value">' + esc(String(analysisData.readiness || 0)) + '%</span><span class="risk-stat-label">' + esc(t("ih.stat.readiness")) + "</span></div>" +
+      '<div class="risk-stat"><span class="risk-stat-value">$' + esc(Number(analysisData.estimatedCost || 0).toLocaleString("en-US")) + '</span><span class="risk-stat-label">' + esc(t("ih.stat.cost")) + "</span></div>" +
+      '<div class="risk-stat"><span class="risk-stat-value">' + esc(String(analysisData.estimatedDays || 0)) + '</span><span class="risk-stat-label">' + esc(t("ih.stat.days")) + "</span></div>" +
+      '<div class="risk-stat"><span class="risk-stat-value">' + esc(String(counts.pending || 0)) + '</span><span class="risk-stat-label">' + esc(t("ih.stat.open")) + "</span></div>";
+
+    /* what investors will probe — each answered from project state */
+    const elevatedOpen = ir.h.risks.filter(
+      (r) => (r.severity === "Critical" || r.severity === "High") && (!r.status || r.status === "Open")
+    ).length;
+    const docsTarget = Math.max(3, Math.ceil(counts.total / 3));
+    const asks = [
+      { key: "ih.ask.clearance", cls: counts.pending === 0 ? "chip-green" : counts.completed > 0 ? "chip-orange" : "chip-red", val: tf("ih.ask.clearanceVal", { done: counts.completed, total: counts.total }) },
+      { key: "ih.ask.risk", cls: elevatedOpen === 0 ? "chip-green" : elevatedOpen <= 2 ? "chip-orange" : "chip-red", val: String(elevatedOpen) },
+      { key: "ih.ask.timeline", cls: (Number(analysisData.estimatedDays) || 999) <= 180 ? "chip-green" : "chip-orange", val: String(analysisData.estimatedDays || 0) + "d" },
+      { key: "ih.ask.docs", cls: (Array.isArray(docs) ? docs.length : 0) >= docsTarget ? "chip-green" : "chip-orange", val: (Array.isArray(docs) ? docs.length : 0) + "/" + docsTarget },
+      { key: "ih.ask.team", cls: "chip-gray", val: t("ih.ask.teamVal") },
+    ];
+    els.ihAsks.innerHTML = "";
+    asks.forEach((a) => {
+      const row = document.createElement("div");
+      row.className = "bh-signal";
+      row.innerHTML = '<p style="flex:1;margin:0;font-size:13.5px;"></p><span class="chip ' + a.cls + '">' + esc(a.val) + "</span>";
+      row.querySelector("p").textContent = t(a.key);
+      els.ihAsks.appendChild(row);
+    });
+  }
+
+  async function generateOnePager() {
+    if (!analysisData) return;
+    const btn = els.ihGenBrief;
+    btn.disabled = true;
+    btn.textContent = t("ih.generating");
+    els.ihStatus.textContent = "";
+    const counts = statusCounts();
+    const h = computeBusinessHealth();
+
+    const header =
+      analysisData.company + " — Investor one-pager draft\n" +
+      "".padEnd(40, "=") + "\n" +
+      "Product: " + (analysisData.product || "") + "\n" +
+      "Market: " + (analysisData.target || "") + " (from " + (analysisData.origin || "-") + ")\n" +
+      "Industry: " + (analysisData.industry || "") + "\n" +
+      "Compliance readiness: " + (analysisData.readiness || 0) + "% · Risk level: " + (analysisData.riskLevel || "-") + "\n" +
+      "Requirements: " + counts.completed + "/" + counts.total + " completed (" + counts.critical + " critical)\n" +
+      "Estimated cost: $" + Number(analysisData.estimatedCost || 0).toLocaleString("en-US") + " over " + analysisData.estimatedDays + " days\n";
+
+    try {
+      const res = await api("/api/report", {
+        method: "POST",
+        headers: jsonHeaders,
+        body: JSON.stringify({ analysis: analysisData, lang: settings.lang }),
+      });
+      const data = await res.json();
+      const rec = data.recommendation || {};
+      let brief = header + "\nEXECUTIVE SUMMARY\n" + (data.executiveSummary || "") + "\n";
+      brief += "\nLAUNCH RECOMMENDATION: " + (rec.recommendation || "-") + "\n";
+      brief += (rec.verdict || "") + "\n";
+      if (Array.isArray(rec.prerequisites) && rec.prerequisites.length) {
+        brief += "\nPREREQUISITES\n" + rec.prerequisites.map((p) => "- " + p).join("\n") + "\n";
+      }
+      brief += "\nTimeline: " + (rec.timeline || analysisData.estimatedDays + " days") + "\n";
+      showBrief(brief, true);
+    } catch (err) {
+      /* deterministic fallback so the feature still works without AI */
+      let brief = header + "\nSTATUS SUMMARY\n";
+      brief += "-" + counts.completed + " of " + counts.total + " requirements completed (" + counts.inProgress + " in progress).\n";
+      brief += "-" + (h.risks.filter((r) => r.severity === "Critical" || r.severity === "High").length) + " high-severity risks tracked in the register.\n";
+      brief += "-Gap closure at " + (analysisData.gapStats ? Math.round(((analysisData.gapStats.closed + 0.5 * analysisData.gapStats.inProgress) / Math.max(1, analysisData.gapStats.closed + analysisData.gapStats.open + analysisData.gapStats.inProgress)) * 100) : 0) + "%.\n";
+      brief += "\nNOTE: AI summary unavailable (" + (err.message || "no key") + ") — figures above are computed directly from your analysis.\n";
+      showBrief(brief, false);
+    } finally {
+      btn.disabled = false;
+      btn.textContent = t("ih.generate");
+    }
+  }
+
+  function showBrief(text, isAi) {
+    els.ihBriefCard.classList.remove("hidden");
+    els.ihBriefMode.textContent = isAi ? t("feas.modeAi") : t("feas.modeDemo");
+    els.ihBriefPre.textContent = text;
+    els.ihBriefCard.scrollIntoView({ behavior: "smooth", block: "nearest" });
+  }
+
+  els.ihGenBrief.addEventListener("click", generateOnePager);
+  els.ihBriefCopy.addEventListener("click", () => {
+    const txt = els.ihBriefPre.textContent || "";
+    if (txt) copyText(txt);
+  });
+
   /* ───────── analysis workflow (demo-first orchestrator) ───────── */
   let analysisAbort = null;
   function startAnalysis(params) {
@@ -5822,6 +7054,75 @@
     RC.createRiskMatrix('chartRiskMatrix', risks);
   }
 
+  /* ───────── Risk & Business Health module ───────── */
+
+  function renderRiskMatrixView() {
+    const wrap = document.getElementById("riskDataWrap");
+    const empty = document.getElementById("riskEmptyState");
+    if (!wrap || !empty) return;
+    const risks =
+      analysisData && Array.isArray(analysisData.riskMatrix) ? analysisData.riskMatrix : [];
+    const hasData = risks.length > 0;
+    empty.classList.toggle("hidden", hasData);
+    wrap.classList.toggle("hidden", !hasData);
+    if (!hasData) return;
+
+    const dist = { critical: 0, high: 0, medium: 0, low: 0 };
+    risks.forEach((r) => {
+      const k = String(r.severity || "medium").toLowerCase();
+      if (dist[k] !== undefined) dist[k] += 1;
+    });
+    const openCount = risks.filter((r) => String(r.status || "Open").toLowerCase() === "open").length;
+
+    const row = document.getElementById("riskStatsRow");
+    if (row) {
+      const cards = [
+        { v: risks.length, l: t("risk.stat.total"), tone: "" },
+        { v: dist.critical, l: t("gap.critical") , tone: "tone-critical" },
+        { v: dist.high + dist.medium, l: t("risk.stat.elevated"), tone: "tone-high" },
+        { v: dist.low, l: t("sev.low"), tone: "tone-low" },
+        { v: openCount, l: t("risk.stat.open"), tone: "" },
+      ];
+      row.innerHTML = cards
+        .map(
+          (c) =>
+            `<div class="risk-stat ${c.tone}"><span class="risk-stat-value">${esc(
+              String(c.v)
+            )}</span><span class="risk-stat-label">${esc(c.l)}</span></div>`
+        )
+        .join("");
+    }
+
+    const tbody = document.getElementById("riskTbody");
+    if (tbody) {
+      tbody.innerHTML = risks
+        .map((r) => {
+          const sev = String(r.severity || "medium").toLowerCase();
+          return (
+            "<tr>" +
+            `<td>${esc(r.title || r.name || "—")}</td>` +
+            `<td>${esc(r.category || "—")}</td>` +
+            `<td><span class="sev-badge ${esc(sev)}">${esc(sevLabel(sev))}</span></td>` +
+            `<td>${esc(String(r.probability != null ? r.probability : "—"))}</td>` +
+            `<td>${esc(String(r.impact != null ? r.impact : "—"))}</td>` +
+            `<td><span class="status-badge">${esc(r.status || "Open")}</span></td>` +
+            "</tr>"
+          );
+        })
+        .join("");
+    }
+
+    if (!window.ReguLensCharts) return;
+    const RC = window.ReguLensCharts;
+    RC.createRiskMatrix("riskMatrixCanvas", risks);
+    RC.createDonutChart(
+      "riskDistCanvas",
+      [t("gap.critical"), t("gap.high"), t("gap.medium"), t("gap.low")],
+      [dist.critical, dist.high, dist.medium, dist.low],
+      [RC.getColors().critical, RC.getColors().high, RC.getColors().medium, RC.getColors().low]
+    );
+  }
+
   /* ───────── public API (consumed by regulens.js experience layer) ───────── */
   window.ReguLens = {
     navigate,
@@ -5846,6 +7147,7 @@
       user,
       chats,
       currentView,
+      currentModule,
       commandsEnabled,
       dark: els.body.classList.contains("dark"),
     }),

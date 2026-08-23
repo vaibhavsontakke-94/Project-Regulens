@@ -75,6 +75,19 @@
       const items = [];
 
       items.push({ group: "Navigate", icon: ICONS.dashboard, label: "Dashboard", hint: "home", keywords: "dashboard home overview readiness", run: () => api.navigate("dashboard") });
+      items.push({ group: "Modules", icon: ICONS.industry, label: "Market Intelligence", hint: "module", keywords: "market intelligence feasibility cost entry", run: () => api.navigate("can-i-launch") });
+      items.push({ group: "Modules", icon: ICONS.req, label: "Compliance Center", hint: "module", keywords: "compliance center requirements gaps plan", run: () => api.navigate("requirements") });
+      items.push({ group: "Modules", icon: ICONS.gap, label: "Risk & Business Health", hint: "module", keywords: "risk business health matrix monitor", run: () => api.navigate("risk-matrix") });
+      items.push({ group: "Modules", icon: ICONS.user, label: "Growth & Global Network", hint: "module", keywords: "growth network cofounder investor global", run: () => api.navigate("network") });
+      items.push({ group: "Modules", icon: ICONS.watch, label: "Policy Intelligence", hint: "module", keywords: "policy intelligence government watch updates consultations", run: () => api.navigate("regulation-watch") });
+      items.push({ group: "Modules", icon: ICONS.sim, label: "Impact & Scenarios", hint: "module", keywords: "impact scenarios simulator compare industry", run: () => api.navigate("impact-analysis") });
+      items.push({ group: "Modules", icon: ICONS.launch, label: "AI Copilot", hint: "module", keywords: "ai copilot assistant chat agents history", run: () => api.navigate("assistant") });
+      items.push({ group: "Modules", icon: ICONS.docs, label: "Documents & Evidence", hint: "module", keywords: "documents evidence checklist templates library files workspace", run: () => api.navigate("doc-checklist") });
+      items.push({ group: "Navigate", icon: ICONS.launch, label: "Feasibility Analyzer", hint: "market", keywords: "feasibility analyzer idea evaluate viability", run: () => api.navigate("feasibility") });
+      items.push({ group: "Navigate", icon: ICONS.watch, label: "Policy Checker", hint: "compliance", keywords: "policy checker country question ai", run: () => api.navigate("policy-checker") });
+      items.push({ group: "Navigate", icon: ICONS.industry, label: "Business Health Monitor", hint: "risk", keywords: "business health monitor scorecard signals fraud", run: () => api.navigate("business-health") });
+      items.push({ group: "Navigate", icon: ICONS.user, label: "Co-Founder Finder", hint: "growth", keywords: "cofounder finder team roles search brief", run: () => api.navigate("co-founder") });
+      items.push({ group: "Navigate", icon: ICONS.gap, label: "Investor Readiness", hint: "growth", keywords: "investor readiness one pager pitch fundraise", run: () => api.navigate("investor-hub") });
       items.push({ group: "Navigate", icon: ICONS.launch, label: "Can I Launch?", hint: "launch", keywords: "launch go market verification", run: () => api.navigate("can-i-launch") });
       items.push({ group: "Navigate", icon: ICONS.req, label: "Requirements", hint: "req", keywords: "requirements compliance checklist", run: () => api.navigate("requirements") });
       items.push({ group: "Navigate", icon: ICONS.gap, label: "Gap Analysis", hint: "gap", keywords: "gap analysis gaps", run: () => api.navigate("gap-analysis") });
