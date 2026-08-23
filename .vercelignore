@@ -3,5 +3,8 @@
 !package-lock.json
 !api
 !api/**
+!server.js
+!lib
+!lib/**
 !public
 !public/**
