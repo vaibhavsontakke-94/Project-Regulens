@@ -10,7 +10,7 @@
   "scripts": {
     "start": "node --env-file=.env server.js",
     "dev": "node --env-file=.env --watch server.js",
-    "build": "node --check server.js && node --check netlify/functions/api.js && node --check lib/auth.js && node --check lib/supabase.js && node --check lib/groq.js && node --check lib/store.js && node --check lib/gov-engine.cjs && node --check lib/gov-policy-db.cjs && node --check public/government.js"
+    "build": "node --check server.js && node --check lib/auth.js && node --check lib/supabase.js && node --check lib/groq.js && node --check lib/store.js && node --check lib/gov-engine.cjs && node --check lib/gov-policy-db.cjs && node --check public/government.js"
   },
   "license": "ISC",
   "dependencies": {
