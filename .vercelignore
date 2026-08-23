@@ -1,9 +1,7 @@
-node_modules
-data
-.env
-.env.*
-*.log
-server_*.txt
-netlify
-.vercel
-.git
+*
+!package.json
+!package-lock.json
+!api
+!api/**
+!public
+!public/**
