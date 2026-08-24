@@ -127,7 +127,8 @@ function firebasePublicConfig() {
   };
   const cfg = {};
   for (const [key, envName] of Object.entries(map)) {
-    if (process.env[envName]) cfg[key] = process.env[envName];
+    let val = process.env[envName] || process.env[`NEXT_PUBLIC_${envName}`];
+    if (val) cfg[key] = val;
   }
   return cfg;
 }
