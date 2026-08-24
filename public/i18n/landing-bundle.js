@@ -9,8 +9,8 @@
   var LANDING_I18N = {
     en: {
       "landing.badge": "AI-Powered Regulatory Intelligence",
-      "landing.headline": "Turn Regulatory Complexity Into Intelligent Decisions.",
-      "landing.sub": "Understand regulations. Predict impact. Make confident decisions.",
+      "landing.headline": "Turn Your Business Idea Into a Real-World Opportunity",
+      "landing.sub": "Powered by AI. Guided by REGULENS.",
       "landing.ctaStart": "Start Analysis",
       "landing.ctaExplore": "Explore ReguLens",
       "landing.methodEyebrow": "The ReguLens method",
