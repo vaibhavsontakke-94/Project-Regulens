@@ -1109,6 +1109,114 @@ app.post("/api/gov/compare", (req, res) => {
   res.json(gov.compareScenarios(sanitizeGovContext(body.context), specs));
 });
 
+/* ── Origin-vs-Target market comparison (Gap Analysis) ──────────────
+   Deterministic Requirement Intensity profile per policy category,
+   computed by the canonical government engine from POLICY_DB.
+   Measures each market's regulatory burden — never completion progress. */
+function resolveGovCountryId(raw) {
+  const s = sanitizeStr(raw, 40).toLowerCase();
+  if (!s) return "";
+  if (gov.GOV_COUNTRIES[s]) return s;
+  const hit = Object.values(gov.GOV_COUNTRIES).find(
+    (c) => c.name.toLowerCase() === s || c.name.toLowerCase().startsWith(s + " ")
+  );
+  return hit ? hit.id : "";
+}
+
+app.get("/api/gov/compare-markets", (req, res) => {
+  try {
+    const q = req.query || {};
+    const originId = resolveGovCountryId(q.origin);
+    const targetId = resolveGovCountryId(q.target);
+    if (!originId || !targetId) {
+      return res.status(400).json({ error: "origin and target must be a supported country id or name" });
+    }
+    const ctx = gov.normalizeContext({
+      originId,
+      targetId,
+      industryId: sanitizeStr(q.industry, 40),
+      company: sanitizeStr(q.company, 120),
+      product: sanitizeStr(q.product, 160),
+    });
+
+    const marketProfile = (countryId) => {
+      /* Score policies exactly as buildGovernmentPackage() would score a
+         launch into this market, keeping the cross-border context factor. */
+      const mctx = { ...ctx, targetId: countryId };
+      mctx.targetName = (gov.GOV_COUNTRIES[countryId] || {}).name || countryId;
+      const policies = gov.relevantPolicies(countryId, ctx.industryId);
+      const byCat = new Map();
+      for (const p of policies) {
+        const a = gov.analyzePolicy(p, mctx);
+        const cat = p.policyType || "Other";
+        let row = byCat.get(cat);
+        if (!row) { row = { category: cat, requirements: 0, weighted: 0, top: null }; byCat.set(cat, row); }
+        row.requirements += 1;
+        row.weighted += a.overall;
+        if (!row.top || a.overall > row.top.overall) {
+          row.top = { code: p.code, title: p.title, authority: p.authority, overall: a.overall };
+        }
+      }
+      const categories = [...byCat.values()]
+        .map((r) => ({
+          category: r.category,
+          requirements: r.requirements,
+          burdenScore: Math.round(r.weighted / r.requirements),
+          topRegulation: r.top,
+        }))
+        .sort((a, b) => b.burdenScore - a.burdenScore);
+      return {
+        countryId,
+        name: mctx.targetName,
+        flag: (gov.GOV_COUNTRIES[countryId] || {}).flag || "",
+        totalRequirements: policies.length,
+        avgBurden: policies.length
+          ? Math.round(categories.reduce((s, c) => s + c.burdenScore * c.requirements, 0) / policies.length)
+          : 0,
+        categories,
+      };
+    };
+
+    const sameMarket = originId === targetId;
+    const markets = [marketProfile(originId)];
+    if (!sameMarket) markets.push(marketProfile(targetId));
+
+    const catSet = [];
+    markets.forEach((m) =>
+      m.categories.forEach((c) => { if (!catSet.includes(c.category)) catSet.push(c.category); })
+    );
+    const aligned = (m, field) =>
+      catSet.map((cat) => {
+        const hit = m.categories.find((c) => c.category === cat);
+        return hit ? hit[field] : 0;
+      });
+
+    res.json({
+      engineVersion: gov.GOV_VERSION,
+      industryId: ctx.industryId,
+      industryName: ctx.industryName,
+      sameMarket,
+      markets,
+      categories: catSet,
+      series: {
+        origin: aligned(markets[0], "burdenScore"),
+        target: sameMarket ? null : aligned(markets[1], "burdenScore"),
+      },
+      requirementCounts: {
+        origin: aligned(markets[0], "requirements"),
+        target: sameMarket ? null : aligned(markets[1], "requirements"),
+      },
+      methodology:
+        "Requirement Intensity Score: deterministic 0-100 burden estimate per policy category " +
+        "(base risk x industry relevance x cross-border factor), computed from ReguLens' verified " +
+        "regulation database. It measures each market's regulatory burden — not completion progress.",
+    });
+  } catch (err) {
+    console.error("[gov] compare-markets error:", err);
+    res.status(500).json({ error: "Country comparison failed" });
+  }
+});
+
 app.post("/api/gov/copilot", async (req, res) => {
   const body = req.body || {};
   const question = sanitizeStr(body.question, 500);

@@ -954,6 +954,24 @@
               <div class="chart-container chart-container-sm"><canvas id="chartGapSeverity"></canvas></div>
             </div>
           </div>
+          <div class="chart-card" id="countryCompareCard">
+            <div class="chart-card-title" data-i18n="gap.compareTitle">Origin vs Target Market</div>
+            <p class="page-desc" id="compareSub"></p>
+            <p class="page-desc hidden" id="compareSameNote"></p>
+            <div class="metric-row" id="compareMetrics"></div>
+            <div class="chart-container"><canvas id="chartCountryCompare"></canvas></div>
+            <table class="req-table" id="compareTable">
+              <thead><tr>
+                <th data-i18n="gap.category">Category</th>
+                <th data-i18n="gap.compareOrigin">Origin</th>
+                <th data-i18n="gap.compareTarget">Target</th>
+                <th data-i18n="gap.applicableReqs">Requirements</th>
+                <th data-i18n="gap.topRegulation">Top driver (target)</th>
+              </tr></thead>
+              <tbody id="compareTbody"></tbody>
+            </table>
+            <p class="page-desc" id="compareMethodology"></p>
+          </div>
         </div>
       </section>
 

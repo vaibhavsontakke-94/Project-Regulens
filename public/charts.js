@@ -207,11 +207,12 @@
 
   /* ───────── factory: donut ───────── */
 
-  function createDonutChart(canvasId, labels, data, colors) {
+  function createDonutChart(canvasId, labels, data, colors, options) {
     ensurePlugins();
     var canvas = getCanvas(canvasId);
     if (!canvas) return null;
 
+    options = options || {};
     var total = data.reduce(function (a, b) { return a + b; }, 0);
     var ctx = canvas.getContext("2d");
 
@@ -231,7 +232,10 @@
         cutout: "70%",
         plugins: {
           legend: { position: "bottom" },
-          regulensCentreText: { value: total, title: labels.length === 1 ? "" : "Total" },
+          regulensCentreText: {
+            value: total,
+            title: options.centreTitle !== undefined ? options.centreTitle : (labels.length === 1 ? "" : "Total"),
+          },
         },
       },
     });

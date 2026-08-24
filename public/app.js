@@ -2554,9 +2554,12 @@
     setTimeout(() => {
       try {
         if (document.getElementById("chartComplianceStatus")) renderDashboardCharts();
-        if (document.getElementById("chartGapsBySeverity")) renderGapCharts();
-        if (document.getElementById("chartActions")) renderActionCharts();
-        if (document.getElementById("planTimeline")) renderPlanTimeline();
+        if (document.getElementById("chartGapSeverity")) renderGapCharts();
+        if (document.getElementById("actionMetrics")) renderActionCharts();
+        if (document.getElementById("planPhaseTimeline")) renderPlanTimeline();
+        if (document.getElementById("watchTimeline")) renderWatchTimeline();
+        if (document.getElementById("chartRiskMatrix")) renderRiskMatrix();
+        if (document.getElementById("chartCountryCompare")) renderCountryCompare();
       } catch {}
       try { if (currentView === "risk-matrix") renderRiskMatrixView(); } catch {}
       try {
@@ -2890,7 +2893,7 @@
     else if (view === "setup-guide") renderSetupGuide();
     else if (view === "requirements") renderRequirements();
     else if (view === "policy-checker") renderPolicyChecker();
-    else if (view === "gap-analysis") renderGaps();
+    else if (view === "gap-analysis") { renderGaps(); renderCountryCompare(); }
     else if (view === "action-plan") renderActions();
     else if (view === "business-health") renderBusinessHealth();
     else if (view === "cost-estimator") renderCosts();
@@ -6046,6 +6049,7 @@
         if (document.getElementById('planPhaseTimeline')) renderPlanTimeline();
         if (document.getElementById('watchTimeline')) renderWatchTimeline();
         if (document.getElementById('chartRiskMatrix')) renderRiskMatrix();
+        if (document.getElementById('chartCountryCompare')) { countryCompareCache = { key: "", data: null }; renderCountryCompare(); }
       } catch(e) { console.warn('Chart render error:', e); }
     }, 100);
   }
@@ -6934,7 +6938,8 @@
       RC.createDonutChart('chartComplianceStatus',
         [t('req.statusCompleted'), t('req.statusInProgress'), t('req.statusPending'), t('req.statusNA')],
         [stats.completed || 0, stats.inProgress || 0, stats.pending || 0, stats.nA || 0],
-        [RC.getColors().completed, RC.getColors().inProgress, RC.getColors().pending, RC.getColors().notApplicable]
+        [RC.getColors().completed, RC.getColors().inProgress, RC.getColors().pending, RC.getColors().notApplicable],
+        { centreTitle: t('charts.total') }
       );
     }
 
@@ -6980,10 +6985,129 @@
     const RC = window.ReguLensCharts;
     if (chartGuard('chartGapSeverity', gaps.length > 0)) {
       RC.createBarChart('chartGapSeverity',
-        ['Critical', 'High', 'Medium/Low'],
+        [t('gap.critical'), t('gap.high'), t('gap.mediumLow')],
         [critical, high, mediumLow],
         [RC.getColors().critical, RC.getColors().high, RC.getColors().medium]
       );
+    }
+  }
+
+  /* ───────── Gap Analysis: Origin vs Target market comparison ─────────
+     Data comes from GET /api/gov/compare-markets (canonical gov engine,
+     POLICY_DB). Deterministic burden profile per policy category — no
+     fabricated numbers; empty/error states are honest. */
+  let countryCompareCache = { key: "", data: null };
+
+  function compareMarketLabel(m) {
+    return (m.flag ? m.flag + " " : "") + m.name;
+  }
+
+  function renderCountryCompareFromCache(data) {
+    const RC = window.ReguLensCharts;
+    if (!RC || !data || !Array.isArray(data.markets) || !data.markets.length) return;
+    const origin = data.markets[0];
+    const target = data.sameMarket ? null : (data.markets[1] || null);
+
+    const sub = document.getElementById("compareSub");
+    if (sub) {
+      sub.textContent = target
+        ? `${compareMarketLabel(origin)} → ${compareMarketLabel(target)} · ${data.industryName || ""}`
+        : `${compareMarketLabel(origin)} · ${data.industryName || ""}`;
+    }
+    const sameNote = document.getElementById("compareSameNote");
+    if (sameNote) {
+      sameNote.textContent = data.sameMarket ? t("gap.compareSameMarket") : "";
+      sameNote.classList.toggle("hidden", !data.sameMarket);
+    }
+
+    const metrics = document.getElementById("compareMetrics");
+    if (metrics) {
+      const cards = [
+        { v: origin.avgBurden + "/100", l: t("gap.avgBurden") + " — " + t("gap.compareOrigin"), tone: "color:var(--primary)" },
+        { v: origin.totalRequirements, l: t("gap.applicableReqs") + " — " + t("gap.compareOrigin"), tone: "" },
+      ];
+      if (target) {
+        cards.push(
+          { v: target.avgBurden + "/100", l: t("gap.avgBurden") + " — " + t("gap.compareTarget"), tone: "color:var(--orange)" },
+          { v: target.totalRequirements, l: t("gap.applicableReqs") + " — " + t("gap.compareTarget"), tone: "" }
+        );
+      }
+      metrics.innerHTML = cards.map((c) =>
+        `<div class="metric-card"><div class="metric-card-value" style="${c.tone}">${esc(String(c.v))}</div><div class="metric-card-label">${esc(c.l)}</div></div>`
+      ).join("");
+    }
+
+    if (chartGuard('chartCountryCompare', (data.categories || []).length > 0)) {
+      const datasets = [
+        { label: compareMarketLabel(origin), data: data.series.origin, color: RC.getColors().primary },
+      ];
+      if (target) {
+        datasets.push({ label: compareMarketLabel(target), data: data.series.target, color: RC.getColors().orange });
+      }
+      RC.createGroupedBarChart('chartCountryCompare', data.categories, datasets, { yMax: 100 });
+    }
+
+    const tbody = document.getElementById("compareTbody");
+    if (tbody) {
+      tbody.innerHTML = (data.categories || []).map((cat) => {
+        const oc = origin.categories.find((x) => x.category === cat) || null;
+        const tc = target ? (target.categories.find((x) => x.category === cat) || null) : null;
+        const reqs = target
+          ? `${oc ? oc.requirements : 0} / ${tc ? tc.requirements : 0}`
+          : String(oc ? oc.requirements : 0);
+        return (
+          "<tr>" +
+          `<td>${esc(cat)}</td>` +
+          `<td>${oc ? esc(String(oc.burdenScore)) : "—"}</td>` +
+          `<td>${tc ? esc(String(tc.burdenScore)) : (target ? "0" : "—")}</td>` +
+          `<td>${esc(reqs)}</td>` +
+          `<td>${tc && tc.topRegulation ? esc(tc.topRegulation.code + " — " + tc.topRegulation.title) : "—"}</td>` +
+          "</tr>"
+        );
+      }).join("");
+    }
+
+    const note = document.getElementById("compareMethodology");
+    if (note) note.textContent = data.methodology || t("gap.methodologyNote");
+  }
+
+  async function renderCountryCompare() {
+    const canvasEl = document.getElementById('chartCountryCompare');
+    if (!canvasEl || !window.ReguLensCharts) return;
+
+    const d = analysisData;
+    if (!d || (!d.targetId && !d.target)) {
+      chartGuard('chartCountryCompare', false);
+      const tb = document.getElementById("compareTbody");
+      if (tb) tb.innerHTML = "";
+      const mx = document.getElementById("compareMetrics");
+      if (mx) mx.innerHTML = "";
+      const sb = document.getElementById("compareSub");
+      if (sb) sb.textContent = analysisData ? "" : t("charts.empty");
+      return;
+    }
+
+    const params = new URLSearchParams({
+      origin: String(d.originId || d.origin || ""),
+      target: String(d.targetId || d.target || ""),
+      industry: String(d.industryId || d.industry || ""),
+    });
+    const key = params.toString();
+
+    if (countryCompareCache.key === key && countryCompareCache.data) {
+      renderCountryCompareFromCache(countryCompareCache.data);
+      return;
+    }
+
+    try {
+      const res = await api("/api/gov/compare-markets?" + key);
+      const data = await res.json();
+      countryCompareCache = { key, data };
+      renderCountryCompareFromCache(data);
+    } catch {
+      chartGuard('chartCountryCompare', false, t("gap.compareError"));
+      const tb = document.getElementById("compareTbody");
+      if (tb) tb.innerHTML = "";
     }
   }
 
@@ -6996,10 +7120,10 @@
     actions.forEach(a => { prio[String(a.priority || "standard").toLowerCase()] = (prio[String(a.priority || "standard").toLowerCase()] || 0) + 1; });
     const doneCount = actions.filter(a => a.status === "done" || a.status === "completed").length;
     el.innerHTML = `
-      <div class="metric-card"><div class="metric-card-value">${actions.length}</div><div class="metric-card-label">Total Actions</div></div>
-      <div class="metric-card"><div class="metric-card-value" style="color:var(--red)">${prio.critical || 0}</div><div class="metric-card-label">Critical</div></div>
-      <div class="metric-card"><div class="metric-card-value" style="color:var(--green)">${doneCount}</div><div class="metric-card-label">Completed</div></div>
-      <div class="metric-card"><div class="metric-card-value">${(analysisData.timeline && analysisData.timeline.totalDays) || analysisData.estimatedDays || 0}</div><div class="metric-card-label">Days to Ready</div></div>
+      <div class="metric-card"><div class="metric-card-value">${actions.length}</div><div class="metric-card-label">${t('action.total')}</div></div>
+      <div class="metric-card"><div class="metric-card-value" style="color:var(--red)">${prio.critical || 0}</div><div class="metric-card-label">${t('req.critical')}</div></div>
+      <div class="metric-card"><div class="metric-card-value" style="color:var(--green)">${doneCount}</div><div class="metric-card-label">${t('req.statusCompleted')}</div></div>
+      <div class="metric-card"><div class="metric-card-value">${(analysisData.timeline && analysisData.timeline.totalDays) || analysisData.estimatedDays || 0}</div><div class="metric-card-label">${t('action.daysToReady')}</div></div>
     `;
   }
 
@@ -7119,7 +7243,8 @@
       "riskDistCanvas",
       [t("gap.critical"), t("gap.high"), t("gap.medium"), t("gap.low")],
       [dist.critical, dist.high, dist.medium, dist.low],
-      [RC.getColors().critical, RC.getColors().high, RC.getColors().medium, RC.getColors().low]
+      [RC.getColors().critical, RC.getColors().high, RC.getColors().medium, RC.getColors().low],
+      { centreTitle: t("charts.total") }
     );
   }
 
