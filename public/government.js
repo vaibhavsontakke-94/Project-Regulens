@@ -667,7 +667,7 @@
     const base = res.baseline;
     const labels = [T("gov.cmp.mCost"), T("gov.cmp.mDays"), T("gov.cmp.mReqs")].map((l) => l.replace(/\s*\(\$\)$/, ""));
     const series = [{ key: "cost", color: "#6366f1", base: Number(base.cost) }, { key: "days", color: "#06b6d4", base: Number(base.days) }, { key: "requirements", color: "#22c55e", base: Number(base.requirements) }];
-    const rel = (val, baseVal) => (val == null || !Number.isFinite(baseVal) || baseVal <= 0) ? null : Math.round((Number(val) / baseVal) * 100);
+    const rel = (val, baseVal) => (val == null || !Number.isFinite(Number(val)) || !Number.isFinite(baseVal) || baseVal <= 0) ? null : Math.round((Number(val) / baseVal) * 100);
     const datasets = [
       { label: T("gov.cmp.baselineName"), data: [100, 100, 100], color: "#94a3b8" },
     ].concat(res.scenarios.map((s, i) => ({
@@ -679,10 +679,13 @@
   }
   function destroyGovChart(canvasId) {
     const rc = RC();
-    if (rc.destroyChart && rc.trackChart) {
-      // replace with a destroyed stub to clear the registry slot
-      try { rc.trackChart(canvasId, { destroy() {} }); } catch {}
-    }
+    if (!rc) return;
+    try {
+      /* Use trackChart with a self-destroying placeholder to properly clear the
+         registry slot. trackChart will destroy the old instance before storing. */
+      var placeholder = { destroy: function() {} };
+      if (rc.trackChart) rc.trackChart(canvasId, placeholder);
+    } catch (_) { /* ignore cleanup errors */ }
   }
   /* chart container state helpers: empty / failed messages replace the canvas content */
   function setChartState(canvasId, msgKey) {

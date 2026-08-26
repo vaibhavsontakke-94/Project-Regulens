@@ -2563,10 +2563,10 @@
     renderDashTimeline();
     renderDashWatch();
     /* global language master fix: re-render language-sensitive dynamic surfaces */
-    try { renderAgentIntelligence(); } catch {}
-    try { populateAnalysisForm(); } catch {}
-    try { renderModuleBar(); } catch {}
-    try { refreshRegionLabels(); } catch {}
+    try { renderAgentIntelligence(); } catch (e) { console.warn("[charts] agent intelligence error:", e); }
+    try { populateAnalysisForm(); } catch (e) { console.warn("[charts] populate form error:", e); }
+    try { renderModuleBar(); } catch (e) { console.warn("[charts] module bar error:", e); }
+    try { refreshRegionLabels(); } catch (e) { console.warn("[charts] region labels error:", e); }
     setTimeout(() => {
       try {
         if (document.getElementById("chartComplianceStatus")) renderDashboardCharts();
@@ -2576,27 +2576,27 @@
         if (document.getElementById("watchTimeline")) renderWatchTimeline();
         if (document.getElementById("chartRiskMatrix")) renderRiskMatrix();
         if (document.getElementById("chartCountryCompare")) renderCountryCompare();
-      } catch {}
-      try { if (currentView === "risk-matrix") renderRiskMatrixView(); } catch {}
+      } catch (e) { console.warn("[charts] render error:", e); }
+      try { if (currentView === "risk-matrix") renderRiskMatrixView(); } catch (e) { console.warn("[charts] risk-matrix view error:", e); }
       try {
         if (currentView === "feasibility") {
           populateFeasibilityForm();
           const cached = loadCachedFeasibility();
           if (cached) renderFeasibilityResult(cached);
         }
-      } catch {}
-      try { if (currentView === "setup-guide") renderSetupGuide(); } catch {}
+      } catch (e) { console.warn("[charts] feasibility render error:", e); }
+      try { if (currentView === "setup-guide") renderSetupGuide(); } catch (e) { console.warn("[charts] setup-guide error:", e); }
       try {
         if (currentView === "policy-checker") {
           populatePolicyForm();
           const pc = loadCachedPolicy();
           if (pc) renderPolicyResult(pc);
         }
-      } catch {}
-      try { if (currentView === "business-health") renderBusinessHealth(); } catch {}
-      try { if (currentView === "doc-checklist") renderDocChecklist(); } catch {}
-      try { if (currentView === "co-founder") renderCoFounder(); } catch {}
-      try { if (currentView === "investor-hub") renderInvestorHub(); } catch {}
+      } catch (e) { console.warn("[charts] policy-checker error:", e); }
+      try { if (currentView === "business-health") renderBusinessHealth(); } catch (e) { console.warn("[charts] business-health error:", e); }
+      try { if (currentView === "doc-checklist") renderDocChecklist(); } catch (e) { console.warn("[charts] doc-checklist error:", e); }
+      try { if (currentView === "co-founder") renderCoFounder(); } catch (e) { console.warn("[charts] co-founder error:", e); }
+      try { if (currentView === "investor-hub") renderInvestorHub(); } catch (e) { console.warn("[charts] investor-hub error:", e); }
     }, 0);
     if (window.ReguLensGov) window.ReguLensGov.refresh();
   }
@@ -6323,9 +6323,9 @@
     syncThemeSeg(theme);
     window.setTimeout(() => els.body.classList.remove("theme-swap"), 300);
 
-    // Reconnect charts with new theme colors
+    // Reconnect charts with new theme colors (wait for 300ms CSS transition to finish)
     if (window.ReguLensCharts) {
-      setTimeout(() => window.ReguLensCharts.reconnectAllCharts(), 50);
+      setTimeout(() => window.ReguLensCharts.reconnectAllCharts(), 350);
     }
   }
 
@@ -7076,6 +7076,12 @@
     let msg = box ? box.querySelector(".chart-empty") : null;
     if (!hasData) {
       canvas.classList.add("hidden");
+      /* destroy any existing chart on this canvas to prevent stale instances */
+      if (window.ReguLensCharts && window.ReguLensCharts.destroyChart) {
+        try {
+          window.ReguLensCharts.destroyChart(id);
+        } catch (_) { /* ignore */ }
+      }
       if (box && !msg) {
         msg = document.createElement("div");
         msg.className = "chart-empty";
@@ -7352,6 +7358,7 @@
   }
 
   async function renderCountryCompare() {
+    try {
     const canvasEl = document.getElementById('chartCountryCompare');
     if (!canvasEl || !window.ReguLensCharts) return;
 
@@ -7389,6 +7396,7 @@
       const tb = document.getElementById("compareTbody");
       if (tb) tb.innerHTML = "";
     }
+    } catch (outer) { console.warn("[charts] country compare error:", outer); }
   }
 
   function renderActionCharts() {

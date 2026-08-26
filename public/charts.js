@@ -222,13 +222,6 @@
     return "rgba(" + r + "," + g + "," + b + "," + alpha + ")";
   }
 
-  function gradient(ctx, el, topColor, bottomColor) {
-    var grad = ctx.createLinearGradient(0, 0, 0, el.height || 300);
-    grad.addColorStop(0, topColor);
-    grad.addColorStop(1, bottomColor);
-    return grad;
-  }
-
   /* ───────── factory: donut ───────── */
 
   function createDonutChart(canvasId, labels, data, colors, options) {
@@ -239,6 +232,7 @@
     options = options || {};
     var total = safeArray(data).reduce(function (a, b) { return a + b; }, 0);
     var ctx = canvas.getContext("2d");
+    if (!ctx) return null;
 
     var chart = new Chart(ctx, {
       type: "doughnut",
@@ -254,6 +248,8 @@
       },
       options: {
         cutout: "70%",
+        maintainAspectRatio: true,
+        aspectRatio: 1.4,
         plugins: {
           legend: { position: "bottom" },
           regulensCentreText: {
@@ -278,6 +274,7 @@
     var horizontal = !!options.horizontal;
     var c = getColors();
     var ctx = canvas.getContext("2d");
+    if (!ctx) return null;
 
     var barColors = Array.isArray(colors) ? colors : (typeof colors === "string" ? colors : c.primary);
 
@@ -297,11 +294,13 @@
         indexAxis: horizontal ? "y" : "x",
         scales: {
           x: {
-            grid: { color: c.border, drawBorder: false },
+            grid: { color: c.border },
+            border: { display: false },
             ticks: { color: c.text3 },
           },
           y: {
-            grid: { color: c.border, drawBorder: false },
+            grid: { color: c.border },
+            border: { display: false },
             ticks: { color: c.text3 },
           },
         },
@@ -331,6 +330,7 @@
     var c = getColors();
     var radarColor = color || c.primary;
     var ctx = canvas.getContext("2d");
+    if (!ctx) return null;
     var radarData = safeArray(data);
 
     var maxVal = radarData.length ? Math.max.apply(null, radarData) : 0;
@@ -381,6 +381,7 @@
     options = options || {};
     var c = getColors();
     var ctx = canvas.getContext("2d");
+    if (!ctx) return null;
 
     var styledDatasets = datasets.map(function (ds, i) {
       var col = ds.color || c.primary;
@@ -415,11 +416,13 @@
       options: {
         scales: {
           x: {
-            grid: { color: c.border, drawBorder: false },
+            grid: { color: c.border },
+            border: { display: false },
             ticks: { color: c.text3 },
           },
           y: {
-            grid: { color: c.border, drawBorder: false },
+            grid: { color: c.border },
+            border: { display: false },
             ticks: { color: c.text3 },
           },
         },
@@ -446,6 +449,7 @@
     var pct    = total > 0 ? Math.round((completed / total) * 100) : 0;
     var remaining = Math.max(0, total - completed);
     var ctx = canvas.getContext("2d");
+    if (!ctx) return null;
 
     var chart = new Chart(ctx, {
       type: "bar",
@@ -498,6 +502,7 @@
     options = options || {};
     var c   = getColors();
     var ctx = canvas.getContext("2d");
+    if (!ctx) return null;
 
     var severityColorMap = {
       critical: c.critical,
@@ -572,7 +577,8 @@
             min: 0.5,
             max: 5.5,
             title: { display: true, text: options.xLabel || "Probability", color: c.text3 },
-            grid: { color: c.border, drawBorder: false },
+            grid: { color: c.border },
+            border: { display: false },
             ticks: {
               stepSize: 1,
               color: c.text3,
@@ -583,7 +589,8 @@
             min: 0.5,
             max: 5.5,
             title: { display: true, text: options.yLabel || "Impact", color: c.text3 },
-            grid: { color: c.border, drawBorder: false },
+            grid: { color: c.border },
+            border: { display: false },
             ticks: {
               stepSize: 1,
               color: c.text3,
@@ -607,6 +614,7 @@
     options = options || {};
     var c = getColors();
     var ctx = canvas.getContext("2d");
+    if (!ctx) return null;
 
     var chart = new Chart(ctx, {
       type: "bar",
@@ -626,9 +634,10 @@
       },
       options: {
         scales: {
-          x: { grid: { color: c.border, drawBorder: false }, ticks: { color: c.text3 } },
+          x: { grid: { color: c.border }, border: { display: false }, ticks: { color: c.text3 } },
           y: {
-            grid: { color: c.border, drawBorder: false },
+            grid: { color: c.border },
+            border: { display: false },
             ticks: { color: c.text3 },
             beginAtZero: true,
             suggestedMax: options.yMax || undefined,
@@ -658,6 +667,7 @@
 
     var c   = getColors();
     var ctx = canvas.getContext("2d");
+    if (!ctx) return null;
 
     var pct    = max > 0 ? Math.min(value / max, 1) : 0;
     var filled = pct * 180;
@@ -681,6 +691,8 @@
         rotation: -90,
         circumference: 180,
         cutout: "75%",
+        maintainAspectRatio: true,
+        aspectRatio: 2,
         plugins: {
           legend: { display: false },
           tooltip: { enabled: false },
@@ -698,7 +710,7 @@
   /* ───────── theme reconnection ───────── */
 
   function updateChartTheme(chartInstance) {
-    if (!chartInstance || typeof chartInstance.destroy !== "function") return;
+    if (!chartInstance || typeof chartInstance.destroy !== "function" || !chartInstance.options) return;
     applyDefaults();
 
     var c = getColors();
@@ -708,6 +720,7 @@
         var sc = chartInstance.options.scales[axis];
         if (!sc) return;
         if (sc.grid)   sc.grid.color = c.border;
+        if (sc.border) sc.border.color = c.border;
         if (sc.ticks)  sc.ticks.color = c.text3;
         if (sc.angleLines) sc.angleLines.color = c.border;
         if (sc.pointLabels) sc.pointLabels.color = c.text2;
@@ -715,8 +728,7 @@
       });
     }
 
-    /* keep legend/tooltip text readable after a day/night switch —
-       resolved option values would otherwise keep the old theme's color */
+    /* keep legend/tooltip text readable after a day/night switch */
     var plugins = chartInstance.options.plugins || {};
     if (plugins.legend && plugins.legend.labels && plugins.legend.display !== false) {
       plugins.legend.labels.color = c.text3;
@@ -727,6 +739,16 @@
         : "rgba(15,23,42,0.92)";
       plugins.tooltip.titleColor = "#f8fafc";
       plugins.tooltip.bodyColor  = "#e2e8f0";
+    }
+
+    /* update dataset-level colors (e.g. pointBorderColor from hardcoded #fff) */
+    if (chartInstance.data && chartInstance.data.datasets) {
+      chartInstance.data.datasets.forEach(function (ds) {
+        if (ds.pointBorderColor === "#fff") ds.pointBorderColor = isDark() ? "#1e293b" : "#fff";
+        if (ds.pointBackgroundColor && typeof ds.pointBackgroundColor === "string") {
+          /* keep semantic colors (red/green/blue etc) — only update neutral whites */
+        }
+      });
     }
 
     chartInstance.update();
