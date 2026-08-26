@@ -585,9 +585,17 @@
                 <option value="Other">Other</option>
               </select>
             </div>
+            <div class="set-row" id="aiOriginRegionRow" style="display:none">
+              <span class="set-label" id="aiOriginRegionLabel">Region</span>
+              <select class="select" id="aiOriginRegion"></select>
+            </div>
             <div class="set-row">
               <span class="set-label">Target Market</span>
               <select class="select" id="aiTarget"></select>
+            </div>
+            <div class="set-row" id="aiTargetRegionRow" style="display:none">
+              <span class="set-label" id="aiTargetRegionLabel">Region</span>
+              <select class="select" id="aiTargetRegion"></select>
             </div>
             <div class="set-row">
               <span class="set-label">Industry</span>
@@ -633,9 +641,17 @@
                 <option value="Other">Other</option>
               </select>
             </div>
+            <div class="set-row" id="fbOriginRegionRow" style="display:none">
+              <span class="set-label" id="fbOriginRegionLabel">Region</span>
+              <select class="select" id="fbOriginRegion"></select>
+            </div>
             <div class="set-row">
               <span class="set-label" data-i18n="feas.target">Target Market</span>
               <select class="select" id="fbTarget"></select>
+            </div>
+            <div class="set-row" id="fbTargetRegionRow" style="display:none">
+              <span class="set-label" id="fbTargetRegionLabel">Region</span>
+              <select class="select" id="fbTargetRegion"></select>
             </div>
             <div class="set-row">
               <span class="set-label" data-i18n="feas.industry">Industry</span>
@@ -746,6 +762,10 @@
             <div class="set-row">
               <span class="set-label" data-i18n="pc.target">Target Market</span>
               <select class="select" id="pcTarget"></select>
+            </div>
+            <div class="set-row" id="pcTargetRegionRow" style="display:none">
+              <span class="set-label" id="pcTargetRegionLabel">Region</span>
+              <select class="select" id="pcTargetRegion"></select>
             </div>
             <div class="set-row">
               <span class="set-label" data-i18n="pc.industry">Industry (optional)</span>
@@ -965,7 +985,8 @@
                 <th data-i18n="gap.category">Category</th>
                 <th data-i18n="gap.compareOrigin">Origin</th>
                 <th data-i18n="gap.compareTarget">Target</th>
-                <th data-i18n="gap.applicableReqs">Requirements</th>
+                <th data-i18n="gap.compareGap">Gap</th>
+                <th data-i18n="gap.comparePriority">Priority</th>
                 <th data-i18n="gap.topRegulation">Top driver (target)</th>
               </tr></thead>
               <tbody id="compareTbody"></tbody>
@@ -1932,10 +1953,10 @@
 <script src="/core/regulens-core.js"></script>
 <script src="i18n/europe-a.js"></script>
 <script src="i18n/gov-bundle.js?v=1"></script>
-  <script src="i18n/core-bundle.js?v=2"></script>
+  <script src="i18n/core-bundle.js?v=3"></script>
   <script src="i18n/landing-bundle.js?v=1"></script>
-<script src="charts.js?v=1"></script>
-<script src="app.js?v=45"></script>
+<script src="charts.js?v=2"></script>
+<script src="app.js?v=46"></script>
 <script src="government.js?v=2"></script>
           <script src="regulens.js?v=45"></script>
           <script src="landing.js?v=1"></script>

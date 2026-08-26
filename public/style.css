@@ -3910,6 +3910,19 @@ body.dark .ai-agent-card.ai-agent-error {
   padding: 20px;
 }
 
+/* inline loading spinner for chart empty-state slot */
+.chart-empty .spinner {
+  display: inline-block;
+  width: 14px;
+  height: 14px;
+  border: 2px solid var(--border);
+  border-top-color: var(--primary);
+  border-radius: 50%;
+  vertical-align: -2px;
+  margin-right: 8px;
+  animation: spin 0.8s linear infinite;
+}
+
 .risk-matrix-wrap {
   position: relative;
   width: 100%;
@@ -4012,6 +4025,16 @@ body.dark .ai-agent-card.ai-agent-error {
   font-weight: 700;
   color: var(--text);
   font-variant-numeric: tabular-nums;
+}
+
+/* gap analysis compare table */
+.compare-gap-up { color: var(--orange); font-weight: 700; }
+.compare-gap-down { color: var(--primary); font-weight: 700; }
+.compare-gap-flat { color: var(--text-2); }
+.cell-sub {
+  display: block;
+  font-size: 11px;
+  color: var(--text-2);
 }
 
 /* policy simulator results */

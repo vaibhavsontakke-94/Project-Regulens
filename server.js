@@ -12,6 +12,7 @@ import { nextAnalysisId, logAnalysisEvent } from "./lib/analysis-log.js";
    Static imports so serverless bundlers (Vercel NFT) always trace them. */
 import core from "./lib/regulens-core.cjs";
 import gov from "./lib/gov-engine.cjs";
+import { COUNTRY_REGIONS, validateRegion, getNormalizedRegion } from "./lib/country-regions.cjs";
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 
@@ -429,6 +430,10 @@ app.get("/api/markets", (_req, res) => {
   res.json(DROPDOWN_DATA);
 });
 
+app.get("/api/country-regions", (_req, res) => {
+  res.json(COUNTRY_REGIONS);
+});
+
 function extractJSON(text) {
   const t = String(text || "").trim();
   const fenced = t.match(/```(?:json)?\s*([\s\S]*?)```/i);
@@ -463,6 +468,8 @@ app.post("/api/analysis", async (req, res) => {
   const origin = sanitizeStr(raw.origin, 50) || "India";
   const target = sanitizeStr(raw.target, 10);
   const industry = sanitizeStr(raw.industry, 50);
+  const originRegion = sanitizeStr(raw.originRegion, 100);
+  const targetRegion = sanitizeStr(raw.targetRegion, 100);
 
   if (!company || !product || !target || !industry) {
     const missing = [
@@ -479,7 +486,7 @@ app.post("/api/analysis", async (req, res) => {
 
   const analysisId = await nextAnalysisId();
   const marketName = MARKET_NAMES[target] || target;
-  const ctx = { company, product, origin, target: marketName, industry };
+  const ctx = { company, product, origin, target: marketName, industry, originRegion, targetRegion };
 
   res.setHeader("Content-Type", "text/event-stream");
   res.setHeader("Cache-Control", "no-cache");
@@ -565,8 +572,8 @@ app.post("/api/analysis", async (req, res) => {
 Company: ${ctx.company}
 Product: ${ctx.product}
 Origin Country: ${ctx.origin}
-Target Market: ${ctx.target}
-Industry: ${ctx.industry}
+${ctx.originRegion ? "Origin Region: " + ctx.originRegion + "\n" : ""}Target Market: ${ctx.target}
+${ctx.targetRegion ? "Target Region: " + ctx.targetRegion + "\n" : ""}Industry: ${ctx.industry}
 
 CRITICAL RULES:
 - Only list regulations you are confident about based on your training data.
@@ -634,7 +641,7 @@ Return ONLY valid JSON (no markdown fencing, no explanation) with this exact str
 Company: ${ctx.company}
 Product: ${ctx.product}
 Target Market: ${ctx.target}
-Industry: ${ctx.industry}
+${ctx.targetRegion ? "Target Region: " + ctx.targetRegion + "\n" : ""}Industry: ${ctx.industry}
 Regulations found: ${JSON.stringify(researchResult.regulations.map(r => r.title))}
 
 Return ONLY valid JSON with this exact structure:
@@ -688,7 +695,7 @@ Return ONLY valid JSON with this exact structure:
 Company: ${ctx.company}
 Product: ${ctx.product}
 Target Market: ${ctx.target}
-Requirements: ${JSON.stringify(reqResult.requirements.map(r => ({ name: r.name, priority: r.priority, status: r.status })))}
+${ctx.targetRegion ? "Target Region: " + ctx.targetRegion + "\n" : ""}Requirements: ${JSON.stringify(reqResult.requirements.map(r => ({ name: r.name, priority: r.priority, status: r.status })))}
 
 Return ONLY valid JSON with this exact structure:
 {
@@ -735,7 +742,7 @@ Return ONLY valid JSON with this exact structure:
 Company: ${ctx.company}
 Product: ${ctx.product}
 Target Market: ${ctx.target}
-Industry: ${ctx.industry}
+${ctx.targetRegion ? "Target Region: " + ctx.targetRegion + "\n" : ""}Industry: ${ctx.industry}
 Requirements: ${JSON.stringify(reqResult.requirements.map(r => ({ id: r.id, name: r.name, priority: r.priority })))}
 
 Return ONLY valid JSON with this exact structure:
@@ -816,7 +823,7 @@ Return ONLY valid JSON with this exact structure:
 Company: ${ctx.company}
 Product: ${ctx.product}
 Target Market: ${ctx.target}
-Requirements: ${JSON.stringify(reqResult.requirements.map(r => ({ name: r.name, priority: r.priority, dueDays: r.dueDays })))}
+${ctx.targetRegion ? "Target Region: " + ctx.targetRegion + "\n" : ""}Requirements: ${JSON.stringify(reqResult.requirements.map(r => ({ name: r.name, priority: r.priority, dueDays: r.dueDays })))}
 Top Risks: ${JSON.stringify((riskResult.risks || []).slice(0, 5).map(r => ({ title: r.title, severity: r.severity })))}
 
 Return ONLY valid JSON with this exact structure:
@@ -1001,6 +1008,8 @@ app.post("/api/analysis/demo", async (req, res) => {
   const origin = sanitizeStr(raw.origin, 50) || "India";
   const target = sanitizeStr(raw.target, 10);
   const industry = sanitizeStr(raw.industry, 50);
+  const originRegion = sanitizeStr(raw.originRegion, 100);
+  const targetRegion = sanitizeStr(raw.targetRegion, 100);
 
   if (!company || !product || !target || !industry) {
     return res.status(400).json({ error: "company, product, target, and industry are required" });
@@ -1008,7 +1017,7 @@ app.post("/api/analysis/demo", async (req, res) => {
 
   try {
     const analysisId = await nextAnalysisId();
-    const data = runDemoAnalysis({ company, product, origin, target, industry, analysisId });
+    const data = runDemoAnalysis({ company, product, origin, target, industry, analysisId, originRegion, targetRegion });
     logAnalysisEvent({
       analysisId, event: "analysis_completed", mode: "demo",
       readiness: data.readiness, canLaunch: data.canLaunch ? data.canLaunch.state : null,
@@ -1542,7 +1551,7 @@ function feasibilityFromAnalysis(a) {
 }
 
 app.post("/api/feasibility", async (req, res) => {
-  const b = sanitizeObj(req.body || {}, ["company", "product", "origin", "target", "industry", "notes"], 600);
+  const b = sanitizeObj(req.body || {}, ["company", "product", "origin", "target", "industry", "notes", "originRegion", "targetRegion"], 600);
   if (!b.company || !b.product) {
     return res.status(400).json({ error: "company and product are required" });
   }
@@ -1557,8 +1566,8 @@ app.post("/api/feasibility", async (req, res) => {
 Company: ${b.company}
 Product / Idea: ${b.product}
 Origin Country: ${b.origin || "unspecified"}
-Target Market: ${b.target || "unspecified"}
-Industry: ${b.industry || "general"}
+${b.originRegion ? "Origin Region: " + b.originRegion + "\n" : ""}Target Market: ${b.target || "unspecified"}
+${b.targetRegion ? "Target Region: " + b.targetRegion + "\n" : ""}Industry: ${b.industry || "general"}
 Founder Notes: ${b.notes || "none"}
 
 Return ONLY valid JSON with exactly this structure:
@@ -1687,7 +1696,7 @@ function policyCheckFromKnowledgeBase(targetName, industry, question) {
 }
 
 app.post("/api/policy-check", async (req, res) => {
-  const b = sanitizeObj(req.body || {}, ["target", "question", "industry", "product"], 800);
+  const b = sanitizeObj(req.body || {}, ["target", "question", "industry", "product", "targetRegion"], 800);
   if (!b.target || !b.question) {
     return res.status(400).json({ error: "target and question are required" });
   }
@@ -1700,7 +1709,7 @@ app.post("/api/policy-check", async (req, res) => {
       const prompt = `You are a regulatory policy analyst. Answer this concrete policy question about doing business in the specified target market. Be precise, practical, and cite the kind of authority/source generically (e.g., "the federal data protection authority"). If uncertain, say so plainly instead of inventing specifics.
 
 Target Market: ${b.target}
-Industry: ${b.industry || "general"}
+${b.targetRegion ? "Target Region: " + b.targetRegion + "\n" : ""}Industry: ${b.industry || "general"}
 Product Context: ${b.product || "not provided"}
 Question: ${b.question}
 

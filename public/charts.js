@@ -100,8 +100,9 @@
 
   var centreTextPlugin = {
     id: "regulensCentreText",
+    /* Draws for ANY chart type that opts in via plugins.regulensCentreText
+       (doughnuts, gauges AND stacked progress bars). */
     afterDraw: function (chart) {
-      if (chart.config.type !== "doughnut") return;
       if (!chart.options.plugins.regulensCentreText) return;
 
       var cfg = chart.options.plugins.regulensCentreText;
@@ -181,6 +182,29 @@
 
   /* ───────── private helpers ───────── */
 
+  /* Data validation — never pass NaN/undefined/Infinity to Chart.js. */
+  function safeNumber(v, fallback) {
+    var n = Number(v);
+    return Number.isFinite(n) ? n : (fallback || 0);
+  }
+
+  function safeArray(arr, len, fill) {
+    if (!Array.isArray(arr)) arr = [];
+    var out = [];
+    for (var i = 0; i < (len || arr.length); i++) {
+      var v = safeNumber(arr[i], fill);
+      out.push(Number.isFinite(v) ? v : (fill || 0));
+    }
+    return out;
+  }
+
+  function safeLabels(labels) {
+    return (Array.isArray(labels) ? labels : []).map(function (l, i) {
+      if (l === undefined || l === null || l === "") return "—";
+      return String(l);
+    });
+  }
+
   function getCanvas(canvasId) {
     var el = document.getElementById(canvasId);
     if (!el || el.getContext === undefined) {
@@ -213,16 +237,16 @@
     if (!canvas) return null;
 
     options = options || {};
-    var total = data.reduce(function (a, b) { return a + b; }, 0);
+    var total = safeArray(data).reduce(function (a, b) { return a + b; }, 0);
     var ctx = canvas.getContext("2d");
 
     var chart = new Chart(ctx, {
       type: "doughnut",
       data: {
-        labels: labels,
+        labels: safeLabels(labels),
         datasets: [{
-          data: data,
-          backgroundColor: colors,
+          data: safeArray(data),
+          backgroundColor: Array.isArray(colors) ? colors : getColors().primary,
           borderWidth: 0,
           hoverOffset: 8,
           borderRadius: 4,
@@ -260,9 +284,9 @@
     var cfg = {
       type: "bar",
       data: {
-        labels: labels,
+        labels: safeLabels(labels),
         datasets: [{
-          data: data,
+          data: safeArray(data),
           backgroundColor: barColors,
           borderRadius: 6,
           borderSkipped: false,
@@ -307,16 +331,17 @@
     var c = getColors();
     var radarColor = color || c.primary;
     var ctx = canvas.getContext("2d");
+    var radarData = safeArray(data);
 
-    var maxVal = Math.max.apply(null, data);
+    var maxVal = radarData.length ? Math.max.apply(null, radarData) : 0;
     var suggestedMax = maxVal <= 5 ? 5 : 100;
 
     var chart = new Chart(ctx, {
       type: "radar",
       data: {
-        labels: labels,
+        labels: safeLabels(labels),
         datasets: [{
-          data: data,
+          data: radarData,
           backgroundColor: alphaColor(radarColor, 0.18),
           borderColor: radarColor,
           borderWidth: 2,
@@ -367,7 +392,7 @@
 
       return {
         label: ds.label || ("Series " + (i + 1)),
-        data: ds.data,
+        data: safeArray(ds.data),
         borderColor: col,
         backgroundColor: fillColor || "transparent",
         borderWidth: 2.5,
@@ -384,7 +409,7 @@
     var chart = new Chart(ctx, {
       type: "line",
       data: {
-        labels: labels,
+        labels: safeLabels(labels),
         datasets: styledDatasets,
       },
       options: {
@@ -416,8 +441,10 @@
     if (!canvas) return null;
 
     var c   = getColors();
-    var pct = total > 0 ? Math.round((completed / total) * 100) : 0;
-    var remaining = total - completed;
+    completed = Math.max(0, safeNumber(completed));
+    total     = Math.max(0, safeNumber(total, 1)) || 1;
+    var pct    = total > 0 ? Math.round((completed / total) * 100) : 0;
+    var remaining = Math.max(0, total - completed);
     var ctx = canvas.getContext("2d");
 
     var chart = new Chart(ctx, {
@@ -463,11 +490,12 @@
 
   /* ───────── factory: risk-matrix (scatter) ───────── */
 
-  function createRiskMatrix(canvasId, risks) {
+  function createRiskMatrix(canvasId, risks, options) {
     ensurePlugins();
     var canvas = getCanvas(canvasId);
     if (!canvas) return null;
 
+    options = options || {};
     var c   = getColors();
     var ctx = canvas.getContext("2d");
 
@@ -485,16 +513,17 @@
       low:      7,
     };
 
-    var points = (risks || []).map(function (r) {
-      var sev = (r.severity || "medium").toLowerCase();
+    var points = (Array.isArray(risks) ? risks : []).map(function (r) {
+      r = r || {};
+      var sev = String(r.severity || "medium").toLowerCase();
       return {
-        x: r.probability || 3,
-        y: r.impact || 3,
+        x: safeNumber(r.probability, 3),
+        y: safeNumber(r.impact, 3),
         r: severitySizeMap[sev] || 9,
         _risk: r,
         _sev: sev,
       };
-    });
+    }).filter(function (p) { return p.x > 0 && p.y > 0; });
 
     var chart = new Chart(ctx, {
       type: "bubble",
@@ -519,15 +548,21 @@
               title: function (items) {
                 if (!items.length) return "";
                 var pt = items[0].raw;
-                return pt._risk.title || pt._risk.name || "Risk";
+                return (pt._risk && (pt._risk.title || pt._risk.name)) || "Risk";
               },
               label: function (item) {
-                var r = item.raw._risk;
-                return [
-                  "Severity: " + (r.severity || "medium"),
-                  "Probability: " + (r.probability || item.raw.x),
-                  "Impact: " + (r.impact || item.raw.y),
+                var r = item.raw._risk || {};
+                var lines = [
+                  (options.severityLabel || "Severity") + ": " + (r.severity || "medium"),
+                  (options.xLabel || "Probability") + ": " + item.raw.x,
+                  (options.yLabel || "Impact") + ": " + item.raw.y,
                 ];
+                if (r.mitigation) {
+                  var mit = String(r.mitigation);
+                  if (mit.length > 96) mit = mit.slice(0, 93) + "…";
+                  lines.push((options.mitigationLabel || "Mitigation") + ": " + mit);
+                }
+                return lines;
               },
             },
           },
@@ -536,7 +571,7 @@
           x: {
             min: 0.5,
             max: 5.5,
-            title: { display: true, text: "Probability", color: c.text3 },
+            title: { display: true, text: options.xLabel || "Probability", color: c.text3 },
             grid: { color: c.border, drawBorder: false },
             ticks: {
               stepSize: 1,
@@ -547,7 +582,7 @@
           y: {
             min: 0.5,
             max: 5.5,
-            title: { display: true, text: "Impact", color: c.text3 },
+            title: { display: true, text: options.yLabel || "Impact", color: c.text3 },
             grid: { color: c.border, drawBorder: false },
             ticks: {
               stepSize: 1,
@@ -576,12 +611,13 @@
     var chart = new Chart(ctx, {
       type: "bar",
       data: {
-        labels: labels,
-        datasets: (datasets || []).map(function (ds) {
+        labels: safeLabels(labels),
+        datasets: (Array.isArray(datasets) ? datasets : []).map(function (ds) {
+          ds = ds || {};
           return {
-            label: ds.label,
-            data: ds.data,
-            backgroundColor: ds.color,
+            label: String(ds.label || "—"),
+            data: safeArray(ds.data, safeLabels(labels).length),
+            backgroundColor: ds.color || c.primary,
             borderRadius: 6,
             borderSkipped: false,
             maxBarThickness: 42,
@@ -596,9 +632,17 @@
             ticks: { color: c.text3 },
             beginAtZero: true,
             suggestedMax: options.yMax || undefined,
+            title: options.yLabel
+              ? { display: true, text: options.yLabel, color: c.text3 }
+              : undefined,
           },
         },
-        plugins: { legend: { position: "bottom" } },
+        plugins: {
+          legend: { position: options.legendPosition || "bottom" },
+          tooltip: (options.tooltipCallbacks && Object.keys(options.tooltipCallbacks).length)
+            ? { callbacks: options.tooltipCallbacks }
+            : undefined,
+        },
       },
     });
 
@@ -654,7 +698,7 @@
   /* ───────── theme reconnection ───────── */
 
   function updateChartTheme(chartInstance) {
-    if (!chartInstance) return;
+    if (!chartInstance || typeof chartInstance.destroy !== "function") return;
     applyDefaults();
 
     var c = getColors();
@@ -669,6 +713,20 @@
         if (sc.pointLabels) sc.pointLabels.color = c.text2;
         if (sc.title)  sc.title.color = c.text3;
       });
+    }
+
+    /* keep legend/tooltip text readable after a day/night switch —
+       resolved option values would otherwise keep the old theme's color */
+    var plugins = chartInstance.options.plugins || {};
+    if (plugins.legend && plugins.legend.labels && plugins.legend.display !== false) {
+      plugins.legend.labels.color = c.text3;
+    }
+    if (plugins.tooltip) {
+      plugins.tooltip.backgroundColor = isDark()
+        ? "rgba(17,22,30,0.92)"
+        : "rgba(15,23,42,0.92)";
+      plugins.tooltip.titleColor = "#f8fafc";
+      plugins.tooltip.bodyColor  = "#e2e8f0";
     }
 
     chartInstance.update();
@@ -699,6 +757,9 @@
     getColors:                getColors,
     isDark:                   isDark,
     trackChart:               trackChart,
+    safeNumber:               safeNumber,
+    safeArray:                safeArray,
+    safeLabels:               safeLabels,
   };
 
   /* ───────── auto-init when DOM ready ───────── */

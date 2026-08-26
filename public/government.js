@@ -264,17 +264,31 @@
     saveCtx();
     render(S.activeView, true);
   }
+  function resolveCountryId(value) {
+    const v = String(value == null ? "" : value).trim().toLowerCase();
+    if (!v) return "";
+    const countries = (S.pkg && S.pkg.countries) || [];
+    const hit = countries.find((c) =>
+      String(c.id).toLowerCase() === v ||
+      String(c.name).toLowerCase() === v
+    );
+    return hit ? hit.id : "";
+  }
   function syncFromAnalysis() {
     const api = window.ReguLens;
     const a = api && api.getState ? (api.getState().analysis || null) : null;
-    if (!a) return;
-    S.ctx = {
-      originId: a.origin || S.ctx.originId,
-      targetId: a.targetId || a.target || S.ctx.targetId,
-      industryId: a.industry || S.ctx.industryId,
+    if (!a) { toast(T("gov.empty.generic")); return; }
+    /* analysis stores display names + target id; resolve ids via the
+       canonical country list so the gov engine gets valid context */
+    const next = {
+      originId: resolveCountryId(a.originId || a.origin) || S.ctx.originId,
+      targetId: resolveCountryId(a.targetId || a.target) || S.ctx.targetId,
+      industryId: String(a.industryId || a.industry || S.ctx.industryId).toLowerCase(),
       company: a.company || "",
       product: a.product || "",
     };
+    if (!next.industryId) next.industryId = S.ctx.industryId;
+    S.ctx = next;
     saveCtx();
     render(S.activeView, true);
   }

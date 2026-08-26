@@ -119,14 +119,26 @@
     aiCompany: document.getElementById("aiCompany"),
     aiProduct: document.getElementById("aiProduct"),
     aiOrigin: document.getElementById("aiOrigin"),
+    aiOriginRegion: document.getElementById("aiOriginRegion"),
+    aiOriginRegionRow: document.getElementById("aiOriginRegionRow"),
+    aiOriginRegionLabel: document.getElementById("aiOriginRegionLabel"),
     aiTarget: document.getElementById("aiTarget"),
+    aiTargetRegion: document.getElementById("aiTargetRegion"),
+    aiTargetRegionRow: document.getElementById("aiTargetRegionRow"),
+    aiTargetRegionLabel: document.getElementById("aiTargetRegionLabel"),
     aiIndustry: document.getElementById("aiIndustry"),
     aiRunBtn: document.getElementById("aiRunBtn"),
     aiRunStatus: document.getElementById("aiRunStatus"),
     fbCompany: document.getElementById("fbCompany"),
     fbProduct: document.getElementById("fbProduct"),
     fbOrigin: document.getElementById("fbOrigin"),
+    fbOriginRegion: document.getElementById("fbOriginRegion"),
+    fbOriginRegionRow: document.getElementById("fbOriginRegionRow"),
+    fbOriginRegionLabel: document.getElementById("fbOriginRegionLabel"),
     fbTarget: document.getElementById("fbTarget"),
+    fbTargetRegion: document.getElementById("fbTargetRegion"),
+    fbTargetRegionRow: document.getElementById("fbTargetRegionRow"),
+    fbTargetRegionLabel: document.getElementById("fbTargetRegionLabel"),
     fbIndustry: document.getElementById("fbIndustry"),
     fbNotes: document.getElementById("fbNotes"),
     fbRunBtn: document.getElementById("fbRunBtn"),
@@ -149,6 +161,9 @@
     guidePhases: document.getElementById("guidePhases"),
     guideResetBtn: document.getElementById("guideResetBtn"),
     pcTarget: document.getElementById("pcTarget"),
+    pcTargetRegion: document.getElementById("pcTargetRegion"),
+    pcTargetRegionRow: document.getElementById("pcTargetRegionRow"),
+    pcTargetRegionLabel: document.getElementById("pcTargetRegionLabel"),
     pcIndustry: document.getElementById("pcIndustry"),
     pcProduct: document.getElementById("pcProduct"),
     pcQuestion: document.getElementById("pcQuestion"),
@@ -2551,6 +2566,7 @@
     try { renderAgentIntelligence(); } catch {}
     try { populateAnalysisForm(); } catch {}
     try { renderModuleBar(); } catch {}
+    try { refreshRegionLabels(); } catch {}
     setTimeout(() => {
       try {
         if (document.getElementById("chartComplianceStatus")) renderDashboardCharts();
@@ -2887,21 +2903,21 @@
       if (window.ReguLensGov) window.ReguLensGov.render(view);
       return;
     }
-    if (view === "dashboard") renderStats();
+    if (view === "dashboard") { renderStats(); renderDashboardCharts(); }
     else if (view === "can-i-launch") renderVerdict();
     else if (view === "feasibility") renderFeasibility();
     else if (view === "setup-guide") renderSetupGuide();
     else if (view === "requirements") renderRequirements();
     else if (view === "policy-checker") renderPolicyChecker();
-    else if (view === "gap-analysis") { renderGaps(); renderCountryCompare(); }
-    else if (view === "action-plan") renderActions();
+    else if (view === "gap-analysis") { renderGaps(); renderGapCharts(); renderCountryCompare(); }
+    else if (view === "action-plan") { renderActions(); renderActionCharts(); renderPlanTimeline(); }
     else if (view === "business-health") renderBusinessHealth();
     else if (view === "cost-estimator") renderCosts();
     else if (view === "document-library") renderDocs();
     else if (view === "doc-checklist") renderDocChecklist();
-    else if (view === "regulation-watch") renderWatch();
+    else if (view === "regulation-watch") { renderWatch(); renderWatchTimeline(); }
     else if (view === "updates") renderUpdates();
-    else if (view === "impact-analysis") renderImpact();
+    else if (view === "impact-analysis") { renderImpact(); renderRiskMatrix(); }
     else if (view === "agent-intelligence") renderAgentIntelligence();
     else if (view === "history") renderHistory();
     else if (view === "assistant") renderAssistant();
@@ -3146,6 +3162,140 @@
     { id: "travel-tourism", name: "Travel & Tourism" },
     { id: "general", name: "General / Other" },
   ];
+
+  /* ───────── country → administrative division selection ───────── */
+  const COUNTRY_NAME_TO_CODE = {};
+  TARGET_MARKETS.forEach((m) => { COUNTRY_NAME_TO_CODE[m.name.replace(/^.{2}\s/, "")] = m.id; });
+  COUNTRY_NAME_TO_CODE["India"] = "in";
+  COUNTRY_NAME_TO_CODE["United States"] = "us";
+  COUNTRY_NAME_TO_CODE["United Kingdom"] = "uk";
+  COUNTRY_NAME_TO_CODE["UAE"] = "ae";
+  COUNTRY_NAME_TO_CODE["Germany"] = "de";
+  COUNTRY_NAME_TO_CODE["Singapore"] = "sg";
+  COUNTRY_NAME_TO_CODE["Australia"] = "au";
+  COUNTRY_NAME_TO_CODE["Canada"] = "ca";
+  COUNTRY_NAME_TO_CODE["Japan"] = "jp";
+  COUNTRY_NAME_TO_CODE["European Union"] = "eu";
+  COUNTRY_NAME_TO_CODE["France"] = "fr";
+  COUNTRY_NAME_TO_CODE["China"] = "cn";
+  COUNTRY_NAME_TO_CODE["Brazil"] = "br";
+  COUNTRY_NAME_TO_CODE["South Korea"] = "kr";
+  COUNTRY_NAME_TO_CODE["Saudi Arabia"] = "sa";
+  COUNTRY_NAME_TO_CODE["Mexico"] = "mx";
+  COUNTRY_NAME_TO_CODE["Italy"] = "it";
+  COUNTRY_NAME_TO_CODE["Spain"] = "es";
+  COUNTRY_NAME_TO_CODE["Netherlands"] = "nl";
+  COUNTRY_NAME_TO_CODE["Sweden"] = "se";
+  COUNTRY_NAME_TO_CODE["Switzerland"] = "ch";
+  COUNTRY_NAME_TO_CODE["Other"] = "";
+
+  let _countryRegionsCache = null;
+  let _countryRegionsLoading = null;
+
+  function loadCountryRegions() {
+    if (_countryRegionsCache) return Promise.resolve(_countryRegionsCache);
+    if (_countryRegionsLoading) return _countryRegionsLoading;
+    _countryRegionsLoading = fetch("/api/country-regions")
+      .then((r) => { if (!r.ok) throw new Error(r.statusText); return r.json(); })
+      .then((data) => { _countryRegionsCache = data; return data; })
+      .catch((err) => { console.warn("[country-regions] load failed:", err); _countryRegionsLoading = null; return null; });
+    return _countryRegionsLoading;
+  }
+
+  function getCountryCode(countryName) {
+    if (!countryName) return "";
+    const v = String(countryName).trim();
+    if (COUNTRY_NAME_TO_CODE[v] !== undefined) return COUNTRY_NAME_TO_CODE[v];
+    if (_countryRegionsCache && _countryRegionsCache[v.toLowerCase()]) return v.toLowerCase();
+    const stripped = v.replace(/^.{2}\s/, "").trim();
+    if (COUNTRY_NAME_TO_CODE[stripped] !== undefined) return COUNTRY_NAME_TO_CODE[stripped];
+    return "";
+  }
+
+  function getRegionLabel(countryCode) {
+    if (!_countryRegionsCache || !countryCode) return t("region.label.default");
+    const meta = _countryRegionsCache[countryCode];
+    if (!meta) return t("region.label.default");
+    const i18nKey = "region.label." + countryCode;
+    const translated = t(i18nKey);
+    return translated !== i18nKey ? translated : meta.divisionLabel;
+  }
+
+  function populateRegionDropdown(regionSelect, countryCode) {
+    if (!regionSelect) return;
+    regionSelect.innerHTML = "";
+    if (!countryCode || !_countryRegionsCache) {
+      const ph = document.createElement("option");
+      ph.value = "";
+      ph.disabled = true;
+      ph.selected = true;
+      ph.textContent = t("region.selectRegion");
+      regionSelect.appendChild(ph);
+      return;
+    }
+    const meta = _countryRegionsCache[countryCode];
+    if (!meta || meta.noDivisions || !meta.divisions.length) {
+      const ph = document.createElement("option");
+      ph.value = "";
+      ph.disabled = true;
+      ph.selected = true;
+      ph.textContent = t("region.noneAvailable");
+      regionSelect.appendChild(ph);
+      return;
+    }
+    const ph = document.createElement("option");
+    ph.value = "";
+    ph.disabled = true;
+    ph.selected = true;
+    ph.textContent = t("region.selectRegion");
+    regionSelect.appendChild(ph);
+    meta.divisions.forEach((div) => {
+      const opt = document.createElement("option");
+      opt.value = div;
+      opt.textContent = div;
+      regionSelect.appendChild(opt);
+    });
+  }
+
+  function showRegionField(rowEl, labelEl, countryCode) {
+    if (!rowEl) return;
+    if (!countryCode || !_countryRegionsCache) { rowEl.style.display = "none"; return; }
+    const meta = _countryRegionsCache[countryCode];
+    if (!meta || meta.noDivisions) { rowEl.style.display = "none"; return; }
+    rowEl.style.display = "";
+    if (labelEl) labelEl.textContent = getRegionLabel(countryCode);
+  }
+
+  function handleOriginCountryChange(originSelect, regionSelect, rowEl, labelEl) {
+    const countryCode = getCountryCode(originSelect.value);
+    populateRegionDropdown(regionSelect, countryCode);
+    showRegionField(rowEl, labelEl, countryCode);
+    if (regionSelect) regionSelect.value = "";
+  }
+
+  function handleTargetCountryChange(targetSelect, regionSelect, rowEl, labelEl) {
+    const countryCode = getCountryCode(targetSelect.value);
+    populateRegionDropdown(regionSelect, countryCode);
+    showRegionField(rowEl, labelEl, countryCode);
+    if (regionSelect) regionSelect.value = "";
+  }
+
+  function refreshRegionLabels() {
+    const pairs = [
+      [els.aiOrigin, els.aiOriginRegion, els.aiOriginRegionRow, els.aiOriginRegionLabel],
+      [els.aiTarget, els.aiTargetRegion, els.aiTargetRegionRow, els.aiTargetRegionLabel],
+      [els.fbOrigin, els.fbOriginRegion, els.fbOriginRegionRow, els.fbOriginRegionLabel],
+      [els.fbTarget, els.fbTargetRegion, els.fbTargetRegionRow, els.fbTargetRegionLabel],
+      [els.pcTarget, els.pcTargetRegion, els.pcTargetRegionRow, els.pcTargetRegionLabel],
+    ];
+    pairs.forEach(([countrySel, regionSel, rowEl, labelEl]) => {
+      if (!countrySel || !rowEl) return;
+      const cc = getCountryCode(countrySel.value);
+      if (cc && rowEl.style.display !== "none") {
+        showRegionField(rowEl, labelEl, cc);
+      }
+    });
+  }
 
   /* ───────── analysis state (multi-agent system) ───────── */
   let analysisData = null;
@@ -3915,6 +4065,20 @@
     renderActions();
     renderCosts();
     renderCompare();
+    /* keep every affected visualization in sync with the new status */
+    refreshStatusCharts();
+  }
+
+  /* Charts that depend on requirement/gap/action state. Only the active
+     view's charts are refreshed now; navigating to another view re-renders
+     that view's charts (see renderView), so nothing can go stale. */
+  function refreshStatusCharts() {
+    try {
+      if (currentView === "dashboard") renderDashboardCharts();
+      else if (currentView === "gap-analysis") renderGapCharts();
+      else if (currentView === "risk-matrix") renderRiskMatrixView();
+      else if (currentView === "action-plan") renderPlanTimeline();
+    } catch (e) { console.warn("Chart refresh after status change failed:", e); }
   }
 
   function openReqModal(r) {
@@ -4878,11 +5042,42 @@
       .catch(() => { renderDropdowns(localData); });
   }
 
+  /* ───────── region selection event listeners (Can I Launch?) ───────── */
+  loadCountryRegions().then(() => {
+    els.aiOrigin.addEventListener("change", () => {
+      handleOriginCountryChange(els.aiOrigin, els.aiOriginRegion, els.aiOriginRegionRow, els.aiOriginRegionLabel);
+    });
+    els.aiTarget.addEventListener("change", () => {
+      handleTargetCountryChange(els.aiTarget, els.aiTargetRegion, els.aiTargetRegionRow, els.aiTargetRegionLabel);
+    });
+    els.fbOrigin.addEventListener("change", () => {
+      handleOriginCountryChange(els.fbOrigin, els.fbOriginRegion, els.fbOriginRegionRow, els.fbOriginRegionLabel);
+    });
+    els.fbTarget.addEventListener("change", () => {
+      handleTargetCountryChange(els.fbTarget, els.fbTargetRegion, els.fbTargetRegionRow, els.fbTargetRegionLabel);
+    });
+    els.pcTarget.addEventListener("change", () => {
+      handleTargetCountryChange(els.pcTarget, els.pcTargetRegion, els.pcTargetRegionRow, els.pcTargetRegionLabel);
+    });
+    if (els.aiOrigin.value) {
+      const cc = getCountryCode(els.aiOrigin.value);
+      populateRegionDropdown(els.aiOriginRegion, cc);
+      showRegionField(els.aiOriginRegionRow, els.aiOriginRegionLabel, cc);
+    }
+    if (els.aiTarget.value) {
+      const cc = getCountryCode(els.aiTarget.value);
+      populateRegionDropdown(els.aiTargetRegion, cc);
+      showRegionField(els.aiTargetRegionRow, els.aiTargetRegionLabel, cc);
+    }
+  });
+
   els.aiRunBtn.addEventListener("click", () => {
     const company = (els.aiCompany.value || "").trim();
     const product = (els.aiProduct.value || "").trim();
     const origin = els.aiOrigin.value || "India";
+    const originRegion = els.aiOriginRegion ? els.aiOriginRegion.value : "";
     const target = els.aiTarget.value;
+    const targetRegion = els.aiTargetRegion ? els.aiTargetRegion.value : "";
     const industry = els.aiIndustry.value;
 
     if (!company) { toast("Please enter your company name."); return; }
@@ -4890,7 +5085,7 @@
     if (!target) { toast("Please select a target market."); return; }
     if (!industry) { toast("Please select an industry."); return; }
 
-    startAnalysis({ company, product, origin, target, industry });
+    startAnalysis({ company, product, origin, originRegion, target, targetRegion, industry });
   });
 
   /* ───────── feasibility analyzer ─────────
@@ -5019,7 +5214,9 @@
           company,
           product,
           origin: els.fbOrigin.value || "",
+          originRegion: els.fbOriginRegion ? els.fbOriginRegion.value : "",
           target: els.fbTarget.value || "",
+          targetRegion: els.fbTargetRegion ? els.fbTargetRegion.value : "",
           industry: els.fbIndustry.value || "",
           notes: (els.fbNotes.value || "").trim(),
         }),
@@ -5263,6 +5460,7 @@
         headers: jsonHeaders,
         body: JSON.stringify({
           target,
+          targetRegion: els.pcTargetRegion ? els.pcTargetRegion.value : "",
           industry: els.pcIndustry.value || "",
           product: (els.pcProduct.value || "").trim(),
           question,
@@ -5883,7 +6081,7 @@
     fetch("/api/analysis/demo", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ company: params.company, product: params.product, origin: params.origin, target: params.target, industry: params.industry }),
+      body: JSON.stringify({ company: params.company, product: params.product, origin: params.origin, originRegion: params.originRegion || "", target: params.target, targetRegion: params.targetRegion || "", industry: params.industry }),
       signal: analysisAbort.signal,
     }).then((r) => {
       if (!r.ok) {
@@ -6869,7 +7067,8 @@
      7 Compare Scenarios: grouped bar
      ═══════════════════════════════════════════════════════════ */
 
-  /* Shows an honest empty state instead of a fake/blank graph. */
+  /* Shows an honest empty state instead of a fake/blank graph.
+     While an analysis is running it shows a loading state instead. */
   function chartGuard(id, hasData, message) {
     const canvas = document.getElementById(id);
     if (!canvas) return false;
@@ -6882,7 +7081,13 @@
         msg.className = "chart-empty";
         box.appendChild(msg);
       }
-      if (msg) msg.textContent = message || (analysisData ? "No data available for this chart." : t("charts.empty"));
+      if (msg) {
+        if (!analysisData && analysisRunning) {
+          msg.innerHTML = '<span class="spinner" aria-hidden="true"></span> ' + esc(t("charts.loading"));
+        } else {
+          msg.textContent = message || t("charts.empty");
+        }
+      }
       return false;
     }
     canvas.classList.remove("hidden");
@@ -7002,9 +7207,20 @@
     return (m.flag ? m.flag + " " : "") + m.name;
   }
 
+  /* Deterministic priority from the burden delta between the two markets.
+     Same metric for both countries: Requirement Intensity Score (0-100). */
+  function compareGapPriority(delta) {
+    if (delta >= 20) return { label: t("gap.high"), cls: "chip-red" };
+    if (delta >= 10) return { label: t("gap.medium"), cls: "chip-orange" };
+    return { label: t("gap.low"), cls: "chip-green" };
+  }
+
   function renderCountryCompareFromCache(data) {
     const RC = window.ReguLensCharts;
-    if (!RC || !data || !Array.isArray(data.markets) || !data.markets.length) return;
+    if (!RC || !data || !Array.isArray(data.markets) || !data.markets.length) {
+      chartGuard('chartCountryCompare', false);
+      return;
+    }
     const origin = data.markets[0];
     const target = data.sameMarket ? null : (data.markets[1] || null);
 
@@ -7020,48 +7236,112 @@
       sameNote.classList.toggle("hidden", !data.sameMarket);
     }
 
+    /* per-category lookups + deterministic gap stats */
+    const catRows = (data.categories || []).map((cat) => {
+      const oc = (origin.categories || []).find((x) => x.category === cat) || null;
+      const tc = target ? ((target.categories || []).find((x) => x.category === cat) || null) : null;
+      const oScore = oc ? Number(oc.burdenScore) || 0 : 0;
+      const tScore = tc ? Number(tc.burdenScore) || 0 : 0;
+      return {
+        category: cat,
+        oc, tc,
+        oScore, tScore,
+        oReqs: oc ? Number(oc.requirements) || 0 : 0,
+        tReqs: tc ? Number(tc.requirements) || 0 : 0,
+        delta: Math.round(tScore - oScore),
+      };
+    });
+    const largestGapRow = target
+      ? catRows.reduce((m, r) => (Math.abs(r.delta) > Math.abs(m.delta) ? r : m), catRows[0] || null)
+      : null;
+    const higherMarket = target
+      ? (origin.avgBurden >= target.avgBurden ? origin : target)
+      : null;
+
     const metrics = document.getElementById("compareMetrics");
     if (metrics) {
       const cards = [
         { v: origin.avgBurden + "/100", l: t("gap.avgBurden") + " — " + t("gap.compareOrigin"), tone: "color:var(--primary)" },
-        { v: origin.totalRequirements, l: t("gap.applicableReqs") + " — " + t("gap.compareOrigin"), tone: "" },
+        { v: fmtNum(origin.totalRequirements), l: t("gap.applicableReqs") + " — " + t("gap.compareOrigin"), tone: "" },
       ];
       if (target) {
         cards.push(
           { v: target.avgBurden + "/100", l: t("gap.avgBurden") + " — " + t("gap.compareTarget"), tone: "color:var(--orange)" },
-          { v: target.totalRequirements, l: t("gap.applicableReqs") + " — " + t("gap.compareTarget"), tone: "" }
+          { v: fmtNum(target.totalRequirements), l: t("gap.applicableReqs") + " — " + t("gap.compareTarget"), tone: "" },
+          { v: String(catRows.length), l: t("gap.cmp.categories"), tone: "" },
+          { v: compareMarketLabel(higherMarket), l: t("gap.cmp.higherBurden"), tone: "" },
+          largestGapRow && largestGapRow.category
+            ? { v: `${largestGapRow.category} (Δ ${Math.abs(largestGapRow.delta)})`, l: t("gap.cmp.largestGap"), tone: "" }
+            : null
         );
       }
-      metrics.innerHTML = cards.map((c) =>
+      metrics.innerHTML = cards.filter(Boolean).map((c) =>
         `<div class="metric-card"><div class="metric-card-value" style="${c.tone}">${esc(String(c.v))}</div><div class="metric-card-label">${esc(c.l)}</div></div>`
       ).join("");
     }
 
-    if (chartGuard('chartCountryCompare', (data.categories || []).length > 0)) {
+    if (chartGuard('chartCountryCompare', catRows.length > 0)) {
+      const num = (v) => (Number.isFinite(Number(v)) ? Number(v) : 0);
+      const tooltipCallbacks = {
+        title: function (items) {
+          return items.length ? String(items[0].label) : "";
+        },
+        label: function (item) {
+          const i = item.dataIndex;
+          const row = catRows[i] || {};
+          const isOrigin = item.datasetIndex === 0;
+          const market = isOrigin ? origin : target;
+          const score = isOrigin ? row.oScore : row.tScore;
+          const reqs = isOrigin ? row.oReqs : row.tReqs;
+          const lines = [
+            (market ? compareMarketLabel(market) : item.dataset.label) + ": " + num(score) + "/100",
+            t("gap.applicableReqs") + ": " + fmtNum(reqs),
+          ];
+          if (target) {
+            const d = num(row.delta);
+            lines.push(t("gap.compareGap") + " (" + t("gap.compareTarget") + " − " + t("gap.compareOrigin") + "): " + (d > 0 ? "+" : "") + d);
+          }
+          return lines;
+        },
+      };
       const datasets = [
         { label: compareMarketLabel(origin), data: data.series.origin, color: RC.getColors().primary },
       ];
       if (target) {
         datasets.push({ label: compareMarketLabel(target), data: data.series.target, color: RC.getColors().orange });
       }
-      RC.createGroupedBarChart('chartCountryCompare', data.categories, datasets, { yMax: 100 });
+      RC.createGroupedBarChart('chartCountryCompare', data.categories, datasets, {
+        yMax: 100,
+        yLabel: t("gap.avgBurden"),
+        tooltipCallbacks,
+      });
     }
 
     const tbody = document.getElementById("compareTbody");
     if (tbody) {
-      tbody.innerHTML = (data.categories || []).map((cat) => {
-        const oc = origin.categories.find((x) => x.category === cat) || null;
-        const tc = target ? (target.categories.find((x) => x.category === cat) || null) : null;
-        const reqs = target
-          ? `${oc ? oc.requirements : 0} / ${tc ? tc.requirements : 0}`
-          : String(oc ? oc.requirements : 0);
+      tbody.innerHTML = catRows.map((r) => {
+        const prio = compareGapPriority(Math.abs(r.delta));
+        const originCell =
+          `<td><strong>${esc(String(r.oScore))}</strong>/100<span class="cell-sub">${fmtNum(r.oReqs)} ${esc(t("gap.applicableReqs"))}</span></td>`;
+        const targetCell = target
+          ? `<td><strong>${esc(String(r.tScore))}</strong>/100<span class="cell-sub">${fmtNum(r.tReqs)} ${esc(t("gap.applicableReqs"))}</span></td>`
+          : `<td>—</td>`;
+        const gapCell = target
+          ? `<td class="${r.delta > 0 ? "compare-gap-up" : r.delta < 0 ? "compare-gap-down" : "compare-gap-flat"}">${r.delta > 0 ? "+" : ""}${r.delta}</td>`
+          : `<td>—</td>`;
+        const prioCell = target
+          ? `<td><span class="chip ${prio.cls}">${esc(prio.label)}</span></td>`
+          : `<td>—</td>`;
+        const driverCell =
+          `<td>${r.tc && r.tc.topRegulation ? esc(r.tc.topRegulation.code + " — " + r.tc.topRegulation.title) : "—"}</td>`;
         return (
           "<tr>" +
-          `<td>${esc(cat)}</td>` +
-          `<td>${oc ? esc(String(oc.burdenScore)) : "—"}</td>` +
-          `<td>${tc ? esc(String(tc.burdenScore)) : (target ? "0" : "—")}</td>` +
-          `<td>${esc(reqs)}</td>` +
-          `<td>${tc && tc.topRegulation ? esc(tc.topRegulation.code + " — " + tc.topRegulation.title) : "—"}</td>` +
+          `<td>${esc(r.category)}</td>` +
+          originCell +
+          targetCell +
+          gapCell +
+          prioCell +
+          driverCell +
           "</tr>"
         );
       }).join("");
@@ -7132,19 +7412,21 @@
     if (!list) return;
     list.innerHTML = "";
     const tl = analysisData ? analysisData.timeline : null;
+    const phases = tl && Array.isArray(tl.phases) ? tl.phases : [];
+    const critPath = tl && Array.isArray(tl.criticalPath) ? tl.criticalPath : [];
     const meta = document.getElementById('planTimelineMeta');
     if (meta) {
       meta.textContent = !analysisData ? t("charts.empty")
-        : tl ? `Total ${tl.totalDays} days (~${tl.totalWeeks} weeks) · critical path: ${tl.criticalPath.map(c => c.title).join(" → ")}` : "";
+        : tl ? `${t("charts.total")} ${fmtNum(tl.totalDays)} ${t("time.days")} (~${fmtNum(tl.totalWeeks)} ${t("time.weeks")}) · ${tf("plan.criticalPath", { p: critPath.map(c => c.title).join(" → ") })}` : "";
     }
-    if (!analysisData || !tl || !tl.phases || !tl.phases.length) {
+    if (!analysisData || !tl || !phases.length) {
       list.innerHTML = `<li class="tl-item"><div class="tl-body"><p class="tl-title">${esc(t("charts.empty"))}</p><p class="tl-days">Run an analysis to compute the plan timeline.</p></div></li>`;
       return;
     }
-    tl.phases.forEach((p) => {
+    phases.forEach((p) => {
       const li = document.createElement("li");
       li.className = "tl-item";
-      li.innerHTML = '<span class="tl-num">' + esc("P" + p.phase) + '</span><div class="tl-body"><p class="tl-title"></p><div class="tl-meta"><span class="chip chip-gray">' + p.actionCount + ' actions</span><span class="tl-days">Day ' + p.startDay + '–' + p.endDay + '</span></div></div>';
+      li.innerHTML = '<span class="tl-num">' + esc("P" + p.phase) + '</span><div class="tl-body"><p class="tl-title"></p><div class="tl-meta"><span class="chip chip-gray">' + fmtNum(p.actionCount || 0) + ' ' + esc(t("time.actions")) + '</span><span class="tl-days">' + esc(t("time.day")) + ' ' + p.startDay + '–' + p.endDay + '</span></div></div>';
       li.querySelector(".tl-title").textContent = p.name;
       list.appendChild(li);
     });
@@ -7174,8 +7456,13 @@
     if (!window.ReguLensCharts) return;
     const RC = window.ReguLensCharts;
     const risks = analysisData.riskMatrix || analysisData.risks || [];
-    if (!chartGuard('chartRiskMatrix', risks.length > 0)) return;
-    RC.createRiskMatrix('chartRiskMatrix', risks);
+    if (!chartGuard('chartRiskMatrix', Array.isArray(risks) && risks.length > 0)) return;
+    RC.createRiskMatrix('chartRiskMatrix', risks, {
+      xLabel: t("charts.probability"),
+      yLabel: t("charts.impact"),
+      severityLabel: t("risk.col.severity"),
+      mitigationLabel: t("charts.mitigation"),
+    });
   }
 
   /* ───────── Risk & Business Health module ───────── */
@@ -7238,7 +7525,12 @@
 
     if (!window.ReguLensCharts) return;
     const RC = window.ReguLensCharts;
-    RC.createRiskMatrix("riskMatrixCanvas", risks);
+    RC.createRiskMatrix("riskMatrixCanvas", risks, {
+      xLabel: t("charts.probability"),
+      yLabel: t("charts.impact"),
+      severityLabel: t("risk.col.severity"),
+      mitigationLabel: t("charts.mitigation"),
+    });
     RC.createDonutChart(
       "riskDistCanvas",
       [t("gap.critical"), t("gap.high"), t("gap.medium"), t("gap.low")],
@@ -7275,6 +7567,7 @@
       currentModule,
       commandsEnabled,
       dark: els.body.classList.contains("dark"),
+      analysis: analysisData,
     }),
   };
 
