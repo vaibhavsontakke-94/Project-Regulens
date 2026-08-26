@@ -4257,27 +4257,29 @@
 
   /* ───────── policy simulator moved to public/government.js (gov engine) ───────── */
 
-  /* ───────── book a call ───────── */
-  els.bookCallBtn.addEventListener("click", () => {
-    els.callForm.reset();
-    if (user && user.email) els.callEmail.value = user.email;
-    els.callModal.classList.remove("hidden");
-    els.callEmail.focus();
-  });
-  els.callModalClose.addEventListener("click", () => els.callModal.classList.add("hidden"));
-  els.callModal.addEventListener("click", (e) => {
-    if (e.target === els.callModal) els.callModal.classList.add("hidden");
-  });
-  els.callForm.addEventListener("submit", (ev) => {
-    ev.preventDefault();
-    const email = els.callEmail.value.trim();
-    if (!isValidEmail(email)) {
-      toast(t("call.invalid"));
-      return;
-    }
-    els.callModal.classList.add("hidden");
-    els.callForm.reset();
-    toast(t("call.sent"));
+  /* ───────── REGULENS Copilot (replaces Book a Call) ───────── */
+  const copilotBtn = document.getElementById("copilotBtn");
+  if (copilotBtn) {
+    copilotBtn.addEventListener("click", () => {
+      if (window.ReguLensCopilot) window.ReguLensCopilot.open();
+    });
+  }
+  /* floating copilot button */
+  (function initCopilotFab() {
+    const fab = document.createElement("button");
+    fab.className = "copilot-fab";
+    fab.id = "copilotFab";
+    fab.innerHTML = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2a2 2 0 0 1 2 2v1h4a2 2 0 0 1 2 2v9a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V7a2 2 0 0 1 2-2h4V4a2 2 0 0 1 2-2z"/></svg><span>' + t("copilot.helpBtn") + '</span>';
+    fab.addEventListener("click", () => { if (window.ReguLensCopilot) window.ReguLensCopilot.open(); });
+    document.body.appendChild(fab);
+  })();
+  /* insight copilot links (delegated click) */
+  document.addEventListener("click", (e) => {
+    const btn = e.target.closest("[data-insight-copilot]");
+    if (!btn) return;
+    const canvasId = btn.dataset.insightCopilot;
+    const graphContext = { canvasId: canvasId, question: "Explain this chart in detail" };
+    if (window.ReguLensCopilot) window.ReguLensCopilot.open(graphContext);
   });
 
   /* ───────── download report (dynamic) ───────── */
@@ -7065,7 +7067,15 @@
      5 Impact Analysis: Risk Matrix scatter (probability × impact)
      6 Regulation Watch: Regulatory timeline (HTML)
      7 Compare Scenarios: grouped bar
-     ═══════════════════════════════════════════════════════════ */
+      ═══════════════════════════════════════════════════════════ */
+
+  /* ───────── Graph Insight Engine wiring ───────── */
+  function updateChartInsight(canvasId, data, extra) {
+    if (!window.ReguLensInsights) return;
+    const insight = window.ReguLensInsights.generateInsight(canvasId, data, t, extra);
+    const containerId = "insight" + canvasId.charAt(0).toUpperCase() + canvasId.slice(1);
+    window.ReguLensInsights.renderInsight(containerId, insight);
+  }
 
   /* Shows an honest empty state instead of a fake/blank graph.
      While an analysis is running it shows a loading state instead. */
@@ -7171,6 +7181,11 @@
         t('dashboard.complianceProgress')
       );
     }
+
+    /* chart insights */
+    updateChartInsight('chartComplianceStatus', d);
+    updateChartInsight('chartPriorityDist', d);
+    updateChartInsight('chartComplianceProgress', d);
   }
 
   function renderGapCharts() {
@@ -7201,6 +7216,9 @@
         [RC.getColors().critical, RC.getColors().high, RC.getColors().medium]
       );
     }
+
+    /* chart insight */
+    updateChartInsight('chartGapSeverity', analysisData);
   }
 
   /* ───────── Gap Analysis: Origin vs Target market comparison ─────────
@@ -7355,6 +7373,14 @@
 
     const note = document.getElementById("compareMethodology");
     if (note) note.textContent = data.methodology || t("gap.methodologyNote");
+
+    /* chart insight */
+    updateChartInsight('chartCountryCompare', analysisData, {
+      originName: origin ? compareMarketLabel(origin) : "",
+      targetName: target ? compareMarketLabel(target) : "",
+      categories: data.categories,
+      catRows: catRows,
+    });
   }
 
   async function renderCountryCompare() {
@@ -7471,6 +7497,9 @@
       severityLabel: t("risk.col.severity"),
       mitigationLabel: t("charts.mitigation"),
     });
+
+    /* chart insight */
+    updateChartInsight('chartRiskMatrix', analysisData);
   }
 
   /* ───────── Risk & Business Health module ───────── */
@@ -7546,6 +7575,10 @@
       [RC.getColors().critical, RC.getColors().high, RC.getColors().medium, RC.getColors().low],
       { centreTitle: t("charts.total") }
     );
+
+    /* chart insights */
+    updateChartInsight('riskMatrixCanvas', analysisData);
+    updateChartInsight('riskDistCanvas', analysisData);
   }
 
   /* ───────── public API (consumed by regulens.js experience layer) ───────── */

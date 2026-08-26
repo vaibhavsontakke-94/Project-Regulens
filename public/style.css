@@ -4952,3 +4952,443 @@ summary:focus-visible {
   overflow: hidden;
   text-overflow: ellipsis;
 }
+
+/* ─────────────────────────────────────────────────────────
+   GRAPH INSIGHT ENGINE
+   ───────────────────────────────────────────────────────── */
+.chart-insight {
+  margin-top: var(--s3);
+  border-top: 1px solid var(--border);
+  padding-top: var(--s3);
+}
+
+.insight-box {
+  font-size: 12.5px;
+  color: var(--text-2);
+  line-height: 1.55;
+}
+
+.insight-highlight {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  background: var(--primary-50);
+  border: 1px solid var(--primary-border);
+  border-radius: var(--radius-xs);
+  padding: 5px 12px;
+  margin-bottom: var(--s3);
+  font-weight: 600;
+  font-size: 12px;
+  color: var(--primary);
+}
+
+.insight-highlight-icon {
+  font-size: 14px;
+}
+
+.insight-highlight-value {
+  font-weight: 750;
+  color: var(--text);
+}
+
+.insight-section {
+  margin-bottom: var(--s2);
+}
+
+.insight-label {
+  font-size: 11px;
+  font-weight: 650;
+  color: var(--text-3);
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  margin-bottom: 2px;
+}
+
+.insight-text {
+  font-size: 12.5px;
+  color: var(--text-2);
+  line-height: 1.5;
+}
+
+.insight-details {
+  margin-top: var(--s2);
+  font-size: 11.5px;
+  color: var(--text-4);
+}
+
+.insight-details summary {
+  cursor: pointer;
+  font-weight: 600;
+  color: var(--text-4);
+  user-select: none;
+  transition: color var(--t-fast) var(--ease);
+}
+
+.insight-details summary:hover {
+  color: var(--primary);
+}
+
+.insight-details .insight-text {
+  margin-top: var(--s1);
+  font-size: 11.5px;
+}
+
+.insight-copilot-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  margin-top: var(--s2);
+  padding: 5px 12px;
+  font-size: 11.5px;
+  font-weight: 600;
+  color: var(--primary);
+  background: transparent;
+  border: 1px solid var(--primary-border);
+  border-radius: var(--radius-xs);
+  cursor: pointer;
+  transition:
+    background var(--t-fast) var(--ease),
+    border-color var(--t-fast) var(--ease);
+}
+
+.insight-copilot-btn:hover {
+  background: var(--primary-50);
+  border-color: var(--primary);
+}
+
+/* ─────────────────────────────────────────────────────────
+   REGULENS COPILOT — chat panel
+   ───────────────────────────────────────────────────────── */
+.copilot-panel {
+  position: fixed;
+  top: 0;
+  right: -420px;
+  width: 400px;
+  height: 100vh;
+  background: var(--surface-solid);
+  border-left: 1px solid var(--border);
+  box-shadow: var(--shadow-xl);
+  z-index: 9000;
+  display: flex;
+  flex-direction: column;
+  transition: right 0.32s var(--ease);
+  overflow: hidden;
+}
+
+.copilot-panel.open {
+  right: 0;
+}
+
+body.copilot-open .sidebar-overlay {
+  display: block;
+  z-index: 8999;
+}
+
+.copilot-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: var(--s4) var(--s5);
+  border-bottom: 1px solid var(--border);
+  flex-shrink: 0;
+}
+
+.copilot-header-left {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.copilot-logo {
+  width: 22px;
+  height: 22px;
+  color: var(--primary);
+}
+
+.copilot-title {
+  font-size: 14.5px;
+  font-weight: 700;
+  color: var(--text);
+}
+
+.copilot-close {
+  background: none;
+  border: none;
+  cursor: pointer;
+  color: var(--text-4);
+  padding: 4px;
+  border-radius: var(--radius-xs);
+  transition: color var(--t-fast) var(--ease);
+}
+
+.copilot-close:hover {
+  color: var(--text);
+}
+
+.copilot-subtitle {
+  font-size: 12px;
+  color: var(--text-4);
+  padding: 0 var(--s5) var(--s3);
+  border-bottom: 1px solid var(--border);
+  flex-shrink: 0;
+}
+
+.copilot-messages {
+  flex: 1;
+  overflow-y: auto;
+  padding: var(--s4) var(--s5);
+  display: flex;
+  flex-direction: column;
+  gap: var(--s4);
+}
+
+.copilot-welcome {
+  text-align: center;
+  padding: var(--s7) var(--s4);
+  color: var(--text-4);
+}
+
+.copilot-welcome-icon {
+  margin: 0 auto var(--s4);
+  width: 48px;
+  height: 48px;
+  color: var(--text-4);
+  opacity: 0.5;
+}
+
+.copilot-welcome-text {
+  font-size: 13px;
+  line-height: 1.5;
+  max-width: 280px;
+  margin: 0 auto;
+}
+
+.copilot-msg {
+  display: flex;
+  gap: 10px;
+  max-width: 95%;
+}
+
+.copilot-msg-user {
+  align-self: flex-end;
+  flex-direction: row-reverse;
+}
+
+.copilot-msg-assistant {
+  align-self: flex-start;
+}
+
+.copilot-avatar {
+  width: 28px;
+  height: 28px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+
+.copilot-avatar svg {
+  width: 16px;
+  height: 16px;
+}
+
+.copilot-avatar-user {
+  background: var(--primary);
+  color: #fff;
+}
+
+.copilot-avatar-bot {
+  background: var(--surface-2);
+  color: var(--primary);
+  border: 1px solid var(--border);
+}
+
+.copilot-msg-body {
+  min-width: 0;
+}
+
+.copilot-msg-text {
+  font-size: 13px;
+  line-height: 1.55;
+  color: var(--text);
+  background: var(--surface-2);
+  border: 1px solid var(--border);
+  border-radius: var(--radius) var(--radius) var(--radius) 4px;
+  padding: var(--s3) var(--s4);
+  word-wrap: break-word;
+}
+
+.copilot-msg-user .copilot-msg-text {
+  background: var(--primary);
+  color: #fff;
+  border-color: var(--primary-600);
+  border-radius: var(--radius) var(--radius) 4px var(--radius);
+}
+
+.copilot-mode-tag {
+  display: inline-block;
+  margin-left: 8px;
+  font-size: 10px;
+  font-weight: 600;
+  color: var(--text-4);
+  background: var(--surface-3);
+  border: 1px solid var(--border);
+  border-radius: 999px;
+  padding: 1px 8px;
+  vertical-align: middle;
+}
+
+.copilot-msg-user .copilot-mode-tag {
+  color: rgba(255,255,255,0.7);
+  background: rgba(255,255,255,0.15);
+  border-color: rgba(255,255,255,0.2);
+}
+
+.copilot-quick {
+  padding: 0 var(--s5) var(--s3);
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  flex-shrink: 0;
+}
+
+.copilot-quick.hidden {
+  display: none;
+}
+
+.copilot-quick-btn {
+  font-size: 11.5px;
+  font-weight: 600;
+  color: var(--primary);
+  background: var(--primary-50);
+  border: 1px solid var(--primary-border);
+  border-radius: 999px;
+  padding: 5px 12px;
+  cursor: pointer;
+  transition:
+    background var(--t-fast) var(--ease),
+    border-color var(--t-fast) var(--ease);
+  white-space: nowrap;
+}
+
+.copilot-quick-btn:hover {
+  background: var(--primary);
+  color: #fff;
+  border-color: var(--primary);
+}
+
+.copilot-status {
+  padding: 0 var(--s5) var(--s2);
+  font-size: 11.5px;
+  color: var(--text-4);
+  font-style: italic;
+  flex-shrink: 0;
+}
+
+.copilot-status.hidden {
+  display: none;
+}
+
+.copilot-input-row {
+  display: flex;
+  gap: 8px;
+  padding: var(--s3) var(--s5) var(--s4);
+  border-top: 1px solid var(--border);
+  flex-shrink: 0;
+}
+
+.copilot-input {
+  flex: 1;
+  font-size: 13px;
+  padding: 9px 14px;
+  border: 1px solid var(--border);
+  border-radius: var(--radius-sm);
+  background: var(--surface-2);
+  color: var(--text);
+  outline: none;
+  transition: border-color var(--t-fast) var(--ease);
+}
+
+.copilot-input:focus {
+  border-color: var(--primary);
+}
+
+.copilot-send {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 38px;
+  height: 38px;
+  border: none;
+  border-radius: var(--radius-sm);
+  background: var(--primary);
+  color: #fff;
+  cursor: pointer;
+  flex-shrink: 0;
+  transition: background var(--t-fast) var(--ease);
+}
+
+.copilot-send:hover {
+  background: var(--primary-600);
+}
+
+.copilot-send:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.copilot-send svg {
+  width: 16px;
+  height: 16px;
+}
+
+/* ── Floating "Ask REGULENS" button ── */
+.copilot-fab {
+  position: fixed;
+  bottom: 24px;
+  right: 24px;
+  z-index: 8900;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 12px 20px;
+  font-size: 13.5px;
+  font-weight: 700;
+  color: #fff;
+  background: var(--primary);
+  border: none;
+  border-radius: 999px;
+  cursor: pointer;
+  box-shadow: var(--shadow-lg), 0 0 0 1px var(--primary-border);
+  transition:
+    background var(--t-fast) var(--ease),
+    transform var(--t-fast) var(--ease-out),
+    box-shadow var(--t-fast) var(--ease);
+}
+
+.copilot-fab:hover {
+  background: var(--primary-600);
+  transform: translateY(-2px);
+  box-shadow: var(--shadow-xl), 0 0 0 1px var(--primary-border);
+}
+
+.copilot-fab svg {
+  width: 18px;
+  height: 18px;
+}
+
+/* ── Mobile ── */
+@media (max-width: 768px) {
+  .copilot-panel {
+    width: 100%;
+    right: -100%;
+  }
+
+  .copilot-fab {
+    bottom: 16px;
+    right: 16px;
+    padding: 10px 16px;
+    font-size: 12.5px;
+  }
+}

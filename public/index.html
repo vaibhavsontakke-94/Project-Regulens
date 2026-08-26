@@ -252,11 +252,11 @@
     <div class="side-footer">
       <div class="help-card">
         <span class="help-card-icon">
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"/></svg>
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2a2 2 0 0 1 2 2v1h4a2 2 0 0 1 2 2v9a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V7a2 2 0 0 1 2-2h4V4a2 2 0 0 1 2-2z"/></svg>
         </span>
-        <p class="help-card-title" data-i18n="help.title">Need Help?</p>
-        <p class="help-card-text" data-i18n="help.text">Talk to our compliance expert</p>
-        <button class="btn btn-primary btn-block" id="bookCallBtn" data-i18n="help.book">Book a Call</button>
+        <p class="help-card-title" data-i18n="copilot.helpTitle">Ask REGULENS</p>
+        <p class="help-card-text" data-i18n="copilot.helpText">Chat with your analysis AI assistant</p>
+        <button class="btn btn-primary btn-block" id="copilotBtn" data-i18n="copilot.helpBtn">Ask REGULENS</button>
       </div>
     </div>
   </aside>
@@ -509,14 +509,17 @@
             <div class="chart-card">
               <div class="chart-card-title" data-i18n="dashboard.complianceStatus">Compliance Status</div>
               <div class="chart-container chart-container-sm"><canvas id="chartComplianceStatus"></canvas></div>
+              <div class="chart-insight" data-canvas-id="chartComplianceStatus" id="insightChartComplianceStatus"></div>
             </div>
             <div class="chart-card">
               <div class="chart-card-title" data-i18n="dashboard.priorityDistribution">Priority Distribution</div>
               <div class="chart-container chart-container-sm"><canvas id="chartPriorityDist"></canvas></div>
+              <div class="chart-insight" data-canvas-id="chartPriorityDist" id="insightChartPriorityDist"></div>
             </div>
             <div class="chart-card">
               <div class="chart-card-title" data-i18n="dashboard.complianceProgress">Compliance Progress</div>
               <div class="chart-container chart-container-sm"><canvas id="chartComplianceProgress"></canvas></div>
+              <div class="chart-insight" data-canvas-id="chartComplianceProgress" id="insightChartComplianceProgress"></div>
             </div>
           </div>
         </div>
@@ -972,6 +975,7 @@
             <div class="chart-card">
               <div class="chart-card-title" data-i18n="gap.severityChart">Severity Distribution</div>
               <div class="chart-container chart-container-sm"><canvas id="chartGapSeverity"></canvas></div>
+              <div class="chart-insight" data-canvas-id="chartGapSeverity" id="insightChartGapSeverity"></div>
             </div>
           </div>
           <div class="chart-card" id="countryCompareCard">
@@ -980,6 +984,7 @@
             <p class="page-desc hidden" id="compareSameNote"></p>
             <div class="metric-row" id="compareMetrics"></div>
             <div class="chart-container"><canvas id="chartCountryCompare"></canvas></div>
+            <div class="chart-insight" data-canvas-id="chartCountryCompare" id="insightChartCountryCompare"></div>
             <table class="req-table" id="compareTable">
               <thead><tr>
                 <th data-i18n="gap.category">Category</th>
@@ -1182,6 +1187,7 @@
             <div class="chart-card">
               <div class="chart-card-title">Risk Matrix (Probability × Impact)</div>
               <div class="chart-container"><canvas id="chartRiskMatrix"></canvas></div>
+              <div class="chart-insight" data-canvas-id="chartRiskMatrix" id="insightChartRiskMatrix"></div>
             </div>
           </div>
         </div>
@@ -1470,10 +1476,12 @@
             <div class="card chart-card">
               <div class="card-head"><h3 class="card-title" data-i18n="risk.matrix.title">Probability × Impact</h3></div>
               <div class="chart-box tall"><canvas id="riskMatrixCanvas"></canvas></div>
+              <div class="chart-insight" data-canvas-id="riskMatrixCanvas" id="insightriskMatrixCanvas"></div>
             </div>
             <div class="card chart-card">
               <div class="card-head"><h3 class="card-title" data-i18n="risk.dist.title">Severity Distribution</h3></div>
               <div class="chart-box tall"><canvas id="riskDistCanvas"></canvas></div>
+              <div class="chart-insight" data-canvas-id="riskDistCanvas" id="insightriskDistCanvas"></div>
             </div>
           </div>
           <div class="card table-card">
@@ -1901,32 +1909,7 @@
   </div>
 </div>
 
-<!-- ───────────── BOOK A CALL MODAL ───────────── -->
-<div class="modal-overlay hidden" id="callModal">
-  <div class="modal small" role="dialog" aria-modal="true" aria-labelledby="callTitle">
-    <button class="icon-btn auth-close" id="callModalClose" aria-label="Close">
-      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
-    </button>
-    <h3 id="callTitle">Book a call</h3>
-    <p class="modal-text" id="callSub">Tell us how to reach you and our compliance expert will confirm a slot.</p>
-    <form id="callForm" class="auth-form" novalidate>
-      <label class="auth-field">
-        <span>Your email</span>
-        <input type="email" id="callEmail" autocomplete="email" />
-      </label>
-      <label class="auth-field">
-        <span>Preferred time</span>
-        <select class="select" id="callTime">
-          <option>This week</option>
-          <option>Next week</option>
-          <option>Morning (9–12 CET)</option>
-          <option>Afternoon (13–17 CET)</option>
-        </select>
-      </label>
-      <button type="submit" class="btn btn-primary btn-block">Request a call</button>
-    </form>
-  </div>
-</div>
+<!-- Book a Call modal removed — replaced by REGULENS Copilot -->
 
 <!-- ───────────── GOV POLICY DETAIL MODAL ───────────── -->
 <div class="modal-overlay hidden" id="govPolicyModal">
@@ -1956,7 +1939,9 @@
   <script src="i18n/core-bundle.js?v=3"></script>
   <script src="i18n/landing-bundle.js?v=1"></script>
 <script src="charts.js?v=2"></script>
-<script src="app.js?v=46"></script>
+<script src="insights.js?v=1"></script>
+<script src="copilot.js?v=1"></script>
+<script src="app.js?v=47"></script>
 <script src="government.js?v=2"></script>
           <script src="regulens.js?v=45"></script>
           <script src="landing.js?v=1"></script>
