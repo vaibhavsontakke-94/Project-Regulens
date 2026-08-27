@@ -28,7 +28,7 @@
     langMenu: document.getElementById("langMenu"),
     searchInput: document.getElementById("searchInput"),
     downloadReportBtn: document.getElementById("downloadReportBtn"),
-    bookCallBtn: document.getElementById("bookCallBtn"),
+    bookCallBtn: null,
     uploadDocBtn: document.getElementById("uploadDocBtn"),
     docInput: document.getElementById("docInput"),
     simPolicy: document.getElementById("simPolicy"),

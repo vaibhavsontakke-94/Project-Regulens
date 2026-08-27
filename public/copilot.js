@@ -1,6 +1,7 @@
 /* ═══════════════════════════════════════════════════════════════════════
-   REGULENS Copilot — ChatGPT-style AI assistant
+   REGULENS Copilot — ChatGPT-style AI assistant  v2
    Right-side sliding panel, context-aware, language-aware.
+   Graph→Copilot context connection, report summary, action plan.
    Exposes window.ReguLensCopilot
    ═══════════════════════════════════════════════════════════════════════ */
 (function () {
@@ -15,6 +16,7 @@
   var sendBtn = null;
   var statusEl = null;
   var quickEl = null;
+  var lastGraphContext = null;
 
   /* ───────── i18n helper ───────── */
   function t(key) {
@@ -82,6 +84,7 @@
       { key: "copilot.quick.readiness", q: t("copilot.quick.readiness") },
       { key: "copilot.quick.gaps", q: t("copilot.quick.gaps") },
       { key: "copilot.quick.launch", q: t("copilot.quick.launch") },
+      { key: "copilot.quick.actionPlan", q: t("copilot.quick.actionPlan") },
     ];
     if (ctx && ctx.origin && ctx.target && ctx.origin.country && ctx.target.country) {
       qs.splice(5, 0, {
@@ -90,6 +93,15 @@
       });
     }
     return qs;
+  }
+
+  /* ───────── detect special commands ───────── */
+  function detectCommand(text) {
+    var lower = (text || "").toLowerCase().trim();
+    if (/^(summarize|summary|summarise|give me a summary|give me summary)/.test(lower)) return "summary";
+    if (/(action plan|actionplan|what should i do|steps to|roadmap|step-by-step|step by step|what are the steps|give me (my |the )?action)/.test(lower)) return "actionPlan";
+    if (/(report|download|export|generate report)/.test(lower)) return "report";
+    return null;
   }
 
   /* ───────── send message ───────── */
@@ -105,16 +117,21 @@
     statusEl.textContent = t("copilot.thinking");
     statusEl.classList.remove("hidden");
     sendBtn.disabled = true;
+    inputEl.disabled = true;
 
     var ctx = buildContext();
     var lang = (window.ReguLens && window.ReguLens.getLang) ? window.ReguLens.getLang() : "en";
 
+    /* detect special commands */
+    var cmd = detectCommand(text);
     var body = {
       question: text,
       context: ctx,
       lang: lang,
     };
+    if (cmd) body.command = cmd;
     if (graphContext) body.graphContext = graphContext;
+    else if (lastGraphContext) body.graphContext = lastGraphContext;
 
     try {
       var res = await fetch("/api/copilot", {
@@ -122,15 +139,31 @@
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(body),
       });
-      if (!res.ok) throw new Error("HTTP " + res.status);
+
+      if (!res.ok) {
+        var errBody;
+        try { errBody = await res.json(); } catch (_) { errBody = {}; }
+        var msg = errBody.error || t("copilot.error");
+        if (res.status === 429) msg = t("copilot.errorRateLimit") || "Too many requests. Please wait a moment.";
+        else if (res.status === 503) msg = t("copilot.errorUnavailable") || "REGULENS Copilot is temporarily unavailable. Please try again.";
+        else if (res.status === 401 || res.status === 403) msg = t("copilot.errorAuth") || "Authentication error. Please sign in again.";
+        throw new Error(msg);
+      }
+
       var json = await res.json();
       appendMessage("assistant", json.answer || t("copilot.noAnswer"), json.mode);
     } catch (err) {
-      appendMessage("assistant", t("copilot.error") + " " + (err.message || ""), "error");
+      var errMsg = err.message || t("copilot.error");
+      /* network failure */
+      if (err.name === "TypeError" && err.message.includes("fetch")) {
+        errMsg = t("copilot.errorNetwork") || "Network error. Please check your connection.";
+      }
+      appendMessage("assistant", errMsg, "error");
     } finally {
       isStreaming = false;
       statusEl.classList.add("hidden");
       sendBtn.disabled = false;
+      inputEl.disabled = false;
       inputEl.focus();
     }
   }
@@ -147,10 +180,18 @@
     if (mode === "fallback") {
       modeTag = '<span class="copilot-mode-tag">' + t("copilot.offline") + '</span>';
     }
+    if (mode === "report") {
+      modeTag = '<span class="copilot-mode-tag">' + t("copilot.reportTag") + '</span>';
+    }
+    if (mode === "actionPlan") {
+      modeTag = '<span class="copilot-mode-tag">' + t("copilot.actionPlanTag") + '</span>';
+    }
+
+    var textClass = "copilot-msg-text" + (mode === "error" ? " error-msg" : "");
 
     div.innerHTML = icon +
       '<div class="copilot-msg-body">' +
-        '<div class="copilot-msg-text">' + formatAnswer(text) + modeTag + '</div>' +
+        '<div class="' + textClass + '">' + formatAnswer(text) + modeTag + '</div>' +
       '</div>';
 
     msgsEl.appendChild(div);
@@ -159,10 +200,23 @@
   }
 
   function formatAnswer(text) {
-    /* basic markdown-like formatting: **bold**, newlines */
-    return esc(text)
-      .replace(/\*\*(.*?)\*\*/g, "<strong>$1</strong>")
-      .replace(/\n/g, "<br>");
+    /* markdown-like formatting: **bold**, numbered lists, bullet lists, newlines */
+    var s = esc(text);
+    /* bold */
+    s = s.replace(/\*\*(.*?)\*\*/g, "<strong>$1</strong>");
+    /* italic */
+    s = s.replace(/\*(.*?)\*/g, "<em>$1</em>");
+    /* numbered lists: 1. text  → <br>1. text */
+    s = s.replace(/(?:^|\n)(\d+)\.\s(.+)/g, function (m, num, content) {
+      return "<br><span class=\"copilot-list-num\">" + num + ".</span> " + content;
+    });
+    /* bullet lists: - text or • text */
+    s = s.replace(/(?:^|\n)[-•]\s(.+)/g, function (m, p1) { return "<br>\u2022 " + p1; });
+    /* horizontal rule */
+    s = s.replace(/\n---\n/g, "<br><hr style=\"border:none;border-top:1px solid var(--border);margin:8px 0\">");
+    /* newlines */
+    s = s.replace(/\n/g, "<br>");
+    return s;
   }
 
   /* ───────── open / close ───────── */
@@ -173,7 +227,39 @@
     document.body.classList.add("copilot-open");
     inputEl.focus();
     if (messages.length === 0) renderQuickQuestions();
-    /* if graph context, auto-send */
+
+    /* store graph context for follow-up questions */
+    if (graphContext) {
+      lastGraphContext = graphContext;
+      /* add visual indicator */
+      var ctxTag = document.getElementById("copilotContextTag");
+      if (ctxTag && graphContext.canvasId) {
+        var chartNames = {
+          chartComplianceStatus: "Compliance Status",
+          chartPriorityDist: "Priority Distribution",
+          chartComplianceProgress: "Compliance Progress",
+          chartGapSeverity: "Gap Analysis",
+          chartCountryCompare: "Country Comparison",
+          chartRiskMatrix: "Risk Matrix",
+          riskMatrixCanvas: "Risk Matrix",
+          riskDistCanvas: "Risk Distribution",
+          fbGaugeCanvas: "Market Fit",
+          bhGaugeCanvas: "Business Health",
+          dcGaugeCanvas: "Document Coverage",
+          ihGaugeCanvas: "Investor Readiness",
+          guideGauge: "Setup Progress",
+        };
+        var chartLabel = chartNames[graphContext.canvasId] || graphContext.canvasId;
+        ctxTag.textContent = tf("copilot.viewingChart", { chart: chartLabel });
+        ctxTag.classList.remove("hidden");
+      }
+    } else {
+      lastGraphContext = null;
+      var ctxTag2 = document.getElementById("copilotContextTag");
+      if (ctxTag2) ctxTag2.classList.add("hidden");
+    }
+
+    /* if graph context with question, auto-send */
     if (graphContext && graphContext.question) {
       setTimeout(function () { sendMessage(graphContext.question, graphContext); }, 300);
     }
@@ -212,10 +298,16 @@
         '</button>' +
       '</div>' +
       '<div class="copilot-subtitle">' + t("copilot.subtitle") + '</div>' +
+      '<div class="copilot-context-tag hidden" id="copilotContextTag"></div>' +
       '<div class="copilot-messages" id="copilotMessages">' +
         '<div class="copilot-welcome">' +
           '<div class="copilot-welcome-icon"><svg viewBox="0 0 48 48" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="6" y="8" width="36" height="32" rx="4"/><path d="M16 20h16"/><path d="M16 26h10"/><circle cx="36" cy="10" r="6" fill="var(--primary)" stroke="none"/><path d="M34 10h4M36 8v4" stroke="#fff" stroke-width="1.5"/></svg></div>' +
           '<p class="copilot-welcome-text">' + t("copilot.welcome") + '</p>' +
+          '<div class="copilot-commands-hint">' +
+            '<span class="copilot-command-chip" data-cmd="summary">' + t("copilot.command.summary") + '</span>' +
+            '<span class="copilot-command-chip" data-cmd="actionPlan">' + t("copilot.command.actionPlan") + '</span>' +
+            '<span class="copilot-command-chip" data-cmd="report">' + t("copilot.command.report") + '</span>' +
+          '</div>' +
         '</div>' +
       '</div>' +
       '<div class="copilot-quick" id="copilotQuick"></div>' +
@@ -252,6 +344,17 @@
       if (btn) sendMessage(btn.dataset.q);
     });
 
+    /* command chip clicks */
+    panel.addEventListener("click", function (e) {
+      var chip = e.target.closest(".copilot-command-chip");
+      if (chip) {
+        var cmd = chip.dataset.cmd;
+        if (cmd === "summary") sendMessage(t("copilot.quick.summarize"));
+        else if (cmd === "actionPlan") sendMessage(t("copilot.quick.actionPlan"));
+        else if (cmd === "report") sendMessage(t("copilot.command.report"));
+      }
+    });
+
     /* click outside to close on mobile */
     panel.addEventListener("click", function (e) {
       if (e.target === panel) close();
@@ -266,5 +369,6 @@
     sendMessage: sendMessage,
     isOpen: function () { return isOpen; },
     isContextual: function () { return buildContext() !== null; },
+    getGraphContext: function () { return lastGraphContext; },
   };
 })();
