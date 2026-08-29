@@ -2450,6 +2450,14 @@
     });
   }
 
+  /* Merge Innovation Procurement bundle (public/i18n/sih-bundle.js → window.SIH_I18N) */
+  if (window.SIH_I18N) {
+    Object.keys(window.SIH_I18N).forEach((code) => {
+      if (!I18N[code]) I18N[code] = {};
+      Object.assign(I18N[code], window.SIH_I18N[code]);
+    });
+  }
+
   /* Merge Landing page bundle (public/i18n/landing-bundle.js → window.LANDING_I18N) */
   if (window.LANDING_I18N) {
     Object.keys(window.LANDING_I18N).forEach((code) => {
@@ -2641,6 +2649,8 @@
     "gov-scenario",
     "gov-copilot",
     "gov-consultations",
+    "sih-procurement",
+    "sih-startup",
   ];
   const VIEWS = [
     "dashboard",
@@ -2670,6 +2680,8 @@
     "gov-scenario",
     "gov-copilot",
     "gov-consultations",
+    "sih-procurement",
+    "sih-startup",
     "agent-intelligence",
     "risk-matrix",
     "business-health",
@@ -2813,6 +2825,8 @@
     "gov-scenario": "Scenario Simulator",
     "gov-copilot": "Government Copilot",
     "gov-consultations": "Consultations",
+    "sih-procurement": "Innovation Procurement",
+    "sih-startup": "Startup Intelligence",
     "risk-matrix": "Risk Matrix",
     network: "Growth & Global Network",
     settings: t("settings.title"),
@@ -2899,6 +2913,18 @@
   }
 
   function renderView(view) {
+    if (view === "sih-procurement") {
+      if (window.SIHInnovation) {
+        window.SIHInnovation.render("sih-procurement");
+      }
+      return;
+    }
+    if (view === "sih-startup") {
+      if (window.SIHStartup) {
+        window.SIHStartup.render("sih-startup");
+      }
+      return;
+    }
     if (GOV_VIEWS.includes(view) || view === "policy-simulator" || view === "industry-impact" || view === "compare-scenarios") {
       if (window.ReguLensGov) window.ReguLensGov.render(view);
       return;
