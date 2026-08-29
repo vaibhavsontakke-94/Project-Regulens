@@ -1,0 +1,113 @@
+/* ════════════════════════════════════════════════════════════════════
+   ReguLens INNOVATION PROCUREMENT (SIH26136) — additive styles
+   Reuses the app design tokens (--card-bg, --border, --primary, …).
+   ════════════════════════════════════════════════════════════════════ */
+
+/* status colour variants for SIH workflow states */
+.gov-state.st-draft { background: rgba(107, 114, 128, 0.14); color: #6b7280; }
+.gov-state.st-submitted { background: rgba(59, 130, 246, 0.13); color: #2563eb; }
+.gov-state.st-review { background: rgba(245, 158, 11, 0.16); color: #d97706; }
+.gov-state.st-approved { background: rgba(34, 197, 94, 0.15); color: #16a34a; }
+.gov-state.st-published { background: rgba(139, 92, 246, 0.14); color: #7c3aed; }
+.gov-state.st-in_challenge { background: rgba(34, 197, 94, 0.14); color: #0f9d58; }
+.gov-state.st-archived { background: rgba(107, 114, 128, 0.12); color: #6b7280; }
+.gov-state.st-applications_open { background: rgba(14, 165, 233, 0.14); color: #0284c7; }
+.gov-state.st-evaluation { background: rgba(245, 158, 11, 0.15); color: #d97706; }
+
+/* provenance badges */
+.gov-badge.src-user-provided { background: rgba(34, 197, 94, 0.14); color: #16a34a; }
+.gov-badge.src-ai-derived { background: rgba(245, 158, 11, 0.16); color: #d97706; }
+.gov-badge.src-ai-suggested { background: rgba(245, 158, 11, 0.16); color: #d97706; }
+.gov-badge.src-requires-verification { background: rgba(239, 68, 68, 0.13); color: #dc2626; }
+.gov-badge.src-source-document { background: rgba(59, 130, 246, 0.13); color: #2563eb; }
+
+/* layout */
+.sih-orgbar { display: flex; align-items: flex-end; gap: 12px; margin-bottom: 18px; flex-wrap: wrap; }
+.sih-orgbar .select { max-width: 320px; }
+.sih-toolbar { display: flex; align-items: center; gap: 12px; margin: 8px 0 14px; flex-wrap: wrap; }
+.sih-toolbar h2, .sih-toolbar h3, .sih-toolbar h4 { margin: 0; }
+.sih-toolbar .btn-ghost { margin-right: auto; }
+.sih-divider { border: 0; border-top: 1px solid var(--border, rgba(0,0,0,0.1)); margin: 22px 0; }
+.sih-empty { color: var(--text-muted, #6b7280); padding: 22px 0; }
+
+.sih-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(250px, 1fr)); gap: 14px; }
+.sih-card { display: flex; flex-direction: column; gap: 8px; }
+.sih-card-top { display: flex; justify-content: space-between; align-items: center; gap: 8px; }
+.sih-sector { font-size: 0.72rem; font-weight: 700; letter-spacing: 0.03em; color: var(--text-muted, #6b7280); }
+.sih-card-title { margin: 0; font-size: 0.98rem; line-height: 1.3; }
+.sih-card-sub { margin: 0; color: var(--text-muted, #6b7280); font-size: 0.82rem; }
+.sih-card-meta { display: flex; justify-content: space-between; align-items: center; margin-top: auto; font-size: 0.78rem; font-weight: 600; }
+.btn-sm { padding: 5px 10px; font-size: 0.78rem; }
+
+/* form */
+.sih-form .row { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+.sih-form-actions { display: flex; justify-content: flex-end; gap: 10px; margin-top: 8px; }
+.sih-actions { display: flex; gap: 10px; margin: 16px 0; flex-wrap: wrap; }
+
+/* problem detail */
+.sih-problem-title { margin: 4px 0 6px; }
+.sih-statement { color: var(--text-muted, #4b5563); max-width: 720px; }
+.sih-meta-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(160px, 1fr)); gap: 12px; margin: 12px 0; }
+.sih-meta-label { display: block; font-size: 0.7rem; font-weight: 700; letter-spacing: 0.04em; color: var(--text-muted, #6b7280); text-transform: uppercase; }
+
+/* quality check */
+.sih-qa { display: flex; flex-direction: column; gap: 10px; }
+.sih-qa-head { display: flex; gap: 14px; align-items: center; }
+.sih-ring {
+  --p: 0;
+  width: 62px; height: 62px; border-radius: 50%; flex-shrink: 0;
+  display: grid; place-items: center; position: relative;
+  background: conic-gradient(var(--primary, #2563eb) calc(var(--p) * 1%), var(--surface-2, rgba(0,0,0,0.08)) 0);
+}
+.sih-ring::before { content: ""; position: absolute; inset: 7px; border-radius: 50%; background: var(--card-bg, #fff); }
+.sih-ring span { position: relative; font-weight: 800; font-size: 0.85rem; }
+.sih-qc-verdict { font-weight: 700; }
+.sih-qc-verdict.ok { color: var(--green, #16a34a); }
+.sih-qc-verdict.bad { color: var(--red, #dc2626); }
+.sih-issues { margin: 0; padding-left: 18px; }
+.sih-issues li { margin: 2px 0; font-size: 0.85rem; }
+.sih-issues li.bad { color: var(--red, #dc2626); list-style-type: disc; }
+.sih-issues li.warn { color: var(--orange, #d97706); }
+
+/* structure / challenge preview */
+.sih-structure h5 { margin: 12px 0 4px; font-size: 0.8rem; letter-spacing: 0.03em; text-transform: uppercase; color: var(--text-muted, #6b7280); }
+.sih-structure ul { margin: 4px 0; padding-left: 18px; }
+.sih-structure li { font-size: 0.86rem; margin: 2px 0; }
+.sih-struct-cols { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+.sih-hint { color: var(--text-muted, #6b7280); font-size: 0.78rem; }
+.sih-muted { color: var(--text-muted, #6b7280); }
+
+/* ───────── Startup Intelligence Profile ───────── */
+.gov-tabs { display: flex; flex-wrap: wrap; gap: 6px; margin: 10px 0 14px; border-bottom: 1px solid var(--border, rgba(0,0,0,0.1)); }
+.gov-tab { border: 0; background: transparent; padding: 8px 12px; cursor: pointer; font-weight: 600; color: var(--text-muted, #6b7280); border-bottom: 2px solid transparent; }
+.gov-tab:hover { color: var(--primary, #2563eb); }
+.gov-tab.active { color: var(--primary, #2563eb); border-bottom-color: var(--primary, #2563eb); }
+
+.progress { display: flex; width: 100%; height: 10px; border-radius: 999px; background: rgba(0,0,0,0.08); overflow: hidden; }
+.progress-bar { display: block; height: 100%; background: var(--primary, #2563eb); border-radius: 999px; transition: width .3s ease; }
+
+.gov-state.st-verified { background: rgba(34, 197, 94, 0.15); color: #16a34a; }
+.gov-state.st-under_review { background: rgba(245, 158, 11, 0.15); color: #d97706; }
+.gov-state.st-partially_verified { background: rgba(139, 92, 246, 0.15); color: #7c3aed; }
+.gov-state.st-requires_update { background: rgba(245, 158, 11, 0.18); color: #b45309; }
+.gov-state.st-suspended { background: rgba(239, 68, 68, 0.13); color: #dc2626; }
+.gov-state.st-review_required { background: rgba(245, 158, 11, 0.16); color: #d97706; }
+.gov-state.st-self_declared { background: rgba(59, 130, 246, 0.13); color: #2563eb; }
+.gov-state.st-not_provided { background: rgba(107, 114, 128, 0.12); color: #6b7280; }
+.gov-state.st-valid { background: rgba(34, 197, 94, 0.14); color: #16a34a; }
+.gov-state.st-expiring_soon { background: rgba(245, 158, 11, 0.16); color: #d97706; }
+.gov-state.st-expired { background: rgba(239, 68, 68, 0.13); color: #dc2626; }
+.gov-state.st-unknown { background: rgba(107, 114, 128, 0.12); color: #6b7280; }
+.gov-state.st-extracted { background: rgba(14, 165, 233, 0.14); color: #0284c7; }
+.gov-state.st-uploaded { background: rgba(107, 114, 128, 0.12); color: #6b7280; }
+
+.gov-badge.src-document_extracted { background: rgba(59, 130, 246, 0.13); color: #2563eb; }
+.gov-badge.src-source_verified { background: rgba(34, 197, 94, 0.14); color: #16a34a; }
+.gov-badge.src-ai_inferred { background: rgba(147, 51, 234, 0.14); color: #7c3aed; }
+.gov-badge.src-recommended { background: rgba(107, 114, 128, 0.12); color: #6b7280; }
+.gov-badge.src-requires_review { background: rgba(245, 158, 11, 0.15); color: #d97706; }
+.gov-badge.src-not_provided { background: rgba(107, 114, 128, 0.12); color: #6b7280; }
+
+@media (max-width: 560px) {
+  .sih-form .row, .sih-struct-cols { grid-template-columns: 1fr; }
+}
