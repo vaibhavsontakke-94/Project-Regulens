@@ -2651,6 +2651,7 @@
     "gov-consultations",
     "sih-procurement",
     "sih-startup",
+    "sih-eligibility",
   ];
   const VIEWS = [
     "dashboard",
@@ -2682,6 +2683,7 @@
     "gov-consultations",
     "sih-procurement",
     "sih-startup",
+    "sih-eligibility",
     "agent-intelligence",
     "risk-matrix",
     "business-health",
@@ -2827,6 +2829,7 @@
     "gov-consultations": "Consultations",
     "sih-procurement": "Innovation Procurement",
     "sih-startup": "Startup Intelligence",
+    "sih-eligibility": "Startup Eligibility",
     "risk-matrix": "Risk Matrix",
     network: "Growth & Global Network",
     settings: t("settings.title"),
@@ -2922,6 +2925,12 @@
     if (view === "sih-startup") {
       if (window.SIHStartup) {
         window.SIHStartup.render("sih-startup");
+      }
+      return;
+    }
+    if (view === "sih-eligibility") {
+      if (window.SIHEligibility) {
+        window.SIHEligibility.render("sih-eligibility");
       }
       return;
     }

@@ -20,6 +20,7 @@
     en: Object.assign({
       "nav.sih": "Innovation Procurement",
       "nav.sihstartup": "Startup Intelligence",
+      "nav.siheligibility": "Startup Eligibility",
       "sih.org": "Organization",
       "sih.noorg": "No organization",
       "sih.refresh": "Refresh",
@@ -87,6 +88,7 @@
     hi: Object.assign({
       "nav.sih": "इनोवेशन खरीद",
       "nav.sihstartup": "स्टार्टअप इंटेलिजेंस",
+      "nav.siheligibility": "स्टार्टअप पात्रता",
       "sih.org": "संगठन",
       "sih.noorg": "कोई संगठन नहीं",
       "sih.refresh": "रीफ़्रेश",
