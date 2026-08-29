@@ -13,6 +13,8 @@ import { nextAnalysisId, logAnalysisEvent } from "./lib/analysis-log.js";
 import core from "./lib/regulens-core.cjs";
 import gov from "./lib/gov-engine.cjs";
 import { COUNTRY_REGIONS, validateRegion, getNormalizedRegion } from "./lib/country-regions.cjs";
+import { createSihRouter } from "./lib/sih-router.js";
+import { buildGovernmentDataset, buildGovernmentSystemPrompt, pickCitations } from "./lib/sih-integration.js";
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 
@@ -1391,69 +1393,36 @@ app.post("/api/gov/copilot", async (req, res) => {
 
   if (!ai.isConfigured()) return respondFallback();
 
-  /* Compact, faithful context extract — the model may ONLY use this. */
+  /* Compact, faithful context extract — the model may ONLY use this.
+     Built by the decoupled SIH integration module (shared with /api/sih). */
   const ctx = pkg.context;
-  const compact = {
-    context: {
-      company: ctx.company, product: ctx.product,
-      origin: ctx.originName, target: ctx.targetName, industry: ctx.industryName,
-    },
-    dashboard: pkg.dashboard.totals,
-    readiness: { score: pkg.dashboard.readiness.score, status: pkg.dashboard.readiness.status },
-    verdict: { state: pkg.dashboard.verdict.state, reasons: (pkg.dashboard.verdict.reasons || []).map((r) => r.label) },
-    policies: pkg.policies.map((p) => ({
-      code: p.code, title: p.title, authority: p.authority, type: p.policyType,
-      status: p.status, effectiveDate: p.effectiveDate, impact: p.overall,
-      impactLevel: p.impactLevel, relevance: p.relevance,
-      obligationsCount: p.obligationsCount,
-      sourceVerified: !!(p.source && p.source.verified && p.source.url),
-    })),
-    topRisks: pkg.dashboard.topRisks.map((r) => ({ title: r.title, severity: r.severity, probability: r.probability, impact: r.impact, mitigation: r.mitigation })),
-    stakeholderGroups: pkg.stakeholders.groups.slice(0, 6).map((g) => ({ group: g.group, maxImpact: g.maxImpact, level: g.impactLevel, concern: g.concerns[0] || "" })),
-    outcomesShortTerm: pkg.outcomes.shortTerm.slice(0, 4).map((o) => ({ title: o.title, likelihood: o.probability, severity: o.severity })),
-    industryTop: [...pkg.industryMatrix].sort((a, b) => b.burdenScore - a.burdenScore).slice(0, 5).map((m) => ({ industry: m.industryName, burden: m.burdenScore, level: m.riskLevel })),
-    actionPlan: {
-      totalCostUSD: pkg.actionPlan.totalCost, totalDays: pkg.actionPlan.timeline.totalDays,
-      actions: pkg.actionPlan.actions.length,
-      criticalPath: (pkg.actionPlan.timeline.criticalPath || []).slice(0, 5).map((c) => c.title),
-    },
-    workloadAssumptions: pkg.actionPlan.assumptions,
-    consultations: pkg.consultations.records.map((c) => ({ title: c.title, status: c.status, window: c.window, authority: c.authority })),
-    sourceIntegrity: pkg.dashboard.sourceIntegrity,
-    disclaimers: pkg.meta.disclaimers,
-  };
+  const compact = buildGovernmentDataset(pkg);
 
   try {
     const answer = await ai.complete({
       messages: [
         {
           role: "system",
-          content:
-            `You are ReguLens Government Copilot, an executive policy-intelligence assistant for ${ctx.targetName}.\n` +
-            `Answer STRICTLY from the JSON dataset below — it is derived from ReguLens's verified policy database and deterministic engines.\n` +
-            `RULES:\n` +
-            `- NEVER invent laws, authorities, URLs, statistics or dates not present in the dataset.\n` +
-            `- Modelled estimates (costs, days, probabilities, scores) must be presented as MODELLED ESTIMATES, never as facts.\n` +
-            `- Cite instruments with their [CODE] when you use them.\n` +
-            `- If the dataset does not contain the answer, say so plainly and suggest what to check next.\n` +
-            `- Be concise, executive-grade, structured with short bullets where helpful.\n` +
-            `- WRITE THE ENTIRE ANSWER IN ${langLabel}.\n\nDATASET:\n` +
-            JSON.stringify(compact),
+          content: buildGovernmentSystemPrompt(ctx.targetName, langLabel) + "\nDATASET:\n" + JSON.stringify(compact),
         },
         { role: "user", content: question },
       ],
       endpoint: "/api/gov/copilot",
     });
     /* Citations = any known policy codes the answer references. */
-    const citations = pkg.policies
-      .filter((p) => p.code && answer.includes(p.code))
-      .map((p) => ({ code: p.code, title: p.title }));
+    const citations = pickCitations(pkg, answer);
     res.json({ answer: String(answer).trim(), citations, mode: "ai", grounded: true, lang: langLabel });
   } catch (err) {
     console.error("[gov] copilot AI failure, using deterministic fallback:", err.message);
     respondFallback();
   }
 });
+
+/* ───────── SIH26136 — startup procurement foundation (additive API) ─────────
+   Mounted at /api/sih. Kept additive: it adds new routes and tables only
+   and reuses the existing Firebase auth, Supabase client, AppError and
+   logging conventions. No AI is used anywhere in this layer. */
+app.use("/api/sih", createSihRouter());
 
 app.use((err, req, res, next) => {
   if (res.headersSent) {
@@ -1463,7 +1432,6 @@ app.use((err, req, res, next) => {
   const p = toPublicError(err, req);
   res.status(p.status).json({ error: p.message, code: p.code, ref: p.ref });
 });
-
 /* ───────── report generation (AI executive summary + launch recommendation) ───────── */
 app.post("/api/report", async (req, res) => {
   if (!ai.isConfigured()) {
