@@ -10,7 +10,8 @@
   "scripts": {
     "start": "node --env-file=.env server.js",
     "dev": "node --env-file=.env --watch server.js",
-    "build": "node --check server.js && node --check lib/auth.js && node --check lib/supabase.js && node --check lib/groq.js && node --check lib/store.js && node --check lib/gov-engine.cjs && node --check lib/gov-policy-db.cjs && node --check public/government.js"
+    "test": "node --test test/sih26136.test.js test/sih-integration.test.js",
+    "build": "node --check server.js && node --check lib/auth.js && node --check lib/supabase.js && node --check lib/groq.js && node --check lib/store.js && node --check lib/gov-engine.cjs && node --check lib/gov-policy-db.cjs && node --check public/government.js && node --check lib/sih-domain.js && node --check lib/sih-store.js && node --check lib/sih-router.js && node --check lib/sih-auth.js && node --check lib/sih-integration.js"
   },
   "license": "ISC",
   "dependencies": {
