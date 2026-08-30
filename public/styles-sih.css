@@ -108,6 +108,14 @@
 .gov-badge.src-requires_review { background: rgba(245, 158, 11, 0.15); color: #d97706; }
 .gov-badge.src-not_provided { background: rgba(107, 114, 128, 0.12); color: #6b7280; }
 
+.sih-ul {
+  margin: 4px 0 0 0;
+  padding-left: 18px;
+  font-size: 12px;
+  line-height: 1.5;
+  color: #6b7280;
+}
+
 @media (max-width: 560px) {
   .sih-form .row, .sih-struct-cols { grid-template-columns: 1fr; }
 }
@@ -123,3 +131,18 @@
 .elig-result .sih-card-top { display: flex; align-items: center; gap: 10px; flex-wrap: wrap; }
 #eligBody .input, #eligRuleForm .input { padding: 8px 10px; border-radius: 6px; }
 #eligRuleForm .card .h3, #eligRuleForm h3 { margin-bottom: 8px; }
+
+/* ───────── SIH evaluation center (additive) ───────── */
+.sih-meta { font-size: 0.78rem; color: var(--text-muted, #6b7280); }
+.sih-meta-label { display: block; font-size: 0.72rem; color: var(--text-muted, #6b7280); letter-spacing: 0.02em; }
+.sih-hint { font-size: 0.82rem; color: var(--text-muted, #6b7280); }
+.sih-chip { display: inline-block; padding: 2px 8px; border-radius: 999px; background: rgba(59,130,246,0.1); color:#2563eb; font-size:0.74rem; font-weight:600; margin: 2px 4px 2px 0; }
+.sih-score-row { display:flex; align-items:center; gap:10px; font-size:0.85rem; padding:4px 0; }
+.sih-score-key { flex:1; overflow:hidden; text-overflow:ellipsis; }
+.sih-score-val { font-weight:700; }
+.sih-score-w { color: var(--text-muted, #6b7280); font-size:0.78rem; }
+.sih-scoreform { border:1px dashed var(--border, #e5e7eb); border-radius:8px; padding:10px 12px; margin-top:8px; display:flex; flex-direction:column; gap:8px; }
+.sih-scoreform-row { display:flex; align-items:center; gap:8px; flex-wrap:wrap; }
+.sih-check { display:flex; align-items:center; gap:6px; font-size:0.8rem; color: var(--text-muted, #6b7280); white-space:nowrap; }
+.sih-hidden { display:none; }
+#sihEvaluationBody .select, #sihEvaluationBody .input { padding: 8px 10px; border-radius:6px; }
