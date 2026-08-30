@@ -2652,6 +2652,8 @@
     "sih-procurement",
     "sih-startup",
     "sih-eligibility",
+    "sih-matching",
+    "sih-evaluation",
   ];
   const VIEWS = [
     "dashboard",
@@ -2684,6 +2686,8 @@
     "sih-procurement",
     "sih-startup",
     "sih-eligibility",
+    "sih-matching",
+    "sih-evaluation",
     "agent-intelligence",
     "risk-matrix",
     "business-health",
@@ -2830,6 +2834,8 @@
     "sih-procurement": "Innovation Procurement",
     "sih-startup": "Startup Intelligence",
     "sih-eligibility": "Startup Eligibility",
+    "sih-matching": "Startup Matching",
+    "sih-evaluation": "Evaluation Center",
     "risk-matrix": "Risk Matrix",
     network: "Growth & Global Network",
     settings: t("settings.title"),
@@ -2931,6 +2937,18 @@
     if (view === "sih-eligibility") {
       if (window.SIHEligibility) {
         window.SIHEligibility.render("sih-eligibility");
+      }
+      return;
+    }
+    if (view === "sih-matching") {
+      if (window.SIHMatching) {
+        window.SIHMatching.render("sih-matching");
+      }
+      return;
+    }
+    if (view === "sih-evaluation") {
+      if (window.SIHEvaluation) {
+        window.SIHEvaluation.render("sih-evaluation");
       }
       return;
     }
