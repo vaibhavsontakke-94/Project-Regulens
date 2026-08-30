@@ -88,7 +88,7 @@
       items.push({ group: "Navigate", icon: ICONS.industry, label: "Business Health Monitor", hint: "risk", keywords: "business health monitor scorecard signals fraud", run: () => api.navigate("business-health") });
       items.push({ group: "Navigate", icon: ICONS.user, label: "Co-Founder Finder", hint: "growth", keywords: "cofounder finder team roles search brief", run: () => api.navigate("co-founder") });
       items.push({ group: "Navigate", icon: ICONS.gap, label: "Investor Readiness", hint: "growth", keywords: "investor readiness one pager pitch fundraise", run: () => api.navigate("investor-hub") });
-      items.push({ group: "Navigate", icon: ICONS.launch, label: "Can I Launch?", hint: "launch", keywords: "launch go market verification", run: () => api.navigate("can-i-launch") });
+      items.push({ group: "Navigate", icon: ICONS.launch, label: "REGISTER YOUR BUSINESS", hint: "register business", keywords: "register business overview readiness", run: () => api.navigate("can-i-launch") });
       items.push({ group: "Navigate", icon: ICONS.req, label: "Requirements", hint: "req", keywords: "requirements compliance checklist", run: () => api.navigate("requirements") });
       items.push({ group: "Navigate", icon: ICONS.gap, label: "Gap Analysis", hint: "gap", keywords: "gap analysis gaps", run: () => api.navigate("gap-analysis") });
       items.push({ group: "Navigate", icon: ICONS.plan, label: "Action Plan", hint: "plan", keywords: "action plan next steps timeline", run: () => api.navigate("action-plan") });

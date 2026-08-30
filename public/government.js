@@ -831,8 +831,8 @@ case "gov-analyzer": renderAnalyzer(pkgReady); break;
         status: progress["01-register"] || "pending",
         completed: progress["01-register"] === "completed",
         /* Connect to business registration via pkg data */
-        business: pkgCtx.company ? { name: pkgCtx.company } : null,
-        cta: "Register Business",
+        business: pkgCtx.company ? { name: pkgCtx.company, industry: pkgCtx.industryName || "Not specified", product: pkgCtx.product || "Not specified", teamSize: pkgCtx.teamSize || "Not specified", experienceYears: pkgCtx.experienceYears || "Not specified", certifications: pkgCtx.certifications || "Not recorded" } : null,
+        cta: "View Profile",
         ctaUrl: "#",
         items: []
       },
@@ -858,7 +858,7 @@ case "gov-analyzer": renderAnalyzer(pkgReady); break;
         desc: "AI Matching",
         status: progress["04-ai-matching"] || "pending",
         completed: progress["04-ai-matching"] === "completed",
-        businesses: [],
+        businesses: pkgCtx.matchedBusinesses || []
         cta: "Find Solutions",
         ctaUrl: "#",
         items: []
@@ -868,7 +868,7 @@ case "gov-analyzer": renderAnalyzer(pkgReady); break;
         desc: "Select Business",
         status: progress["05-select-business"] || "pending",
         completed: progress["05-select-business"] === "completed",
-        businesses: [],
+        businesses: pkgCtx.selectedBusiness ? [pkgCtx.selectedBusiness] : []
         cta: "Review Solutions",
         ctaUrl: "#",
         items: []
@@ -878,7 +878,7 @@ case "gov-analyzer": renderAnalyzer(pkgReady); break;
         desc: "Analysis",
         status: progress["06-analyze"] || "pending",
         completed: progress["06-analyze"] === "completed",
-        cta: "Analyze",
+        cta: "View Analysis",
         ctaUrl: "#",
         items: []
       },
