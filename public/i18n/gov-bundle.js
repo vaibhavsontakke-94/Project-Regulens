@@ -1151,6 +1151,13 @@
       "gov.cop.q7": "Which sources are verified?",
       "gov.cop.q8": "What is the critical path to launch?",
 
+      "gov.sih.q9": "Match score",
+      "gov.sih.q10": "Eligibility verdict",
+      "gov.sih.q11": "Evaluation status",
+      "gov.sih.q12": "Pilot KPI achievement",
+      "gov.sih.q13": "Procurement readiness",
+      "gov.sih.q14": "Scale readiness",
+
       "gov.con.title": "Consultations",
       "gov.con.desc": "Official comment windows that shaped or will shape these rules.",
       "gov.con.window": "Window",
@@ -1279,6 +1286,13 @@
       "gov.cop.q6": "¿Qué podría pasar el primer año?",
       "gov.cop.q7": "¿Qué fuentes están verificadas?",
       "gov.cop.q8": "¿Cuál es la ruta crítica hasta el lanzamiento?",
+
+      "gov.sih.q9": "Puntuación de match",
+      "gov.sih.q10": "Veredicto de elegibilidad",
+      "gov.sih.q11": "Estado de la evaluación",
+      "gov.sih.q12": "Logro KPI del piloto",
+      "gov.sih.q13": "Preparación para la adquisición",
+      "gov.sih.q14": "Preparación para escalar",
 
       "gov.con.title": "Consultas públicas",
       "gov.con.desc": "Ventanas oficiales de comentarios que dieron o darán forma a estas normas.",
@@ -1409,6 +1423,13 @@
       "gov.cop.q7": "Quelles sources sont vérifiées ?",
       "gov.cop.q8": "Quel est le chemin critique jusqu'au lancement ?",
 
+      "gov.sih.q9": "Score de correspondance",
+      "gov.sih.q10": "Verdict d'éligibilité",
+      "gov.sih.q11": "État de l'évaluation",
+      "gov.sih.q12": "Atteinte des KPI du pilote",
+      "gov.sih.q13": "Préparation à l'approvisionnement",
+      "gov.sih.q14": "Préparation à l'échelle",
+
       "gov.con.title": "Consultations",
       "gov.con.desc": "Fenêtres officielles de commentaires qui ont façonné ou façonneront ces règles.",
       "gov.con.window": "Fenêtre",
@@ -1537,6 +1558,13 @@
       "gov.cop.q6": "Was könnte im ersten Jahr passieren?",
       "gov.cop.q7": "Welche Quellen sind verifiziert?",
       "gov.cop.q8": "Was ist der kritische Pfad zum Start?",
+
+      "gov.sih.q9": "Match-Score",
+      "gov.sih.q10": "Eignungsurteil",
+      "gov.sih.q11": "Evaluierungsstatus",
+      "gov.sih.q12": "KPI-Erreichung beim Pilot",
+      "gov.sih.q13": "Beschaffungsbereitschaft",
+      "gov.sih.q14": "Skalierungsbereitschaft",
 
       "gov.con.title": "Konsultationen",
       "gov.con.desc": "Offizielle Stellungnahmefenster, die diese Regeln geprägt haben oder prägen werden.",

@@ -1055,10 +1055,33 @@ case "gov-analyzer": renderAnalyzer(pkgReady); break;
     const dis = $("govCopDisclaimer");
     if (dis) dis.textContent = T("gov.cop.disclaimer");
     const chips = $("govChatChips");
-    chips.innerHTML = [1, 2, 3, 4, 5, 6, 7, 8].map((n) =>
-      `<button class="chip" data-q="${n}">${esc(T("gov.cop.q" + n))}</button>`).join("");
+    /* Government questions (q1–q8) + SIH lifecycle questions (q9–q14) */
+    const allQs = [
+      ["gov.cop.q1", "compliance risks"],
+      ["gov.cop.q2", "compliance cost"],
+      ["gov.cop.q3", "launch timeline"],
+      ["gov.cop.q4", "who is affected"],
+      ["gov.cop.q5", "data storage"],
+      ["gov.cop.q6", "first-year outcomes"],
+      ["gov.cop.q7", "verified sources"],
+      ["gov.cop.q8", "critical path"],
+      /* SIH lifecycle questions */
+      ["gov.sih.q9", "match score"],
+      ["gov.sih.q10", "eligibility verdict"],
+      ["gov.sih.q11", "evaluation status"],
+      ["gov.sih.q12", "pilot KPI achievement"],
+      ["gov.sih.q13", "procurement readiness"],
+      ["gov.sih.q14", "scale readiness"],
+    ];
+    chips.innerHTML = allQs.map(([key, hint]) =>
+      `<button class="chip" data-q="${key}">${esc(T(key))}</button>`).join("");
     chips.querySelectorAll(".chip").forEach((b) =>
-      b.addEventListener("click", () => { input.value = T("gov.cop.q" + b.dataset.q); sendChat(); }));
+      b.addEventListener("click", () => { input.value = T(key); sendChat(); }));
+    /* Set the last clicked question's key for reference in sendChat */
+    let lastQuestionKey = allQs[0][0];
+    chips.querySelectorAll(".chip").forEach((b) => {
+      b.addEventListener("click", () => { lastQuestionKey = b.dataset.q; input.value = T(b.dataset.q); });
+    });
     $("govChatSend").onclick = sendChat;
     $("govChatClear").onclick = () => {
       S.chat = []; S.copMode = ""; renderChat();

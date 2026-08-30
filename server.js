@@ -1387,23 +1387,37 @@ app.post("/api/gov/copilot", async (req, res) => {
     return res.status(500).json({ error: "Could not build government context" });
   }
 
-  /* Deterministic grounded fallback — used when AI is off or fails. */
+  /* ── extract SIH lifecycle data from context or body ──────────────────── */
+  const sihFromContext = body.context && body.context.sih;
+  const sihFromBody = body.sih;
+  const sihData = sihFromContext || sihFromBody || {};
+
+  /* ── build compact dataset: government + SIH lifecycle ────────────────── */
+  const ctx = pkg.context;
+  const compact = buildGovernmentDataset(pkg, sihData.sihBlock
+    ? { sih: sihData.sihBlock }
+    : undefined);
+
+  /* ── deterministic fallback — used when AI is off or fails ─────────────── */
   const respondFallback = () =>
     res.json({ ...gov.copilotFallback(question, pkg), lang: langLabel });
 
   if (!ai.isConfigured()) return respondFallback();
 
-  /* Compact, faithful context extract — the model may ONLY use this.
-     Built by the decoupled SIH integration module (shared with /api/sih). */
-  const ctx = pkg.context;
-  const compact = buildGovernmentDataset(pkg);
+  /* ── extra rules for SIH lifecycle block ─────────────────────────────── */
+  const sihExtraRules = sihData.sihBlock
+    ? `- An "sih" block lists SIH26136 startup/lifecycle records (verification, matching, eligibility, evaluation, capabilities, pilot KPIs). ` +
+      `Use ONLY the fields present in it. Never invent a score, verdict, verification or date. ` +
+      `If a field is null or omitted, state it is not recorded. Present recorded scores/verdicts as stored outcomes, not as new decisions. ` +
+      `Connect to government impact: scale, risk, compliance, procurement readiness.`
+    : "";
 
   try {
     const answer = await ai.complete({
       messages: [
         {
           role: "system",
-          content: buildGovernmentSystemPrompt(ctx.targetName, langLabel) + "\nDATASET:\n" + JSON.stringify(compact),
+          content: buildGovernmentSystemPrompt(ctx.targetName, langLabel, sihExtraRules) + "\nDATASET:\n" + JSON.stringify(compact),
         },
         { role: "user", content: question },
       ],
