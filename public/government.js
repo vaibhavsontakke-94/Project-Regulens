@@ -13,7 +13,7 @@
   const GOV_VIEWS = [
     "gov-analyzer", "policy-simulator", "gov-stakeholders",
     "gov-outcomes", "industry-impact", "compare-scenarios", "gov-scenario",
-    "gov-copilot", "gov-consultations",
+    "gov-scale", "gov-copilot", "gov-consultations",
   ];
   const CHANGE_TYPES = ["stricter", "relaxed", "activate", "repeal"];
   const LS_KEY = "regulens.govContext.v1";
@@ -32,6 +32,15 @@
     cmpBusy: false,
     scnResult: null,
     scnBusy: false,
+    scnLastParams: null,
+    scaleResult: null,
+    scaleBusy: false,
+    scaleLevel: "pilot",
+    scaleFactors: {},
+    scaleKPIs: {},
+    clearlyLabeledProjections: {},
+    scaleRecommendation: {},
+  };
     outHorizon: "shortTerm",
     stkOpen: -1,
     anzQuery: "",
@@ -317,13 +326,14 @@
     fillCtxSlot(view);
     if (!pkgReady) return; // loading/error already painted
     switch (view) {
-      case "gov-analyzer": renderAnalyzer(pkgReady); break;
+case "gov-analyzer": renderAnalyzer(pkgReady); break;
       case "policy-simulator": initSimulator(pkgReady); break;
       case "gov-stakeholders": renderStakeholders(pkgReady); break;
       case "gov-outcomes": renderOutcomes(pkgReady); break;
       case "industry-impact": renderIndustry(pkgReady); break;
       case "compare-scenarios": renderCompare(pkgReady); break;
       case "gov-scenario": initScenario(pkgReady); break;
+      case "gov-scale": initScale(pkgReady); break;
       case "gov-copilot": initCopilot(pkgReady); break;
       case "gov-consultations": renderConsultations(pkgReady); break;
     }
@@ -725,6 +735,80 @@
   }
   function renderCompare(pkg) {
     initCompareBuilder(pkg);
+  }
+
+  function renderScale(pkg) {
+    const root = $("govScaleBody");
+    if (!root) return;
+    const analysis = S.scaleAnalysis || {};
+    const recommendation = S.scaleRecommendation || {};
+    const factors = S.scaleFactors || {};
+    const kpis = S.scaleKPIs || {};
+    const projections = S.clearLabeledProjections || {};
+
+    root.innerHTML = `
+      <div class="card scn-card">
+        <div class="card-head">
+          <h3 class="card-title">${esc(T("gov.scl.title"))}</h3>
+          <span class="scenario-name">${esc(T("gov.scl.level", { level: T("gov.scl.levels." + analysis.scalingLevel) }))}</span>
+        </div>
+        <div class="table-wrap">
+          <table class="req-table factor-table">
+            <thead>
+              <tr>
+                <th>${esc(T("gov.scl.factor"))}</th>
+                <th>${esc(T("gov.scl.score"))}</th>
+                <th>${esc(T("gov.scl.label"))}</th>
+                <th>${esc(T("gov.scl.description"))}</th>
+              </tr>
+            </thead>
+            <tbody>
+              ${Object.entries(factors).map(([key, f]) => `
+                <tr>
+                  <td>${esc(T("gov.scl.factor." + key))}</td>
+                  <td>${f.score}/100</td>
+                  <td>${esc(f.label)}</td>
+                  <td>${esc(f.description)}</td>
+                </tr>`).join("")}
+            </tbody>
+          </table>
+        </div>
+        <div class="grid grid-2 gov-kpis">
+          ${statCard(kpis.usersImpacted ?? "—", T("gov.scl.kpiUsers"))}
+          ${statCard(kpis.costSaving ?? "—", T("gov.scl.kpiCostSaving"))}
+          ${statCard(kpis.efficiency ?? "—", T("gov.scl.kpiEfficiency"))}
+          ${statCard(kpis.satisfaction ?? "—", T("gov.scl.kpiSatisfaction"))}
+        </div>
+        <details class="assump-box" open>
+          <summary>${esc(T("gov.scl.assumptions"))}</summary>
+          <ul>${(analysis.assumptions || []).map((a) => `<li>${esc(a)}</li>`).join("")}</ul>
+          <p class="trace-line mono">${esc(projections.cost || "")}</p>
+        </details>
+        ${recommendation.recommendation ? `
+          <div class="rec-badge ${recommendation.recommendation.toLowerCase().replace(/\s+/g, "-")}">
+            <strong>${esc(T("gov.scl.rec." + recommendation.recommendation))}</strong>
+            ${recommendation.evidence.map((e) => `<p>${esc(e)}</p>`).join("")}
+          </div>` : ""}
+      </div>`;
+  }
+
+  /* ════════════════ SCALE & GOVERNMENT IMPACT INTELLIGENCE ════════════════ */
+  function initScale(pkg) {
+    if (!S.scaleResult) {
+      post("/api/scale/analyze", govCtx()).then((resp) => {
+        if (resp && !resp.error) {
+          S.scaleAnalysis = resp.scaleAnalysis;
+          S.scaleRecommendation = resp.recommendation;
+          S.scaleFactors = resp.scaleAnalysis ? resp.scaleAnalysis.techMetrics : {};
+          S.scaleKPIs = resp.scaleAnalysis ? resp.scaleAnalysis.impactKPIs : {};
+          S.clearLabeledProjections = resp.scaleAnalysis ? resp.scaleAnalysis.clearLabeledProjections : {};
+          S.scaleRecommendation = resp.recommendation;
+          renderScale(S.pkg);
+        }
+      });
+    } else {
+      renderScale(pkg);
+    }
   }
 
   /* ════════════════ MODULE: SCENARIO SIMULATOR ════════════════ */

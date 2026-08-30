@@ -1418,6 +1418,93 @@ app.post("/api/gov/copilot", async (req, res) => {
   }
 });
 
+/* ═══════════ SCALE & GOVERNMENT IMPACT INTELLIGENCE ───────────────────────
+   New module extending the canonical government intelligence engine with
+   multi-level scaling analysis, scale factor evaluation, impact KPI tracking,
+   scenario comparison across Pilot→Local→District→State→National, and
+   evidence-based scaling recommendations. All outputs are deterministic
+   modelled estimates with explicit assumption traces. */
+
+function scaleCtx(raw) {
+  const body = raw || {};
+  return {
+    originId: sanitizeStr(body.originId, 8).toLowerCase(),
+    targetId: sanitizeStr(body.targetId, 8).toLowerCase(),
+    industryId: sanitizeStr(body.industryId, 40).toLowerCase(),
+    company: sanitizeStr(body.company, 120),
+    product: sanitizeStr(body.product, 160),
+  };
+}
+
+app.post("/api/scale/analyze", (req, res) => {
+  try {
+    const ctx = scaleCtx(req.body);
+    const pkg = gov.buildGovernmentPackage(ctx);
+    const analysis = gov.scaleFactorAnalysis(ctx, 4, pkg); // national level
+    const recommendation = gov.generateRecommendation(pkg, analysis);
+    res.json({ context: ctx, package: pkg, scaleAnalysis: analysis, recommendation });
+  } catch (err) {
+    console.error("[scale] analyze error:", err);
+    res.status(500).json({ error: "Scale analysis failed" });
+  }
+});
+
+app.post("/api/scale/simulate", (req, res) => {
+  try {
+    const ctx = scaleCtx(req.body);
+    const spec = {
+      scalingLevel: SCALING_LEVELS[Math.round(Number(req.body.scalingLevelIndex) || 4)] || "national",
+      implementationLevel: Number(req.body.implementationLevel),
+      horizonDays: [90, 180, 365, 730].includes(Number(req.body.horizonDays)) ? Number(req.body.horizonDays) : 365,
+      changeType: req.body.changeType,
+    };
+    const result = gov.simulateScaleScenario(ctx, spec);
+    if (result && result.error) return res.status(400).json({ error: result.error });
+    res.json(result);
+  } catch (err) {
+    console.error("[scale] simulate error:", err);
+    res.status(500).json({ error: "Scale scenario simulation failed" });
+  }
+});
+
+app.post("/api/scale/compare", (req, res) => {
+  try {
+    const ctx = scaleCtx(req.body);
+    const specs = Array.isArray(req.body.scenarios) ? req.body.scenarios.slice(0, 3) : [];
+    const result = gov.compareScales(ctx, specs);
+    res.json(result);
+  } catch (err) {
+    console.error("[scale] compare error:", err);
+    res.status(500).json({ error: "Scale comparison failed" });
+  }
+});
+
+app.post("/api/scale/recommendation", (req, res) => {
+  try {
+    const ctx = scaleCtx(req.body);
+    const pkg = gov.buildGovernmentPackage(ctx);
+    const scaleAnalysis = gov.scaleFactorAnalysis(ctx, 4, pkg);
+    const recommendation = gov.generateRecommendation(pkg, scaleAnalysis);
+    res.json({ recommendation, scaleAnalysis, package: pkg });
+  } catch (err) {
+    console.error("[scale] recommendation error:", err);
+    res.status(500).json({ error: "Scale recommendation failed" });
+  }
+});
+
+app.post("/api/scale/policy-impact", (req, res) => {
+  try {
+    const ctx = scaleCtx(req.body);
+    const policies = gov.relevantPolicies(ctx.targetId, ctx.industryId);
+    const scaleLevel = Number(req.body.scaleLevel) || 4; // national
+    const impactAnalysis = gov.policyImpactAnalysis(policies, ctx, scaleLevel);
+    res.json({ context: ctx, policies, scaleLevel, impactAnalysis });
+  } catch (err) {
+    console.error("[scale] policy-impact error:", err);
+    res.status(500).json({ error: "Policy impact analysis failed" });
+  }
+});
+
 /* ───────── SIH26136 — startup procurement foundation (additive API) ─────────
    Mounted at /api/sih. Kept additive: it adds new routes and tables only
    and reuses the existing Firebase auth, Supabase client, AppError and
