@@ -41,7 +41,6 @@
     scaleKPIs: {},
     clearlyLabeledProjections: {},
     scaleRecommendation: {},
-  };
     outHorizon: "shortTerm",
     stkOpen: -1,
     anzQuery: "",
