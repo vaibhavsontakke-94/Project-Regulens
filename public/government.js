@@ -923,7 +923,7 @@ case "gov-analyzer": renderAnalyzer(pkgReady); break;
         desc: "Scale",
         status: progress["11-scale"] || "pending",
         completed: progress["11-scale"] === "completed",
-        cta: "Scale Analysis",
+        cta: "Impact Scaling",
         ctaUrl: "#",
         items: []
       }
