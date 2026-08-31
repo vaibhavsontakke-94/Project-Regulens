@@ -41,7 +41,6 @@
     scaleKPIs: {},
     clearlyLabeledProjections: {},
     scaleRecommendation: {},
-  };
     outHorizon: "shortTerm",
     stkOpen: -1,
     anzQuery: "",
@@ -858,7 +857,7 @@ case "gov-analyzer": renderAnalyzer(pkgReady); break;
         desc: "AI Matching",
         status: progress["04-ai-matching"] || "pending",
         completed: progress["04-ai-matching"] === "completed",
-        businesses: pkgCtx.matchedBusinesses || []
+        businesses: pkgCtx.matchedBusinesses || [],
         cta: "Find Solutions",
         ctaUrl: "#",
         items: []
@@ -868,7 +867,7 @@ case "gov-analyzer": renderAnalyzer(pkgReady); break;
         desc: "Select Business",
         status: progress["05-select-business"] || "pending",
         completed: progress["05-select-business"] === "completed",
-        businesses: pkgCtx.selectedBusiness ? [pkgCtx.selectedBusiness] : []
+        businesses: pkgCtx.selectedBusiness ? [pkgCtx.selectedBusiness] : [],
         cta: "Review Solutions",
         ctaUrl: "#",
         items: []
