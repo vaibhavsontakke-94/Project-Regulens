@@ -19,8 +19,8 @@
   var SIH_I18N = {
     en: Object.assign({
       "nav.sih": "Innovation Procurement",
-      "nav.sihstartup": "Startup Intelligence",
-      "nav.siheligibility": "Startup Eligibility",
+      "nav.sihstartup": "Solution Profiles",
+      "nav.siheligibility": "Eligibility Assessment",
       "sih.org": "Organization",
       "sih.noorg": "No organization",
       "sih.refresh": "Refresh",
@@ -84,7 +84,7 @@
       "sih.noorg.hint": "Create a government organization to begin structuring problems and innovation challenges.",
       "sih.noorg.name": "Organization name",
       "sih.noorg.create": "Create organization",
-      "nav.sihmatching": "Startup Matching",
+      "nav.sihmatching": "Solution Matching",
       "matching.hint": "Decision-support only. Eligibility is the hard gate; matching ranks the eligible pool with a deterministic, explainable engine. REGULENS provides decision support. Final selection remains with the authorized government authority.",
       "matching.org": "Organization",
       "matching.challenge": "Challenge",
@@ -143,7 +143,7 @@
       "matching.versions": "Saved versions",
       "matching.dynamic": "Weights",
       "matching.pooled": "Pool",
-      "nav.siheval": "Evaluation Center",
+      "nav.siheval": "Solution Evaluation",
       "evaluation.org": "Organization",
       "evaluation.challenge": "Challenge",
       "evaluation.noOrg": "No organization",

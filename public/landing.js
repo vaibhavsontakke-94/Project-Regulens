@@ -160,7 +160,7 @@
   }
 
   var startBtn = document.getElementById("landingStartBtn");
-  if (startBtn) startBtn.addEventListener("click", function () { enterApp("can-i-launch"); });
+  if (startBtn) startBtn.addEventListener("click", function () { enterApp("registration-portal"); });
 
   var settingsBtn = document.getElementById("landingSettingsBtn");
   if (settingsBtn) settingsBtn.addEventListener("click", function () { enterApp("settings"); });

@@ -145,7 +145,7 @@
       <h2>${esc(tr("ss.profile"))}</h2>
       <div class="sih-hint">${esc(tr("ss.completeness.notEligibility"))}</div>
       <div class="sih-toolbar">
-        <h3>Startups</h3>
+        <h3>Solution Profiles</h3>
       </div>
       ${S.startups.length ? `<div class="sih-grid">${S.startups.map(startupCard).join("")}</div>`
         : `<div class="sih-empty">${esc(tr("ss.nostartup"))}</div>`}`;
@@ -265,7 +265,7 @@
       { key: "website", label: "Website", type: "text" },
       { key: "businessEmail", label: "Business Email", type: "text" },
     ]},
-    { key: "startupStatus", label: "Startup Status", fields: [
+    { key: "startupStatus", label: "Solution Status", fields: [
       { key: "dpiitStatus", label: "DPIIT Status", type: "text" },
     ]},
     { key: "business", label: "Business", fields: [

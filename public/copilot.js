@@ -1,9 +1,9 @@
-/* ═══════════════════════════════════════════════════════════════════════
-   REGULENS Copilot — ChatGPT-style AI assistant  v2
+﻿/* â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+   REGULENS Copilot â€” ChatGPT-style AI assistant  v2
    Right-side sliding panel, context-aware, language-aware.
-   Graph→Copilot context connection, report summary, action plan.
-   Exposes window.ReguLensCopilot
-   ═══════════════════════════════════════════════════════════════════════ */
+   Graphâ†’Copilot context connection, report summary, action plan.
+   Exposes window.ReguLensDecisionSupport
+   â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â• */
 (function () {
   "use strict";
 
@@ -18,7 +18,7 @@
   var quickEl = null;
   var lastGraphContext = null;
 
-  /* ───────── i18n helper ───────── */
+  /* â”€â”€â”€â”€â”€â”€â”€â”€â”€ i18n helper â”€â”€â”€â”€â”€â”€â”€â”€â”€ */
   function t(key) {
     if (window.ReguLens && typeof window.ReguLens.t === "function") return window.ReguLens.t(key);
     return key;
@@ -35,7 +35,7 @@
     return d.innerHTML;
   }
 
-  /* ───────── build context from analysisData ───────── */
+  /* â”€â”€â”€â”€â”€â”€â”€â”€â”€ build context from analysisData â”€â”€â”€â”€â”€â”€â”€â”€â”€ */
   function buildContext() {
     var d = (window.ReguLens && window.ReguLens.getAnalysisData) ? window.ReguLens.getAnalysisData() : null;
     if (!d) return null;
@@ -74,7 +74,7 @@
     };
   }
 
-  /* ───────── quick questions ───────── */
+  /* â”€â”€â”€â”€â”€â”€â”€â”€â”€ quick questions â”€â”€â”€â”€â”€â”€â”€â”€â”€ */
   function getQuickQuestions() {
     var ctx = buildContext();
     var qs = [
@@ -95,7 +95,7 @@
     return qs;
   }
 
-  /* ───────── detect special commands ───────── */
+  /* â”€â”€â”€â”€â”€â”€â”€â”€â”€ detect special commands â”€â”€â”€â”€â”€â”€â”€â”€â”€ */
   function detectCommand(text) {
     var lower = (text || "").toLowerCase().trim();
     if (/^(summarize|summary|summarise|give me a summary|give me summary)/.test(lower)) return "summary";
@@ -104,7 +104,7 @@
     return null;
   }
 
-  /* ───────── send message ───────── */
+  /* â”€â”€â”€â”€â”€â”€â”€â”€â”€ send message â”€â”€â”€â”€â”€â”€â”€â”€â”€ */
   async function sendMessage(text, graphContext) {
     if (!text || !text.trim() || isStreaming) return;
     text = text.trim();
@@ -168,7 +168,7 @@
     }
   }
 
-  /* ───────── render ───────── */
+  /* â”€â”€â”€â”€â”€â”€â”€â”€â”€ render â”€â”€â”€â”€â”€â”€â”€â”€â”€ */
   function appendMessage(role, text, mode) {
     var div = document.createElement("div");
     div.className = "copilot-msg copilot-msg-" + role;
@@ -206,12 +206,12 @@
     s = s.replace(/\*\*(.*?)\*\*/g, "<strong>$1</strong>");
     /* italic */
     s = s.replace(/\*(.*?)\*/g, "<em>$1</em>");
-    /* numbered lists: 1. text  → <br>1. text */
+    /* numbered lists: 1. text  â†’ <br>1. text */
     s = s.replace(/(?:^|\n)(\d+)\.\s(.+)/g, function (m, num, content) {
       return "<br><span class=\"copilot-list-num\">" + num + ".</span> " + content;
     });
-    /* bullet lists: - text or • text */
-    s = s.replace(/(?:^|\n)[-•]\s(.+)/g, function (m, p1) { return "<br>\u2022 " + p1; });
+    /* bullet lists: - text or â€¢ text */
+    s = s.replace(/(?:^|\n)[-â€¢]\s(.+)/g, function (m, p1) { return "<br>\u2022 " + p1; });
     /* horizontal rule */
     s = s.replace(/\n---\n/g, "<br><hr style=\"border:none;border-top:1px solid var(--border);margin:8px 0\">");
     /* newlines */
@@ -219,7 +219,7 @@
     return s;
   }
 
-  /* ───────── open / close ───────── */
+  /* â”€â”€â”€â”€â”€â”€â”€â”€â”€ open / close â”€â”€â”€â”€â”€â”€â”€â”€â”€ */
   function open(graphContext) {
     if (!panel) buildPanel();
     isOpen = true;
@@ -273,7 +273,7 @@
 
   function toggle() { isOpen ? close() : open(); }
 
-  /* ───────── quick questions UI ───────── */
+  /* â”€â”€â”€â”€â”€â”€â”€â”€â”€ quick questions UI â”€â”€â”€â”€â”€â”€â”€â”€â”€ */
   function renderQuickQuestions() {
     var qs = getQuickQuestions();
     quickEl.innerHTML = qs.map(function (q) {
@@ -282,7 +282,7 @@
     quickEl.classList.remove("hidden");
   }
 
-  /* ───────── build panel DOM ───────── */
+  /* â”€â”€â”€â”€â”€â”€â”€â”€â”€ build panel DOM â”€â”€â”€â”€â”€â”€â”€â”€â”€ */
   function buildPanel() {
     panel = document.createElement("div");
     panel.id = "copilotPanel";
@@ -291,7 +291,7 @@
       '<div class="copilot-header">' +
         '<div class="copilot-header-left">' +
           '<svg class="copilot-logo" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2a2 2 0 0 1 2 2v1h4a2 2 0 0 1 2 2v9a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V7a2 2 0 0 1 2-2h4V4a2 2 0 0 1 2-2z"/></svg>' +
-          '<span class="copilot-title">REGULENS Copilot</span>' +
+          '<span class="copilot-title">REGULENS Decision Support</span>' +
         '</div>' +
         '<button class="copilot-close" id="copilotClose" aria-label="Close">' +
           '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>' +
@@ -361,8 +361,8 @@
     });
   }
 
-  /* ───────── public API ───────── */
-  window.ReguLensCopilot = {
+  /* â”€â”€â”€â”€â”€â”€â”€â”€â”€ public API â”€â”€â”€â”€â”€â”€â”€â”€â”€ */
+  window.ReguLensDecisionSupport = {
     open: open,
     close: close,
     toggle: toggle,
@@ -372,3 +372,4 @@
     getGraphContext: function () { return lastGraphContext; },
   };
 })();
+

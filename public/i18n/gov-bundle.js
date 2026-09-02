@@ -6,24 +6,24 @@
 
     /* ═══════════════ ENGLISH ═══════════════ */
     en: {
-      "gov.nav.dashboard": "Dashboard",
-      "gov.nav.analyzer": "Policy Analyzer",
-      "gov.nav.simulator": "Impact Simulator",
-      "gov.nav.stakeholders": "Who Is Affected",
-      "gov.nav.outcomes": "What Could Happen",
-      "gov.nav.industry": "Industry Impact",
-      "gov.nav.compare": "Compare Scenarios",
-      "gov.nav.scenario": "Scenario Simulator",
-      "gov.nav.copilot": "Gov Copilot",
-      "gov.nav.consultations": "Consultations",
-  "gov.nav.myproblems": "My Problems",
-  "gov.nav.findsolutions": "Find Solutions",
+"gov.nav.dashboard": "Government Dashboard",
+      "gov.nav.analyzer": "Policy Analysis",
+      "gov.nav.simulator": "Regulatory Impact Simulator",
+      "gov.nav.stakeholders": "Stakeholder Impact",
+      "gov.nav.outcomes": "Outcome Modeling",
+      "gov.nav.industry": "Cross-Industry Burden Analysis",
+      "gov.nav.compare": "Scenario Comparison",
+      "gov.nav.scenario": "Parameter Simulation",
+      "gov.nav.copilot": "Government Decision Assistant",
+      "gov.nav.consultations": "Regulatory Consultations",
+  "gov.nav.myproblems": "Problem Management",
+  "gov.nav.findsolutions": "Solution Discovery",
   "gov.nav.solutions": "Solution Evaluation",
-  "gov.nav.compliancecenter": "Compliance Center",
+  "gov.nav.compliancecenter": "Compliance Assessment",
   "gov.nav.pilotmanagement": "Pilot Management",
   "gov.nav.pilotperformance": "Pilot Performance",
   "gov.nav.procurementreadiness": "Procurement Readiness",
-  "gov.nav.scaleintelligence": "Scale Intelligence"
+  "gov.nav.scaleintelligence": "Scale-Up Assessment"
 
       "gov.ctx.title": "Analysis Context",
       "gov.ctx.desc": "One context powers every government module.",
@@ -116,7 +116,7 @@
       "gov.nav.compare": "Comparar escenarios",
       "gov.nav.scenario": "Simulador de escenarios",
       "gov.nav.copilot": "Copiloto Gubernamental",
-      "gov.nav.consultations": "Consultas públicas",
+      "gov.nav.consultations": "Consultas Regulatorias",
 
       "gov.ctx.title": "Contexto del análisis",
       "gov.ctx.desc": "Un único contexto alimenta todos los módulos gubernamentales.",
@@ -209,7 +209,7 @@
       "gov.nav.compare": "Comparer les scénarios",
       "gov.nav.scenario": "Simulateur de scénarios",
       "gov.nav.copilot": "Copilote Gouvernemental",
-      "gov.nav.consultations": "Consultations",
+      "gov.nav.consultations": "Consultations Réglementaires",
 
       "gov.ctx.title": "Contexte de l'analyse",
       "gov.ctx.desc": "Un contexte unique alimente tous les modules gouvernementaux.",
@@ -395,7 +395,7 @@
       "gov.nav.compare": "Comparar cenários",
       "gov.nav.scenario": "Simulador de cenários",
       "gov.nav.copilot": "Copiloto Governamental",
-      "gov.nav.consultations": "Consultas públicas",
+      "gov.nav.consultations": "Consultas Regulatórias",
 
       "gov.ctx.title": "Contexto da análise",
       "gov.ctx.desc": "Um único contexto alimenta todos os módulos governamentais.",
@@ -1044,7 +1044,7 @@
   var P2 = {
 
     en: {
-      "gov.sim.title": "Policy Impact Simulator",
+"gov.sim.title": "Regulatory Impact Simulator",
       "gov.sim.desc": "Pick one regulation and stress-test a change against it.",
       "gov.sim.selectPolicy": "Regulation",
       "gov.sim.changeType": "Change type",
@@ -1071,7 +1071,7 @@
       "gov.sim.none": "No focus policy",
       "gov.sim.error": "This change does not apply here — adjust the parameters.",
 
-      "gov.anz.title": "Policy Analyzer",
+      "gov.anz.title": "Policy Analysis",
       "gov.anz.desc": "Straight answers about every rule that touches you.",
       "gov.anz.q1": "Which rules apply to me?",
       "gov.anz.q2": "Why do they apply to my product?",
@@ -1083,7 +1083,7 @@
       "gov.anz.topDim": "Strongest dimension",
       "gov.anz.openDetail": "Open policy details",
 
-      "gov.stk.title": "Who Is Affected",
+      "gov.stk.title": "Stakeholder Impact",
       "gov.stk.desc": "Every group this regulatory package touches.",
       "gov.stk.group": "Group",
       "gov.stk.who": "Who they are",
@@ -1093,7 +1093,7 @@
       "gov.stk.showDetail": "Show per-rule detail",
       "gov.stk.hideDetail": "Hide detail",
 
-      "gov.out.title": "What Could Happen",
+      "gov.out.title": "Outcome Modeling",
       "gov.out.desc": "Modelled consequences over three horizons.",
       "gov.out.tabShort": "0–6 months",
       "gov.out.tabMid": "6–18 months",
@@ -1102,7 +1102,7 @@
       "gov.out.severity": "Severity",
       "gov.out.policyCol": "Related rule",
 
-      "gov.ind.title": "Industry Impact",
+      "gov.ind.title": "Cross-Industry Burden Analysis",
       "gov.ind.desc": "Regulatory burden across every tracked industry.",
       "gov.ind.colIndustry": "Industry",
       "gov.ind.colAffected": "Rules",
@@ -1114,7 +1114,7 @@
       "gov.ind.drivers": "Top drivers",
       "gov.ind.chartTitle": "Composite burden by industry",
 
-      "gov.cmp.title": "Compare Scenarios",
+      "gov.cmp.title": "Scenario Comparison",
       "gov.cmp.desc": "Baseline versus up to three modelled changes.",
       "gov.cmp.baselineName": "Current baseline",
       "gov.cmp.builder": "Build a scenario",
@@ -1131,7 +1131,7 @@
       "gov.cmp.mVerdict": "Verdict",
       "gov.cmp.chartTitle": "Scenario comparison",
 
-      "gov.scn.title": "Scenario Simulator",
+      "gov.scn.title": "Parameter Simulation",
       "gov.scn.desc": "Change one parameter and watch consequences cascade.",
       "gov.scn.params": "Parameters",
       "gov.scn.run": "Run simulation",
@@ -1139,7 +1139,7 @@
       "gov.scn.traceability": "Assumptions & traceability",
       "gov.scn.livePkg": "Live simulated package",
 
-      "gov.cop.title": "Government Copilot",
+      "gov.cop.title": "Government Decision Assistant",
       "gov.cop.desc": "Ask anything about this package — answers cite their sources.",
       "gov.cop.placeholder": "Ask about obligations, costs, deadlines…",
       "gov.cop.send": "Send",
@@ -1164,40 +1164,40 @@
       "gov.sih.q11": "Evaluation status",
       "gov.sih.q12": "Pilot KPI achievement",
       "gov.sih.q13": "Procurement readiness",
-      "gov.sih.q14
-gov.scl.title "Solution Scalability",
-gov.scl.level "Current Scalability Level",
-gov.scl.levels "Levels",
-gov.scl.levels.pilot "Pilot",
-gov.scl.levels.local "Local",
-gov.scl.levels.district "District",
-gov.scl.levels.state "State",
-gov.scl.levels.national "National",
-gov.scl.factor "Factor",
-gov.scl.score "Score",
-gov.scl.label "Label",
-gov.scl.description "Description",
-gov.scl.assumptions "Assumptions",
-gov.scl.kpiUsers "Users Impacted",
-gov.scl.kpiCostSaving "Cost Saving",
-gov.scl.kpiEfficiency "Efficiency",
-gov.scl.kpiSatisfaction "Satisfaction",
-gov.scl.assumptions.trace "Modeled estimate with explicit assumption traces"
-gov.risk.title "Risk Analysis",
-gov.risk.regulatory "Regulatory",
-gov.risk.financial "Financial",
-gov.risk.operational "Operational",
-gov.risk.technology "Technology",
-gov.risk.compliance "Compliance",
-gov.risk.level "Risk Level",
-gov.risk.low "Low",
-gov.risk.medium "Medium",
-gov.risk.high "High",
-gov.risk.critical "Critical"
+      "gov.sih.q14": "Scale readiness",
 
-": "Scale readiness",
+      "gov.scl.title": "Solution Scalability",
+      "gov.scl.level": "Current Scalability Level",
+      "gov.scl.levels": "Levels",
+      "gov.scl.levels.pilot": "Pilot",
+      "gov.scl.levels.local": "Local",
+      "gov.scl.levels.district": "District",
+      "gov.scl.levels.state": "State",
+      "gov.scl.levels.national": "National",
+      "gov.scl.factor": "Factor",
+      "gov.scl.score": "Score",
+      "gov.scl.label": "Label",
+      "gov.scl.description": "Description",
+      "gov.scl.assumptions": "Assumptions",
+      "gov.scl.kpiUsers": "Users Impacted",
+      "gov.scl.kpiCostSaving": "Cost Saving",
+      "gov.scl.kpiEfficiency": "Efficiency",
+      "gov.scl.kpiSatisfaction": "Satisfaction",
+      "gov.scl.assumptions.trace": "Modeled estimate with explicit assumption traces",
 
-      "gov.con.title": "Consultations",
+      "gov.risk.title": "Risk Analysis",
+      "gov.risk.regulatory": "Regulatory",
+      "gov.risk.financial": "Financial",
+      "gov.risk.operational": "Operational",
+      "gov.risk.technology": "Technology",
+      "gov.risk.compliance": "Compliance",
+      "gov.risk.level": "Risk Level",
+      "gov.risk.low": "Low",
+      "gov.risk.medium": "Medium",
+      "gov.risk.high": "High",
+      "gov.risk.critical": "Critical",
+
+      "gov.con.title": "Regulatory Consultations",
       "gov.con.desc": "Official comment windows that shaped or will shape these rules.",
       "gov.con.window": "Window",
       "gov.con.outcome": "Outcome",
@@ -1211,7 +1211,7 @@ gov.risk.critical "Critical"
     },
 
     es: {
-      "gov.sim.title": "Simulador de impacto de políticas",
+      "gov.sim.title": "Simulador de Impacto Regulatorio",
       "gov.sim.desc": "Elige un reglamento y somete un cambio a prueba de estrés.",
       "gov.sim.selectPolicy": "Reglamento",
       "gov.sim.changeType": "Tipo de cambio",
@@ -1238,7 +1238,7 @@ gov.risk.critical "Critical"
       "gov.sim.none": "Sin reglamento focal",
       "gov.sim.error": "Este cambio no aplica aquí — ajusta los parámetros.",
 
-      "gov.anz.title": "Analizador de políticas",
+      "gov.anz.title": "Análisis de Políticas",
       "gov.anz.desc": "Respuestas directas sobre cada norma que te afecta.",
       "gov.anz.q1": "¿Qué normas me aplican?",
       "gov.anz.q2": "¿Por qué aplican a mi producto?",
@@ -1250,7 +1250,7 @@ gov.risk.critical "Critical"
       "gov.anz.topDim": "Dimensión más fuerte",
       "gov.anz.openDetail": "Abrir detalles de la norma",
 
-      "gov.stk.title": "¿A quién afecta?",
+      "gov.stk.title": "Impacto en Grupos de Interés",
       "gov.stk.desc": "Todos los grupos que toca este paquete regulatorio.",
       "gov.stk.group": "Grupo",
       "gov.stk.who": "Quiénes son",
@@ -1260,7 +1260,7 @@ gov.risk.critical "Critical"
       "gov.stk.showDetail": "Ver detalle por norma",
       "gov.stk.hideDetail": "Ocultar detalle",
 
-      "gov.out.title": "Qué podría pasar",
+      "gov.out.title": "Modelado de Resultados",
       "gov.out.desc": "Consecuencias modeladas en tres horizontes.",
       "gov.out.tabShort": "0–6 meses",
       "gov.out.tabMid": "6–18 meses",
@@ -1269,7 +1269,7 @@ gov.risk.critical "Critical"
       "gov.out.severity": "Severidad",
       "gov.out.policyCol": "Norma relacionada",
 
-      "gov.ind.title": "Impacto sectorial",
+      "gov.ind.title": "Análisis de Carga Transversal por Industria",
       "gov.ind.desc": "Carga regulatoria en todas las industrias registradas.",
       "gov.ind.colIndustry": "Industria",
       "gov.ind.colAffected": "Normas",
@@ -1281,7 +1281,7 @@ gov.risk.critical "Critical"
       "gov.ind.drivers": "Principales impulsores",
       "gov.ind.chartTitle": "Carga compuesta por industria",
 
-      "gov.cmp.title": "Comparar escenarios",
+      "gov.cmp.title": "Comparación de Escenarios",
       "gov.cmp.desc": "Línea base frente a hasta tres cambios modelados.",
       "gov.cmp.baselineName": "Línea base actual",
       "gov.cmp.builder": "Crear un escenario",
@@ -1298,7 +1298,7 @@ gov.risk.critical "Critical"
       "gov.cmp.mVerdict": "Veredicto",
       "gov.cmp.chartTitle": "Comparación de escenarios",
 
-      "gov.scn.title": "Simulador de escenarios",
+      "gov.scn.title": "Simulación de Parámetros",
       "gov.scn.desc": "Cambia un parámetro y observa cómo se propagan las consecuencias.",
       "gov.scn.params": "Parámetros",
       "gov.scn.run": "Ejecutar simulación",
@@ -1306,7 +1306,7 @@ gov.risk.critical "Critical"
       "gov.scn.traceability": "Supuestos y trazabilidad",
       "gov.scn.livePkg": "Paquete simulado en vivo",
 
-      "gov.cop.title": "Copiloto Gubernamental",
+      "gov.cop.title": "Asistente de Decisiones Gubernamentales",
       "gov.cop.desc": "Pregunta lo que quieras sobre este paquete — las respuestas citan sus fuentes.",
       "gov.cop.placeholder": "Pregunta sobre obligaciones, costes, plazos…",
       "gov.cop.send": "Enviar",
@@ -1326,14 +1326,14 @@ gov.risk.critical "Critical"
       "gov.cop.q7": "¿Qué fuentes están verificadas?",
       "gov.cop.q8": "¿Cuál es la ruta crítica hasta el lanzamiento?",
 
-      "gov.sih.q9": "Puntuación de match",
+      "gov.sih.q9": "Puntuación de correspondencia",
       "gov.sih.q10": "Veredicto de elegibilidad",
       "gov.sih.q11": "Estado de la evaluación",
       "gov.sih.q12": "Logro KPI del piloto",
       "gov.sih.q13": "Preparación para la adquisición",
       "gov.sih.q14": "Preparación para escalar",
 
-      "gov.con.title": "Consultas públicas",
+      "gov.con.title": "Consultas Regulatorias",
       "gov.con.desc": "Ventanas oficiales de comentarios que dieron o darán forma a estas normas.",
       "gov.con.window": "Ventana",
       "gov.con.outcome": "Resultado",
@@ -1347,7 +1347,7 @@ gov.risk.critical "Critical"
     },
 
     fr: {
-      "gov.sim.title": "Simulateur d'impact des politiques",
+      "gov.sim.title": "Simulateur d'Impact Réglementaire",
       "gov.sim.desc": "Choisissez une réglementation et testez un changement.",
       "gov.sim.selectPolicy": "Réglementation",
       "gov.sim.changeType": "Type de changement",
@@ -1374,7 +1374,7 @@ gov.risk.critical "Critical"
       "gov.sim.none": "Aucune réglementation ciblée",
       "gov.sim.error": "Ce changement ne s'applique pas ici — ajustez les paramètres.",
 
-      "gov.anz.title": "Analyseur de politiques",
+      "gov.anz.title": "Analyse de Politiques",
       "gov.anz.desc": "Des réponses directes sur chaque règle qui vous concerne.",
       "gov.anz.q1": "Quelles règles s'appliquent à moi ?",
       "gov.anz.q2": "Pourquoi s'appliquent-elles à mon produit ?",
@@ -1386,7 +1386,7 @@ gov.risk.critical "Critical"
       "gov.anz.topDim": "Dimension dominante",
       "gov.anz.openDetail": "Ouvrir les détails",
 
-      "gov.stk.title": "Qui est concerné",
+      "gov.stk.title": "Impact sur les Parties Prenantes",
       "gov.stk.desc": "Tous les groupes touchés par ce paquet réglementaire.",
       "gov.stk.group": "Groupe",
       "gov.stk.who": "Qui ils sont",
@@ -1396,7 +1396,7 @@ gov.risk.critical "Critical"
       "gov.stk.showDetail": "Afficher le détail par règle",
       "gov.stk.hideDetail": "Masquer le détail",
 
-      "gov.out.title": "Ce qui pourrait arriver",
+      "gov.out.title": "Modélisation des Résultats",
       "gov.out.desc": "Conséquences modélisées sur trois horizons.",
       "gov.out.tabShort": "0–6 mois",
       "gov.out.tabMid": "6–18 mois",
@@ -1405,7 +1405,7 @@ gov.risk.critical "Critical"
       "gov.out.severity": "Gravité",
       "gov.out.policyCol": "Règle associée",
 
-      "gov.ind.title": "Impact sectoriel",
+      "gov.ind.title": "Analyse de Charge Transversale par Secteur",
       "gov.ind.desc": "Charge réglementaire pour chaque secteur suivi.",
       "gov.ind.colIndustry": "Secteur",
       "gov.ind.colAffected": "Règles",
@@ -1417,7 +1417,7 @@ gov.risk.critical "Critical"
       "gov.ind.drivers": "Principaux facteurs",
       "gov.ind.chartTitle": "Charge composite par secteur",
 
-      "gov.cmp.title": "Comparer les scénarios",
+      "gov.cmp.title": "Comparaison de Scénarios",
       "gov.cmp.desc": "La référence face à trois changements modélisés au plus.",
       "gov.cmp.baselineName": "Référence actuelle",
       "gov.cmp.builder": "Créer un scénario",
@@ -1434,7 +1434,7 @@ gov.risk.critical "Critical"
       "gov.cmp.mVerdict": "Verdict",
       "gov.cmp.chartTitle": "Comparaison des scénarios",
 
-      "gov.scn.title": "Simulateur de scénarios",
+      "gov.scn.title": "Simulation de Paramètres",
       "gov.scn.desc": "Changez un paramètre et observez les conséquences en cascade.",
       "gov.scn.params": "Paramètres",
       "gov.scn.run": "Lancer la simulation",
@@ -1442,7 +1442,7 @@ gov.risk.critical "Critical"
       "gov.scn.traceability": "Hypothèses et traçabilité",
       "gov.scn.livePkg": "Paquet simulé en direct",
 
-      "gov.cop.title": "Copilote Gouvernemental",
+      "gov.cop.title": "Assistant de Décisions Gouvernementales",
       "gov.cop.desc": "Posez toutes vos questions — chaque réponse cite ses sources.",
       "gov.cop.placeholder": "Interrogez obligations, coûts, échéances…",
       "gov.cop.send": "Envoyer",
@@ -1469,7 +1469,7 @@ gov.risk.critical "Critical"
       "gov.sih.q13": "Préparation à l'approvisionnement",
       "gov.sih.q14": "Préparation à l'échelle",
 
-      "gov.con.title": "Consultations",
+      "gov.con.title": "Consultations Réglementaires",
       "gov.con.desc": "Fenêtres officielles de commentaires qui ont façonné ou façonneront ces règles.",
       "gov.con.window": "Fenêtre",
       "gov.con.outcome": "Issue",
@@ -1483,7 +1483,7 @@ gov.risk.critical "Critical"
     },
 
     de: {
-      "gov.sim.title": "Policy-Impact-Simulator",
+      "gov.sim.title": "Regulatorischer Impact-Simulator",
       "gov.sim.desc": "Wählen Sie eine Regelung und prüfen Sie eine Änderung im Stress test.", 
       "gov.sim.selectPolicy": "Regelung",
       "gov.sim.changeType": "Änderungsart",
@@ -1522,7 +1522,7 @@ gov.risk.critical "Critical"
       "gov.anz.topDim": "Stärkste Dimension",
       "gov.anz.openDetail": "Details öffnen",
 
-      "gov.stk.title": "Wer ist betroffen",
+      "gov.stk.title": "Betroffene Interessengruppen",
       "gov.stk.desc": "Jede Gruppe, die dieses Regelpaket berührt.",
       "gov.stk.group": "Gruppe",
       "gov.stk.who": "Wer sie sind",
@@ -1532,7 +1532,7 @@ gov.risk.critical "Critical"
       "gov.stk.showDetail": "Detail pro Regel zeigen",
       "gov.stk.hideDetail": "Detail ausblenden",
 
-      "gov.out.title": "Was passieren könnte",
+      "gov.out.title": "Ergebnismodellierung",
       "gov.out.desc": "Modellierte Konsequenzen über drei Zeithorizonte.",
       "gov.out.tabShort": "0–6 Monate",
       "gov.out.tabMid": "6–18 Monate",
@@ -1541,7 +1541,7 @@ gov.risk.critical "Critical"
       "gov.out.severity": "Schweregrad",
       "gov.out.policyCol": "Zugehörige Regel",
 
-      "gov.ind.title": "Branchen-Auswirkungen",
+      "gov.ind.title": "Branchenübergreifende Lastenanalyse",
       "gov.ind.desc": "Regulatorische Last über alle erfassten Branchen.",
       "gov.ind.colIndustry": "Branche",
       "gov.ind.colAffected": "Regeln",
@@ -1553,7 +1553,7 @@ gov.risk.critical "Critical"
       "gov.ind.drivers": "Wichtigste Treiber",
       "gov.ind.chartTitle": "Gesamtlast nach Branche",
 
-      "gov.cmp.title": "Szenarien vergleichen",
+      "gov.cmp.title": "Szenarienvergleich",
       "gov.cmp.desc": "Basislinie gegenüber bis zu drei modellierten Änderungen.",
       "gov.cmp.baselineName": "Aktuelle Basislinie",
       "gov.cmp.builder": "Szenario erstellen",
@@ -1570,7 +1570,7 @@ gov.risk.critical "Critical"
       "gov.cmp.mVerdict": "Fazit",
       "gov.cmp.chartTitle": "Szenarienvergleich",
 
-      "gov.scn.title": "Szenario-Simulator",
+      "gov.scn.title": "Parametersimulation",
       "gov.scn.desc": "Ändern Sie einen Parameter und verfolgen Sie die Folgen.",
       "gov.scn.params": "Parameter",
       "gov.scn.run": "Simulation starten",
@@ -1578,7 +1578,7 @@ gov.risk.critical "Critical"
       "gov.scn.traceability": "Annahmen & Nachvollziehbarkeit",
       "gov.scn.livePkg": "Live-simuliertes Paket",
 
-      "gov.cop.title": "Regierungs-Copilot",
+      "gov.cop.title": "Regierungsentscheidungs-Assistent",
       "gov.cop.desc": "Fragen Sie alles zu diesem Paket — Antworten nennen ihre Quellen.",
       "gov.cop.placeholder": "Fragen Sie zu Pflichten, Kosten, Fristen…",
       "gov.cop.send": "Senden",
@@ -1605,7 +1605,7 @@ gov.risk.critical "Critical"
       "gov.sih.q13": "Beschaffungsbereitschaft",
       "gov.sih.q14": "Skalierungsbereitschaft",
 
-      "gov.con.title": "Konsultationen",
+      "gov.con.title": "Regulatorische Konsultationen",
       "gov.con.desc": "Offizielle Stellungnahmefenster, die diese Regeln geprägt haben oder prägen werden.",
       "gov.con.window": "Zeitraum",
       "gov.con.outcome": "Ergebnis",
@@ -1734,7 +1734,7 @@ gov.risk.critical "Critical"
       "gov.cop.q7": "Quais fontes são verificadas?",
       "gov.cop.q8": "Qual é o caminho crítico até o lançamento?",
 
-      "gov.con.title": "Consultas públicas",
+      "gov.con.title": "Consultas Regulatorias",
       "gov.con.desc": "Janelas oficiais de comentários que moldaram ou moldarão estas regras.",
       "gov.con.window": "Janela",
       "gov.con.outcome": "Resultado",

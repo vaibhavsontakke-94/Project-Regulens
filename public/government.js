@@ -16,6 +16,19 @@
     "gov-scale", "gov-copilot", "gov-consultations",
     "gov-workflow",
   ];
+  const GOV_VIEW_TITLES = {
+    "gov-analyzer": "Policy Analysis",
+    "policy-simulator": "Regulatory Impact Simulator",
+    "gov-stakeholders": "Stakeholder Impact",
+    "gov-outcomes": "Outcome Modeling",
+    "industry-impact": "Cross-Industry Burden Analysis",
+    "compare-scenarios": "Scenario Comparison",
+    "gov-scenario": "Parameter Simulation",
+    "gov-scale": "Scale-Up Assessment",
+    "gov-copilot": "Government Decision Assistant",
+    "gov-consultations": "Regulatory Consultations",
+    "gov-workflow": "Government Innovation Workflow",
+  };
   const CHANGE_TYPES = ["stricter", "relaxed", "activate", "repeal"];
   const LS_KEY = "regulens.govContext.v1";
 
@@ -826,7 +839,7 @@ case "gov-analyzer": renderAnalyzer(pkgReady); break;
     const stageData = {
       "01-register": {
         title: "01 REGISTER",
-        desc: "Business Registration",
+        desc: "Organization Registration",
         status: progress["01-register"] || "pending",
         completed: progress["01-register"] === "completed",
         /* Connect to business registration via pkg data */
@@ -843,56 +856,56 @@ case "gov-analyzer": renderAnalyzer(pkgReady); break;
         items: []
       },
       "03-gov-problem": {
-        title: "03 GOVERNMENT PROBLEM",
-        desc: "Government Problem",
+        title: "03 PROBLEM DEFINITION",
+        desc: "Government Problem Definition",
         status: progress["03-gov-problem"] || "pending",
         completed: progress["03-gov-problem"] === "completed",
         problem: pkgCtx.targetName ? { name: pkgCtx.targetName } : null,
-        cta: "Post Problem",
+        cta: "Define Problem",
         ctaUrl: "/#",
         items: []
       },
-      "04-ai-matching": {
-        title: "04 AI MATCHING",
-        desc: "AI Matching",
-        status: progress["04-ai-matching"] || "pending",
-        completed: progress["04-ai-matching"] === "completed",
+      "04-solution-discovery": {
+        title: "04 SOLUTION DISCOVERY",
+        desc: "Solution Discovery & Matching",
+        status: progress["04-solution-discovery"] || "pending",
+        completed: progress["04-solution-discovery"] === "completed",
         businesses: pkgCtx.matchedBusinesses || [],
-        cta: "Find Solutions",
+        cta: "Discover Solutions",
         ctaUrl: "#",
         items: []
       },
-      "05-select-business": {
-        title: "05 SELECT BUSINESS",
-        desc: "Select Business",
-        status: progress["05-select-business"] || "pending",
-        completed: progress["05-select-business"] === "completed",
+      "05-select-solution": {
+        title: "05 SOLUTION SELECTION",
+        desc: "Select Solution for Evaluation",
+        status: progress["05-select-solution"] || "pending",
+        completed: progress["05-select-solution"] === "completed",
         businesses: pkgCtx.selectedBusiness ? [pkgCtx.selectedBusiness] : [],
         cta: "Review Solutions",
         ctaUrl: "#",
         items: []
       },
       "06-analyze": {
-        title: "06 ANALYZE",
-        desc: "Analysis",
+        title: "06 SOLUTION EVALUATION",
+        desc: "Solution Evaluation",
         status: progress["06-analyze"] || "pending",
         completed: progress["06-analyze"] === "completed",
-        cta: "View Analysis",
+        cta: "View Evaluation",
         ctaUrl: "#",
         items: []
       },
       "07-decision": {
-        title: "07 DECISION",
-        desc: "Decision Point",
+        title: "07 DECISION POINT",
+        desc: "Go/No-Go Decision",
         status: progress["07-decision"] || "pending",
         completed: progress["07-decision"] === "completed",
-        cta: "Make Decision",
+        cta: "Record Decision",
         ctaUrl: "#",
         items: []
       },
       "08-predict": {
-        title: "08 PREDICT / TEST",
-        desc: "Predict / Test",
+        title: "08 SCENARIO MODELING",
+        desc: "Scenario Modeling",
         status: progress["08-predict"] || "pending",
         completed: progress["08-predict"] === "completed",
         cta: "Run Scenarios",
@@ -900,8 +913,8 @@ case "gov-analyzer": renderAnalyzer(pkgReady); break;
         items: []
       },
       "09-pilot": {
-        title: "09 PILOT",
-        desc: "Pilot",
+        title: "09 PILOT EXECUTION",
+        desc: "Pilot Management",
         status: progress["09-pilot"] || "pending",
         completed: progress["09-pilot"] === "completed",
         cta: "Manage Pilot",
@@ -918,11 +931,11 @@ case "gov-analyzer": renderAnalyzer(pkgReady); break;
         items: []
       },
       "11-scale": {
-        title: "11 SCALE",
-        desc: "Scale",
+        title: "11 SCALE-UP ASSESSMENT",
+        desc: "Scale-Up Assessment",
         status: progress["11-scale"] || "pending",
         completed: progress["11-scale"] === "completed",
-        cta: "Impact Scaling",
+        cta: "Assess Scale-Up",
         ctaUrl: "#",
         items: []
       }
@@ -934,7 +947,7 @@ case "gov-analyzer": renderAnalyzer(pkgReady); break;
     const pendingStages = allStages.filter(s => !s.completed && s.status !== "completed");
     
     /* Determine progress bar widths */
-    const stageOrder = ["01-register", "02-verify", "03-gov-problem", "04-ai-matching", "05-select-business", "06-analyze", "07-decision", "08-predict", "09-pilot", "10-procurement", "11-scale"];
+    const stageOrder = ["01-register", "02-verify", "03-gov-problem", "04-solution-discovery", "05-select-solution", "06-analyze", "07-decision", "08-predict", "09-pilot", "10-procurement", "11-scale"];
     const stageProgress = stageOrder.map((s, i) => {
       const d = stageData[s];
       const isCompleted = d.completed;
