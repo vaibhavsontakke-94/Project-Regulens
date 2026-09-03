@@ -28,6 +28,12 @@ const app = express();
 const PORT = process.env.PORT || 3000;
 
 app.use(express.json({ type: "application/json", limit: "2mb" }));
+
+/* Serve index.html at root - MUST be before static middleware */
+app.get("/", (req, res) => {
+  res.sendFile(path.join(__dirname, "public", "index.html"));
+});
+
 app.use(express.static(path.join(__dirname, "public")));
 
 /* Serve the shared core to the browser as a classic script (window.RegulensCore). */

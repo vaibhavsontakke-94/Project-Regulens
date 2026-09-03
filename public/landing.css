@@ -210,7 +210,7 @@ body.dark .lctl .icon-sun { display: none; }
 
 .lheadline {
   margin: 26px 0 0;
-  max-width: 21ch;
+  max-width: 38ch;
   font-size: clamp(2.15rem, 5.4vw, 4.35rem);
   line-height: 1.08;
   font-weight: 800;

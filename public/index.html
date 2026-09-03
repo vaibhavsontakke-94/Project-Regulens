@@ -116,7 +116,7 @@
     <div class="landing-scroll" id="landingScroll">
       <section class="landing-hero" id="landingHero">
         <span class="lbadge"><span class="lbadge-dot"></span><span data-i18n="landing.badge">AI-Powered Regulatory Intelligence</span></span>
-        <h1 class="lheadline" id="landingHeadline" data-i18n="landing.headline">From Government Problems to Procurement-Ready Solutions — Powered by Evidence and AI</h1>
+        <h1 class="lheadline" id="landingHeadline" data-i18n="landing.headline" data-lkey="landing.headline">From Government Problems to Procurement-Ready Solutions — Powered by Evidence and AI</h1>
         <p class="lsub" id="landingSub" data-i18n="landing.sub">REGULENS helps Government discover, evaluate, pilot and validate innovative solutions before making procurement and scale-up decisions.</p>
         <div class="lcta-row" id="landingCtaRow">
           <button class="lbtn lbtn-primary" id="landingStartBtn" type="button">
@@ -276,7 +276,7 @@
       </button>
       <button class="nav-item" data-module="copilot">
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/><path d="M8 9h8"/><path d="M8 13h5"/></svg>
-        <span data-i18n="nav.module.copilot">Decision Support Assistant</span>
+        <span data-i18n="nav.module.copilot">Decision Assistant</span>
       </button>
 
       <span class="nav-label" data-i18n="nav.group.workspace">WORKSPACE</span>
@@ -291,9 +291,9 @@
         <span class="help-card-icon">
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2a2 2 0 0 1 2 2v1h4a2 2 0 0 1 2 2v9a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V7a2 2 0 0 1 2-2h4V4a2 2 0 0 1 2-2z"/></svg>
         </span>
-        <p class="help-card-title" data-i18n="copilot.helpTitle">Ask Decision Support</p>
+        <p class="help-card-title" data-i18n="copilot.helpTitle">Ask Decision Assistant</p>
         <p class="help-card-text" data-i18n="copilot.helpText">Chat with your analysis assistant</p>
-        <button class="btn btn-primary btn-block" id="copilotBtn" data-i18n="copilot.helpBtn">Ask Decision Support</button>
+        <button class="btn btn-primary btn-block" id="copilotBtn" data-i18n="copilot.helpBtn">Ask Decision Assistant</button>
       </div>
     </div>
   </aside>
@@ -572,7 +572,7 @@
         </footer>
       </section>
 
-<!-- ───────────── REGISTRATION PORTAL ───────────── -->
+<!-- ───────────── ORGANIZATION REGISTRATION ───────────── -->
       <section class="view hidden" id="view-registration-portal">
         <div class="page-head">
           <div class="page-head-left">
@@ -623,12 +623,12 @@
         <div class="registration-progress" data-i18n="regPortal.profileCompletion">Profile Completion: 0%</div>
       </section>
 
-      <!-- ───────────── FEASIBILITY ANALYZER ───────────── -->
+      <!-- ───────────── FEASIBILITY ASSESSMENT ───────────── -->
       <section class="view hidden" id="view-feasibility">
         <div class="page-head">
           <div class="page-head-left">
-            <nav class="crumbs"><a href="#" class="crumb" data-goto="dashboard">Dashboard</a><span class="crumb-sep">/</span><span class="crumb crumb-current" data-i18n="crumb.feasibility">Feasibility Analyzer</span></nav>
-            <h1 class="page-title" data-i18n="feas.title">Business Feasibility Analyzer</h1>
+            <nav class="crumbs"><a href="#" class="crumb" data-goto="dashboard">Dashboard</a><span class="crumb-sep">/</span><span class="crumb crumb-current" data-i18n="crumb.feasibility">Feasibility Assessment</span></nav>
+            <h1 class="page-title" data-i18n="feas.title">Feasibility Assessment</h1>
             <p class="page-desc" data-i18n="feas.desc">Describe your business idea and get an honest feasibility evaluation for your target market.</p>
           </div>
         </div>
@@ -733,12 +733,12 @@
         </div>
       </section>
 
-      <!-- ───────────── SETUP GUIDE ───────────── -->
+      <!-- ───────────── LAUNCH PLAN ───────────── -->
       <section class="view hidden" id="view-setup-guide">
         <div class="page-head">
           <div class="page-head-left">
-            <nav class="crumbs"><a href="#" class="crumb" data-goto="dashboard">Dashboard</a><span class="crumb-sep">/</span><span class="crumb crumb-current" data-i18n="crumb.setupGuide">Setup Guide</span></nav>
-            <h1 class="page-title" data-i18n="guide.title">Step-by-Step Setup Guide</h1>
+            <nav class="crumbs"><a href="#" class="crumb" data-goto="dashboard">Dashboard</a><span class="crumb-sep">/</span><span class="crumb crumb-current" data-i18n="crumb.setupGuide">Launch Plan</span></nav>
+            <h1 class="page-title" data-i18n="guide.title">Launch Plan</h1>
             <p class="page-desc" data-i18n="guide.desc">Your launch path as a sequential checklist, generated from your analysis. Progress is saved locally.</p>
           </div>
           <div class="guide-progress">
@@ -760,14 +760,15 @@
         </div>
       </section>
 
-      <!-- ───────────── POLICY CHECKER ───────────── -->
+<!-- ───────────── POLICY INQUIRY ───────────── -->
       <section class="view hidden" id="view-policy-checker">
         <div class="page-head">
           <div class="page-head-left">
-            <nav class="crumbs"><a href="#" class="crumb" data-goto="dashboard">Dashboard</a><span class="crumb-sep">/</span><span class="crumb crumb-current" data-i18n="crumb.policyChecker">Policy Checker</span></nav>
-            <h1 class="page-title" data-i18n="pc.title">AI Country Policy Checker</h1>
-            <p class="page-desc" data-i18n="pc.desc">Ask a concrete policy or compliance question about a target market and get a grounded answer.</p>
+            <nav class="crumbs"><a href="#" class="crumb" data-goto="dashboard">Dashboard</a><span class="crumb-sep">/</span><span class="crumb crumb-current" data-i18n="crumb.policyChecker">Policy Inquiry</span></nav>
+            <h1 class="page-title" data-i18n="pc.title">Policy Inquiry</h1>
+            <p class="page-desc" data-i18n="pc.desc">Ask a concrete policy or compliance question about a target market and get a grounded answer.
           </div>
+        </div>
         </div>
 
         <div class="card">
@@ -832,12 +833,12 @@
         </div>
       </section>
 
-      <!-- ───────────── BUSINESS HEALTH ───────────── -->
+      <!-- ───────────── BUSINESS HEALTH SCORECARD ───────────── -->
       <section class="view hidden" id="view-business-health">
         <div class="page-head">
           <div class="page-head-left">
-            <nav class="crumbs"><a href="#" class="crumb" data-goto="dashboard">Dashboard</a><span class="crumb-sep">/</span><span class="crumb crumb-current" data-i18n="crumb.businessHealth">Business Health</span></nav>
-            <h1 class="page-title" data-i18n="bh.title">Business Health Monitor</h1>
+            <nav class="crumbs"><a href="#" class="crumb" data-goto="dashboard">Dashboard</a><span class="crumb-sep">/</span><span class="crumb crumb-current" data-i18n="crumb.businessHealth">Business Health Scorecard</span></nav>
+            <h1 class="page-title" data-i18n="bh.title">Business Health Scorecard</h1>
             <p class="page-desc" data-i18n="bh.desc">A live scorecard computed from your compliance progress, gaps, risks and documentation — plus integrity signals.</p>
           </div>
           <div class="guide-progress">
@@ -878,7 +879,7 @@
         <div class="page-head">
           <div class="page-head-left">
             <nav class="crumbs"><a href="#" class="crumb" data-goto="dashboard">Dashboard</a><span class="crumb-sep">/</span><span class="crumb crumb-current" data-i18n="nav.agentIntel">Agent Intelligence</span></nav>
-            <h1 class="page-title">Agent Intelligence</h1>
+            <h1 class="page-title" data-i18n="nav.agentIntel">Agent Intelligence</h1>
           </div>
         </div>
 
@@ -1012,12 +1013,12 @@
         </div>
       </section>
 
-      <!-- ───────────── ACTION PLAN ───────────── -->
+      <!-- ───────────── REMediation PLAN ───────────── -->
       <section class="view hidden" id="view-action-plan">
         <div class="page-head">
           <div class="page-head-left">
-            <nav class="crumbs"><a href="#" class="crumb" data-goto="dashboard">Dashboard</a><span class="crumb-sep">/</span><span class="crumb crumb-current" data-i18n="nav.actionPlan">Action Plan</span></nav>
-            <h1 class="page-title">Action Plan</h1>
+            <nav class="crumbs"><a href="#" class="crumb" data-goto="dashboard">Dashboard</a><span class="crumb-sep">/</span><span class="crumb crumb-current" data-i18n="nav.actionPlan">Remediation Plan</span></nav>
+            <h1 class="page-title">Remediation Plan</h1>
           </div>
         </div>
         <div class="card">
@@ -1037,12 +1038,12 @@
         </div>
       </section>
 
-      <!-- ───────────── COST ESTIMATOR ───────────── -->
+      <!-- ───────────── COST ESTIMATION ───────────── -->
       <section class="view hidden" id="view-cost-estimator">
         <div class="page-head">
           <div class="page-head-left">
-            <nav class="crumbs"><a href="#" class="crumb" data-goto="dashboard">Dashboard</a><span class="crumb-sep">/</span><span class="crumb crumb-current" data-i18n="nav.costEstimator">Cost Estimator</span></nav>
-            <h1 class="page-title">Cost Estimator</h1>
+            <nav class="crumbs"><a href="#" class="crumb" data-goto="dashboard">Dashboard</a><span class="crumb-sep">/</span><span class="crumb crumb-current" data-i18n="nav.costEstimator">Cost Estimation</span></nav>
+            <h1 class="page-title">Cost Estimation</h1>
           </div>
         </div>
         <div class="grid grid-3">
@@ -1060,13 +1061,12 @@
       </section>
       </section>
 
-      <!-- ───────────── DOCUMENT LIBRARY ───────────── -->
-      <!-- ───────────── HISTORY ───────────── -->
+      <!-- ───────────── ANALYSIS HISTORY ───────────── -->
       <section class="view hidden" id="view-history">
         <div class="page-head">
           <div class="page-head-left">
-            <nav class="crumbs"><a href="#" class="crumb" data-goto="dashboard">Dashboard</a><span class="crumb-sep">/</span><span class="crumb crumb-current" data-i18n="nav.history">History</span></nav>
-            <h1 class="page-title">History</h1>
+            <nav class="crumbs"><a href="#" class="crumb" data-goto="dashboard">Dashboard</a><span class="crumb-sep">/</span><span class="crumb crumb-current" data-i18n="nav.history">Analysis History</span></nav>
+            <h1 class="page-title">Analysis History</h1>
           </div>
           <div class="page-head-actions">
             <button class="btn btn-outline btn-sm" id="historyRefreshBtn">
@@ -1089,18 +1089,18 @@
         </div>
       </section>
 
-      <!-- ───────────── AI ASSISTANT ───────────── -->
+      <!-- ───────────── DECISION ASSISTANT ───────────── -->
       <section class="view hidden" id="view-assistant">
         <div class="page-head">
           <div class="page-head-left">
-            <nav class="crumbs"><a href="#" class="crumb" data-goto="dashboard">Dashboard</a><span class="crumb-sep">/</span><span class="crumb crumb-current" data-i18n="nav.assistant">AI Assistant</span></nav>
-            <h1 class="page-title">AI Assistant</h1>
+            <nav class="crumbs"><a href="#" class="crumb" data-goto="dashboard">Dashboard</a><span class="crumb-sep">/</span><span class="crumb crumb-current" data-i18n="nav.assistant">Decision Assistant</span></nav>
+            <h1 class="page-title">Decision Assistant</h1>
           </div>
           <div class="page-head-actions">
             <button class="btn btn-ghost btn-sm" id="aiChatClear">Clear chat</button>
           </div>
         </div>
-        <p class="page-desc">Chat with the ReguLens AI assistant. Attach a document to ask questions about its contents.</p>
+        <p class="page-desc">Chat with the ReguLens Decision Assistant. Attach a document to ask questions about its contents.</p>
         <div class="card">
           <div class="assistant-log" id="aiChatLog"></div>
           <div class="cop-chips" id="aiDocChips"></div>
@@ -1204,24 +1204,24 @@
         </div>
       </section>
 
-      <!-- ───────────── GOV ANALYZER ───────────── -->
+      <!-- ───────────── POLICY INTELLIGENCE ───────────── -->
       <section class="view hidden" id="view-gov-analyzer">
         <div class="page-head">
           <div class="page-head-left">
-            <nav class="crumbs"><a href="#" class="crumb" data-goto="dashboard">Dashboard</a><span class="crumb-sep">/</span><span class="crumb crumb-current" data-i18n="gov.nav.analyzer">Policy Analysis</span></nav>
-            <h1 class="page-title" data-i18n="gov.anz.title">Policy Analysis</h1>
+            <nav class="crumbs"><a href="#" class="crumb" data-goto="dashboard">Dashboard</a><span class="crumb-sep">/</span><span class="crumb crumb-current" data-i18n="gov.nav.analyzer">Policy Intelligence</span></nav>
+            <h1 class="page-title" data-i18n="gov.anz.title">Policy Intelligence</h1>
           </div>
         </div>
         <div class="gov-ctx-slot"></div>
         <div id="govAnzBody"></div>
       </section>
 
-      <!-- ───────────── REGULATORY IMPACT SIMULATOR ───────────── -->
+      <!-- ───────────── IMPACT SIMULATOR ───────────── -->
       <section class="view hidden" id="view-policy-simulator">
         <div class="page-head">
           <div class="page-head-left">
-            <nav class="crumbs"><a href="#" class="crumb" data-goto="dashboard">Dashboard</a><span class="crumb-sep">/</span><span class="crumb crumb-current" data-i18n="gov.nav.simulator">Regulatory Impact Simulator</span></nav>
-            <h1 class="page-title" data-i18n="gov.sim.title">Regulatory Impact Simulator</h1>
+            <nav class="crumbs"><a href="#" class="crumb" data-goto="dashboard">Dashboard</a><span class="crumb-sep">/</span><span class="crumb crumb-current" data-i18n="gov.nav.simulator">Impact Simulator</span></nav>
+            <h1 class="page-title" data-i18n="gov.sim.title">Impact Simulator</h1>
           </div>
         </div>
         <div class="gov-ctx-slot"></div>
@@ -1257,12 +1257,12 @@
         <div id="simResultBody"></div>
       </section>
 
-      <!-- ───────────── STAKEHOLDER IMPACT ───────────── -->
+      <!-- ───────────── STAKEHOLDER ANALYSIS ───────────── -->
       <section class="view hidden" id="view-gov-stakeholders">
         <div class="page-head">
           <div class="page-head-left">
-            <nav class="crumbs"><a href="#" class="crumb" data-goto="dashboard">Dashboard</a><span class="crumb-sep">/</span><span class="crumb crumb-current" data-i18n="gov.nav.stakeholders">Stakeholder Impact</span></nav>
-            <h1 class="page-title" data-i18n="gov.stk.title">Stakeholder Impact</h1>
+            <nav class="crumbs"><a href="#" class="crumb" data-goto="dashboard">Dashboard</a><span class="crumb-sep">/</span><span class="crumb crumb-current" data-i18n="gov.nav.stakeholders">Stakeholder Analysis</span></nav>
+            <h1 class="page-title" data-i18n="gov.stk.title">Stakeholder Analysis</h1>
           </div>
         </div>
         <div class="gov-ctx-slot"></div>
@@ -1288,12 +1288,12 @@
         <div id="govOutBody"></div>
       </section>
 
-      <!-- ───────────── INDUSTRY IMPACT ───────────── -->
+      <!-- ───────────── INDUSTRY BURDEN ANALYSIS ───────────── -->
       <section class="view hidden" id="view-industry-impact">
         <div class="page-head">
           <div class="page-head-left">
-            <nav class="crumbs"><a href="#" class="crumb" data-goto="dashboard">Dashboard</a><span class="crumb-sep">/</span><span class="crumb crumb-current" data-i18n="gov.nav.industry">Industry Impact</span></nav>
-            <h1 class="page-title" data-i18n="gov.ind.title">Cross-Industry Burden Analysis</h1>
+            <nav class="crumbs"><a href="#" class="crumb" data-goto="dashboard">Dashboard</a><span class="crumb-sep">/</span><span class="crumb crumb-current" data-i18n="gov.nav.industry">Industry Burden Analysis</span></nav>
+            <h1 class="page-title" data-i18n="gov.ind.title">Industry Burden Analysis</h1>
           </div>
         </div>
         <div class="gov-ctx-slot"></div>
@@ -1405,12 +1405,12 @@
         <div id="scnResultBody"></div>
       </section>
 
-      <!-- ───────────── GOVERNMENT DECISION ASSISTANT ───────────── -->
+      <!-- ───────────── DECISION ASSISTANT ───────────── -->
       <section class="view hidden" id="view-gov-copilot">
         <div class="page-head">
           <div class="page-head-left">
-            <nav class="crumbs"><a href="#" class="crumb" data-goto="dashboard">Dashboard</a><span class="crumb-sep">/</span><span class="crumb crumb-current" data-i18n="gov.nav.copilot">Government Decision Assistant</span></nav>
-            <h1 class="page-title" data-i18n="gov.cop.title">Government Decision Assistant</h1>
+            <nav class="crumbs"><a href="#" class="crumb" data-goto="dashboard">Dashboard</a><span class="crumb-sep">/</span><span class="crumb crumb-current" data-i18n="gov.nav.copilot">Decision Assistant</span></nav>
+            <h1 class="page-title" data-i18n="gov.cop.title">Decision Assistant</h1>
           </div>
           <div class="page-head-actions">
             <span class="badge badge-mode" id="govCopMode"></span>
@@ -1466,7 +1466,7 @@
       <section class="view hidden" id="view-sih-procurement">
         <div class="page-head">
           <div class="page-head-left">
-            <nav class="crumbs"><a href="#" class="crumb" data-goto="dashboard">Dashboard</a><span class="crumb-sep">/</span><span class="crumb crumb-current">Innovation Procurement</span></nav>
+            <nav class="crumbs"><a href="#" class="crumb" data-goto="dashboard">Dashboard</a><span class="crumb-sep">/</span><span class="crumb crumb-current" data-i18n="nav.sih">Innovation Procurement</span></nav>
             <h1 class="page-title" data-i18n="nav.sih">Innovation Procurement</h1>
           </div>
         </div>
@@ -1477,7 +1477,7 @@
       <section class="view hidden" id="view-sih-startup">
         <div class="page-head">
           <div class="page-head-left">
-            <nav class="crumbs"><a href="#" class="crumb" data-goto="dashboard">Dashboard</a><span class="crumb-sep">/</span><span class="crumb crumb-current">Solution Profiles</span></nav>
+            <nav class="crumbs"><a href="#" class="crumb" data-goto="dashboard">Dashboard</a><span class="crumb-sep">/</span><span class="crumb crumb-current" data-i18n="nav.sihstartup">Solution Profiles</span></nav>
             <h1 class="page-title" data-i18n="nav.sihstartup">Solution Profiles</h1>
           </div>
         </div>
@@ -1488,7 +1488,7 @@
       <section class="view hidden" id="view-sih-eligibility">
         <div class="page-head">
           <div class="page-head-left">
-            <nav class="crumbs"><a href="#" class="crumb" data-goto="dashboard">Dashboard</a><span class="crumb-sep">/</span><span class="crumb crumb-current">Eligibility Assessment</span></nav>
+            <nav class="crumbs"><a href="#" class="crumb" data-goto="dashboard">Dashboard</a><span class="crumb-sep">/</span><span class="crumb crumb-current" data-i18n="nav.siheligibility">Eligibility Assessment</span></nav>
             <h1 class="page-title" data-i18n="nav.siheligibility">Eligibility Assessment</h1>
           </div>
         </div>
@@ -1499,7 +1499,7 @@
       <section class="view hidden" id="view-sih-matching">
         <div class="page-head">
           <div class="page-head-left">
-            <nav class="crumbs"><a href="#" class="crumb" data-goto="dashboard">Dashboard</a><span class="crumb-sep">/</span><span class="crumb crumb-current">Solution Matching</span></nav>
+            <nav class="crumbs"><a href="#" class="crumb" data-goto="dashboard">Dashboard</a><span class="crumb-sep">/</span><span class="crumb crumb-current" data-i18n="nav.sihmatching">Solution Matching</span></nav>
             <h1 class="page-title" data-i18n="nav.sihmatching">Solution Matching</h1>
           </div>
         </div>
@@ -1510,7 +1510,7 @@
       <section class="view hidden" id="view-sih-evaluation">
         <div class="page-head">
           <div class="page-head-left">
-            <nav class="crumbs"><a href="#" class="crumb" data-goto="dashboard">Dashboard</a><span class="crumb-sep">/</span><span class="crumb crumb-current">Solution Evaluation</span></nav>
+            <nav class="crumbs"><a href="#" class="crumb" data-goto="dashboard">Dashboard</a><span class="crumb-sep">/</span><span class="crumb crumb-current" data-i18n="nav.siheval">Solution Evaluation</span></nav>
             <h1 class="page-title" data-i18n="nav.siheval">Solution Evaluation</h1>
           </div>
         </div>

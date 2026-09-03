@@ -7,16 +7,16 @@
     /* ═══════════════ ENGLISH ═══════════════ */
     en: {
 "gov.nav.dashboard": "Government Dashboard",
-      "gov.nav.analyzer": "Policy Analysis",
-      "gov.nav.simulator": "Regulatory Impact Simulator",
-      "gov.nav.stakeholders": "Stakeholder Impact",
+      "gov.nav.analyzer": "Policy Intelligence",
+      "gov.nav.simulator": "Impact Simulator",
+      "gov.nav.stakeholders": "Stakeholder Analysis",
       "gov.nav.outcomes": "Outcome Modeling",
-      "gov.nav.industry": "Cross-Industry Burden Analysis",
+      "gov.nav.industry": "Industry Burden Analysis",
       "gov.nav.compare": "Scenario Comparison",
       "gov.nav.scenario": "Parameter Simulation",
-      "gov.nav.copilot": "Government Decision Assistant",
+      "gov.nav.copilot": "Decision Assistant",
       "gov.nav.consultations": "Regulatory Consultations",
-  "gov.nav.myproblems": "Problem Management",
+  "gov.nav.myproblems": "Problem Definition",
   "gov.nav.findsolutions": "Solution Discovery",
   "gov.nav.solutions": "Solution Evaluation",
   "gov.nav.compliancecenter": "Compliance Assessment",
@@ -108,14 +108,14 @@
     /* ═══════════════ SPANISH ═══════════════ */
     es: {
       "gov.nav.dashboard": "Panel",
-      "gov.nav.analyzer": "Analizador de políticas",
-      "gov.nav.simulator": "Simulador de impacto",
-      "gov.nav.stakeholders": "¿A quién afecta?",
-      "gov.nav.outcomes": "Qué podría pasar",
-      "gov.nav.industry": "Impacto sectorial",
-      "gov.nav.compare": "Comparar escenarios",
-      "gov.nav.scenario": "Simulador de escenarios",
-      "gov.nav.copilot": "Copiloto Gubernamental",
+      "gov.nav.analyzer": "Inteligencia de Políticas",
+      "gov.nav.simulator": "Simulador de Impacto",
+      "gov.nav.stakeholders": "Análisis de Partes Interesadas",
+      "gov.nav.outcomes": "Modelado de Resultados",
+      "gov.nav.industry": "Análisis de Carga Sectorial",
+      "gov.nav.compare": "Comparación de Escenarios",
+      "gov.nav.scenario": "Simulación de Parámetros",
+      "gov.nav.copilot": "Asistente de Decisiones",
       "gov.nav.consultations": "Consultas Regulatorias",
 
       "gov.ctx.title": "Contexto del análisis",
@@ -201,14 +201,14 @@
     /* ═══════════════ FRENCH ═══════════════ */
     fr: {
       "gov.nav.dashboard": "Tableau de bord",
-      "gov.nav.analyzer": "Analyseur de politiques",
-      "gov.nav.simulator": "Simulateur d'impact",
-      "gov.nav.stakeholders": "Qui est concerné",
-      "gov.nav.outcomes": "Ce qui pourrait arriver",
-      "gov.nav.industry": "Impact sectoriel",
-      "gov.nav.compare": "Comparer les scénarios",
-      "gov.nav.scenario": "Simulateur de scénarios",
-      "gov.nav.copilot": "Copilote Gouvernemental",
+      "gov.nav.analyzer": "Intelligence Politique",
+      "gov.nav.simulator": "Simulateur d'Impact",
+      "gov.nav.stakeholders": "Analyse des Parties Prenantes",
+      "gov.nav.outcomes": "Modélisation des Résultats",
+      "gov.nav.industry": "Analyse de Charge Sectorielle",
+      "gov.nav.compare": "Comparaison de Scénarios",
+      "gov.nav.scenario": "Simulation de Paramètres",
+      "gov.nav.copilot": "Assistant Décisionnel",
       "gov.nav.consultations": "Consultations Réglementaires",
 
       "gov.ctx.title": "Contexte de l'analyse",
@@ -294,15 +294,15 @@
     /* ═══════════════ GERMAN ═══════════════ */
     de: {
       "gov.nav.dashboard": "Dashboard",
-      "gov.nav.analyzer": "Policy-Analyse",
+      "gov.nav.analyzer": "Policy-Intelligenz",
       "gov.nav.simulator": "Impact-Simulator",
-      "gov.nav.stakeholders": "Wer ist betroffen",
-      "gov.nav.outcomes": "Was passieren könnte",
-      "gov.nav.industry": "Branchen-Auswirkungen",
-      "gov.nav.compare": "Szenarien vergleichen",
-      "gov.nav.scenario": "Szenario-Simulator",
-      "gov.nav.copilot": "Regierungs-Copilot",
-      "gov.nav.consultations": "Konsultationen",
+      "gov.nav.stakeholders": "Stakeholder-Analyse",
+      "gov.nav.outcomes": "Ergebnismodellierung",
+      "gov.nav.industry": "Branchen-Lastenanalyse",
+      "gov.nav.compare": "Szenarienvergleich",
+      "gov.nav.scenario": "Parametersimulation",
+      "gov.nav.copilot": "Entscheidungsassistent",
+      "gov.nav.consultations": "Regulatorische Konsultationen",
 
       "gov.ctx.title": "Analyse-Kontext",
       "gov.ctx.desc": "Ein Kontext versorgt alle Regierungs-Module.",
@@ -387,14 +387,14 @@
     /* ═══════════════ PORTUGUESE ═══════════════ */
     pt: {
       "gov.nav.dashboard": "Painel",
-      "gov.nav.analyzer": "Analisador de políticas",
-      "gov.nav.simulator": "Simulador de impacto",
-      "gov.nav.stakeholders": "Quem é afetado",
-      "gov.nav.outcomes": "O que pode acontecer",
-      "gov.nav.industry": "Impacto setorial",
-      "gov.nav.compare": "Comparar cenários",
-      "gov.nav.scenario": "Simulador de cenários",
-      "gov.nav.copilot": "Copiloto Governamental",
+      "gov.nav.analyzer": "Inteligência de Políticas",
+      "gov.nav.simulator": "Simulador de Impacto",
+      "gov.nav.stakeholders": "Análise de Partes Interessadas",
+      "gov.nav.outcomes": "Modelagem de Resultados",
+      "gov.nav.industry": "Análise de Carga Setorial",
+      "gov.nav.compare": "Comparação de Cenários",
+      "gov.nav.scenario": "Simulação de Parâmetros",
+      "gov.nav.copilot": "Assistente de Decisão",
       "gov.nav.consultations": "Consultas Regulatórias",
 
       "gov.ctx.title": "Contexto da análise",
@@ -480,14 +480,14 @@
     /* ═══════════════ RUSSIAN ═══════════════ */
     ru: {
       "gov.nav.dashboard": "Панель",
-      "gov.nav.analyzer": "Анализ политик",
-      "gov.nav.simulator": "Симулятор воздействия",
-      "gov.nav.stakeholders": "Кого это касается",
-      "gov.nav.outcomes": "Что может произойти",
-      "gov.nav.industry": "Влияние на отрасли",
-      "gov.nav.compare": "Сравнить сценарии",
-      "gov.nav.scenario": "Симулятор сценариев",
-      "gov.nav.copilot": "Гос-копилот",
+      "gov.nav.analyzer": "Интеллект Политик",
+      "gov.nav.simulator": "Симулятор Воздействия",
+      "gov.nav.stakeholders": "Анализ Заинтересованных Сторон",
+      "gov.nav.outcomes": "Моделирование Итогов",
+      "gov.nav.industry": "Анализ Нагрузки по Отраслям",
+      "gov.nav.compare": "Сравнение Сценариев",
+      "gov.nav.scenario": "Симуляция Параметров",
+      "gov.nav.copilot": "Помощник Решений",
       "gov.nav.consultations": "Консультации",
 
       "gov.ctx.title": "Контекст анализа",
@@ -573,15 +573,15 @@
     /* ═══════════════ JAPANESE ═══════════════ */
     ja: {
       "gov.nav.dashboard": "ダッシュボード",
-      "gov.nav.analyzer": "政策アナライザー",
+      "gov.nav.analyzer": "政策インテリジェンス",
       "gov.nav.simulator": "影響シミュレーター",
-      "gov.nav.stakeholders": "影響を受ける対象",
-      "gov.nav.outcomes": "起こりうること",
-      "gov.nav.industry": "業界への影響",
+      "gov.nav.stakeholders": "ステークホルダー分析",
+      "gov.nav.outcomes": "成果モデリング",
+      "gov.nav.industry": "業界負担分析",
       "gov.nav.compare": "シナリオ比較",
-      "gov.nav.scenario": "シナリオ・シミュレーター",
-      "gov.nav.copilot": "政府コパイロット",
-      "gov.nav.consultations": "パブリックコメント",
+      "gov.nav.scenario": "パラメータシミュレーション",
+      "gov.nav.copilot": "意思決定アシスタント",
+      "gov.nav.consultations": "規制関係協議",
 
       "gov.ctx.title": "分析コンテキスト",
       "gov.ctx.desc": "ひとつのコンテキストがすべての政府モジュールを駆動します。",
@@ -666,14 +666,14 @@
     /* ═══════════════ CHINESE (SIMPLIFIED) ═══════════════ */
     zh: {
       "gov.nav.dashboard": "仪表盘",
-      "gov.nav.analyzer": "政策分析器",
+      "gov.nav.analyzer": "政策情报",
       "gov.nav.simulator": "影响模拟器",
-      "gov.nav.stakeholders": "谁会受到影响",
-      "gov.nav.outcomes": "可能发生什么",
-      "gov.nav.industry": "行业影响",
+      "gov.nav.stakeholders": "利益相关方分析",
+      "gov.nav.outcomes": "结果建模",
+      "gov.nav.industry": "行业负担分析",
       "gov.nav.compare": "场景对比",
-      "gov.nav.scenario": "情景模拟器",
-      "gov.nav.copilot": "政务副驾",
+      "gov.nav.scenario": "参数模拟",
+      "gov.nav.copilot": "决策助手",
       "gov.nav.consultations": "公开征求意见",
 
       "gov.ctx.title": "分析上下文",
@@ -759,14 +759,14 @@
     /* ═══════════════ KOREAN ═══════════════ */
     ko: {
       "gov.nav.dashboard": "대시보드",
-      "gov.nav.analyzer": "정책 분석기",
+      "gov.nav.analyzer": "정책 인텔리전스",
       "gov.nav.simulator": "영향 시뮬레이터",
-      "gov.nav.stakeholders": "영향받는 대상",
-      "gov.nav.outcomes": "발생 가능한 일",
-      "gov.nav.industry": "산업 영향",
+      "gov.nav.stakeholders": "이해관계자 분석",
+      "gov.nav.outcomes": "결과 모델링",
+      "gov.nav.industry": "산업 부담 분석",
       "gov.nav.compare": "시나리오 비교",
-      "gov.nav.scenario": "시나리오 시뮬레이터",
-      "gov.nav.copilot": "정부 코파일럿",
+      "gov.nav.scenario": "파라미터 시뮬레이션",
+      "gov.nav.copilot": "의사결정 어시스턴트",
       "gov.nav.consultations": "의견 수렴",
 
       "gov.ctx.title": "분석 컨텍스트",
@@ -852,15 +852,15 @@
     /* ═══════════════ HINDI ═══════════════ */
     hi: {
       "gov.nav.dashboard": "डैशबोर्ड",
-      "gov.nav.analyzer": "नीति विश्लेषक",
+      "gov.nav.analyzer": "नीति इंटेलिजेंस",
       "gov.nav.simulator": "प्रभाव सिमुलेटर",
-      "gov.nav.stakeholders": "किन पर असर",
-      "gov.nav.outcomes": "क्या हो सकता है",
-      "gov.nav.industry": "उद्योग प्रभाव",
+      "gov.nav.stakeholders": "हितधारक विश्लेषण",
+      "gov.nav.outcomes": "परिणाम मॉडलिंग",
+      "gov.nav.industry": "उद्योग बोझ विश्लेषण",
       "gov.nav.compare": "परिदृश्य तुलना",
-      "gov.nav.scenario": "परिदृश्य सिमुलेटर",
-      "gov.nav.copilot": "सरकारी कोपायलट",
-      "gov.nav.consultations": "जनसुनवाई",
+      "gov.nav.scenario": "पैरामीटर सिमुलेशन",
+      "gov.nav.copilot": "निर्णय सहायक",
+      "gov.nav.consultations": "नियामक परामर्श",
 
       "gov.ctx.title": "विश्लेषण संदर्भ",
       "gov.ctx.desc": "एक ही संदर्भ सभी सरकारी मॉड्यूल को संचालित करता है।",
@@ -945,15 +945,15 @@
     /* ═══════════════ MARATHI ═══════════════ */
     mr: {
       "gov.nav.dashboard": "डॅशबोर्ड",
-      "gov.nav.analyzer": "धोरण विश्लेषक",
+      "gov.nav.analyzer": "धोरण माहिती",
       "gov.nav.simulator": "परिणाम सिम्युलेटर",
-      "gov.nav.stakeholders": "कोणावर परिणाम",
-      "gov.nav.outcomes": "काय घडू शकते",
-      "gov.nav.industry": "उद्योग परिणाम",
+      "gov.nav.stakeholders": "हितधारक विश्लेषण",
+      "gov.nav.outcomes": "परिणाम मॉडलिंग",
+      "gov.nav.industry": "उद्योग बोझ विश्लेषण",
       "gov.nav.compare": "परिदृश्य तुलना",
-      "gov.nav.scenario": "परिदृश्य सिम्युलेटर",
-      "gov.nav.copilot": "शासकीय कोपायलट",
-      "gov.nav.consultations": "सर्वसाधारण सूचना",
+      "gov.nav.scenario": "पैरामीटर सिम्युलेशन",
+      "gov.nav.copilot": "निर्णय सहायक",
+      "gov.nav.consultations": "नियामक परामर्श",
 
       "gov.ctx.title": "विश्लेषण संदर्भ",
       "gov.ctx.desc": "एकच संदर्भ सर्व शासकीय मॉड्यूल चालवते.",
@@ -1044,7 +1044,7 @@
   var P2 = {
 
     en: {
-"gov.sim.title": "Regulatory Impact Simulator",
+"gov.sim.title": "Impact Simulator",
       "gov.sim.desc": "Pick one regulation and stress-test a change against it.",
       "gov.sim.selectPolicy": "Regulation",
       "gov.sim.changeType": "Change type",
@@ -1071,7 +1071,7 @@
       "gov.sim.none": "No focus policy",
       "gov.sim.error": "This change does not apply here — adjust the parameters.",
 
-      "gov.anz.title": "Policy Analysis",
+      "gov.anz.title": "Policy Intelligence",
       "gov.anz.desc": "Straight answers about every rule that touches you.",
       "gov.anz.q1": "Which rules apply to me?",
       "gov.anz.q2": "Why do they apply to my product?",
@@ -1083,7 +1083,7 @@
       "gov.anz.topDim": "Strongest dimension",
       "gov.anz.openDetail": "Open policy details",
 
-      "gov.stk.title": "Stakeholder Impact",
+      "gov.stk.title": "Stakeholder Analysis",
       "gov.stk.desc": "Every group this regulatory package touches.",
       "gov.stk.group": "Group",
       "gov.stk.who": "Who they are",
@@ -1102,7 +1102,7 @@
       "gov.out.severity": "Severity",
       "gov.out.policyCol": "Related rule",
 
-      "gov.ind.title": "Cross-Industry Burden Analysis",
+      "gov.ind.title": "Industry Burden Analysis",
       "gov.ind.desc": "Regulatory burden across every tracked industry.",
       "gov.ind.colIndustry": "Industry",
       "gov.ind.colAffected": "Rules",
@@ -1211,7 +1211,7 @@
     },
 
     es: {
-      "gov.sim.title": "Simulador de Impacto Regulatorio",
+      "gov.sim.title": "Simulador de Impacto",
       "gov.sim.desc": "Elige un reglamento y somete un cambio a prueba de estrés.",
       "gov.sim.selectPolicy": "Reglamento",
       "gov.sim.changeType": "Tipo de cambio",
@@ -1238,7 +1238,7 @@
       "gov.sim.none": "Sin reglamento focal",
       "gov.sim.error": "Este cambio no aplica aquí — ajusta los parámetros.",
 
-      "gov.anz.title": "Análisis de Políticas",
+      "gov.anz.title": "Inteligencia de Políticas",
       "gov.anz.desc": "Respuestas directas sobre cada norma que te afecta.",
       "gov.anz.q1": "¿Qué normas me aplican?",
       "gov.anz.q2": "¿Por qué aplican a mi producto?",
@@ -1250,7 +1250,7 @@
       "gov.anz.topDim": "Dimensión más fuerte",
       "gov.anz.openDetail": "Abrir detalles de la norma",
 
-      "gov.stk.title": "Impacto en Grupos de Interés",
+      "gov.stk.title": "Análisis de Partes Interesadas",
       "gov.stk.desc": "Todos los grupos que toca este paquete regulatorio.",
       "gov.stk.group": "Grupo",
       "gov.stk.who": "Quiénes son",
@@ -1269,7 +1269,7 @@
       "gov.out.severity": "Severidad",
       "gov.out.policyCol": "Norma relacionada",
 
-      "gov.ind.title": "Análisis de Carga Transversal por Industria",
+      "gov.ind.title": "Análisis de Carga Sectorial",
       "gov.ind.desc": "Carga regulatoria en todas las industrias registradas.",
       "gov.ind.colIndustry": "Industria",
       "gov.ind.colAffected": "Normas",
@@ -1306,7 +1306,7 @@
       "gov.scn.traceability": "Supuestos y trazabilidad",
       "gov.scn.livePkg": "Paquete simulado en vivo",
 
-      "gov.cop.title": "Asistente de Decisiones Gubernamentales",
+      "gov.cop.title": "Asistente de Decisiones",
       "gov.cop.desc": "Pregunta lo que quieras sobre este paquete — las respuestas citan sus fuentes.",
       "gov.cop.placeholder": "Pregunta sobre obligaciones, costes, plazos…",
       "gov.cop.send": "Enviar",
@@ -1347,7 +1347,7 @@
     },
 
     fr: {
-      "gov.sim.title": "Simulateur d'Impact Réglementaire",
+      "gov.sim.title": "Simulateur d'Impact",
       "gov.sim.desc": "Choisissez une réglementation et testez un changement.",
       "gov.sim.selectPolicy": "Réglementation",
       "gov.sim.changeType": "Type de changement",
@@ -1374,7 +1374,7 @@
       "gov.sim.none": "Aucune réglementation ciblée",
       "gov.sim.error": "Ce changement ne s'applique pas ici — ajustez les paramètres.",
 
-      "gov.anz.title": "Analyse de Politiques",
+      "gov.anz.title": "Intelligence Politique",
       "gov.anz.desc": "Des réponses directes sur chaque règle qui vous concerne.",
       "gov.anz.q1": "Quelles règles s'appliquent à moi ?",
       "gov.anz.q2": "Pourquoi s'appliquent-elles à mon produit ?",
@@ -1386,7 +1386,7 @@
       "gov.anz.topDim": "Dimension dominante",
       "gov.anz.openDetail": "Ouvrir les détails",
 
-      "gov.stk.title": "Impact sur les Parties Prenantes",
+      "gov.stk.title": "Analyse des Parties Prenantes",
       "gov.stk.desc": "Tous les groupes touchés par ce paquet réglementaire.",
       "gov.stk.group": "Groupe",
       "gov.stk.who": "Qui ils sont",
@@ -1405,7 +1405,7 @@
       "gov.out.severity": "Gravité",
       "gov.out.policyCol": "Règle associée",
 
-      "gov.ind.title": "Analyse de Charge Transversale par Secteur",
+      "gov.ind.title": "Analyse de Charge Sectorielle",
       "gov.ind.desc": "Charge réglementaire pour chaque secteur suivi.",
       "gov.ind.colIndustry": "Secteur",
       "gov.ind.colAffected": "Règles",
@@ -1442,7 +1442,7 @@
       "gov.scn.traceability": "Hypothèses et traçabilité",
       "gov.scn.livePkg": "Paquet simulé en direct",
 
-      "gov.cop.title": "Assistant de Décisions Gouvernementales",
+      "gov.cop.title": "Assistant Décisionnel",
       "gov.cop.desc": "Posez toutes vos questions — chaque réponse cite ses sources.",
       "gov.cop.placeholder": "Interrogez obligations, coûts, échéances…",
       "gov.cop.send": "Envoyer",
@@ -1462,13 +1462,6 @@
       "gov.cop.q7": "Quelles sources sont vérifiées ?",
       "gov.cop.q8": "Quel est le chemin critique jusqu'au lancement ?",
 
-      "gov.sih.q9": "Score de correspondance",
-      "gov.sih.q10": "Verdict d'éligibilité",
-      "gov.sih.q11": "État de l'évaluation",
-      "gov.sih.q12": "Atteinte des KPI du pilote",
-      "gov.sih.q13": "Préparation à l'approvisionnement",
-      "gov.sih.q14": "Préparation à l'échelle",
-
       "gov.con.title": "Consultations Réglementaires",
       "gov.con.desc": "Fenêtres officielles de commentaires qui ont façonné ou façonneront ces règles.",
       "gov.con.window": "Fenêtre",
@@ -1483,7 +1476,7 @@
     },
 
     de: {
-      "gov.sim.title": "Regulatorischer Impact-Simulator",
+      "gov.sim.title": "Impact-Simulator",
       "gov.sim.desc": "Wählen Sie eine Regelung und prüfen Sie eine Änderung im Stress test.", 
       "gov.sim.selectPolicy": "Regelung",
       "gov.sim.changeType": "Änderungsart",
@@ -1510,7 +1503,7 @@
       "gov.sim.none": "Keine Fokusregelung",
       "gov.sim.error": "Diese Änderung greift hier nicht — Parameter anpassen.",
 
-      "gov.anz.title": "Policy-Analyse",
+      "gov.anz.title": "Policy-Intelligenz",
       "gov.anz.desc": "Klare Antworten zu jeder Regel, die Sie betrifft.",
       "gov.anz.q1": "Welche Regeln gelten für mich?",
       "gov.anz.q2": "Warum gelten sie für mein Produkt?",
@@ -1522,7 +1515,7 @@
       "gov.anz.topDim": "Stärkste Dimension",
       "gov.anz.openDetail": "Details öffnen",
 
-      "gov.stk.title": "Betroffene Interessengruppen",
+      "gov.stk.title": "Stakeholder-Analyse",
       "gov.stk.desc": "Jede Gruppe, die dieses Regelpaket berührt.",
       "gov.stk.group": "Gruppe",
       "gov.stk.who": "Wer sie sind",
@@ -1541,7 +1534,7 @@
       "gov.out.severity": "Schweregrad",
       "gov.out.policyCol": "Zugehörige Regel",
 
-      "gov.ind.title": "Branchenübergreifende Lastenanalyse",
+      "gov.ind.title": "Branchen-Lastenanalyse",
       "gov.ind.desc": "Regulatorische Last über alle erfassten Branchen.",
       "gov.ind.colIndustry": "Branche",
       "gov.ind.colAffected": "Regeln",
@@ -1578,7 +1571,7 @@
       "gov.scn.traceability": "Annahmen & Nachvollziehbarkeit",
       "gov.scn.livePkg": "Live-simuliertes Paket",
 
-      "gov.cop.title": "Regierungsentscheidungs-Assistent",
+      "gov.cop.title": "Entscheidungsassistent",
       "gov.cop.desc": "Fragen Sie alles zu diesem Paket — Antworten nennen ihre Quellen.",
       "gov.cop.placeholder": "Fragen Sie zu Pflichten, Kosten, Fristen…",
       "gov.cop.send": "Senden",
@@ -1598,13 +1591,6 @@
       "gov.cop.q7": "Welche Quellen sind verifiziert?",
       "gov.cop.q8": "Was ist der kritische Pfad zum Start?",
 
-      "gov.sih.q9": "Match-Score",
-      "gov.sih.q10": "Eignungsurteil",
-      "gov.sih.q11": "Evaluierungsstatus",
-      "gov.sih.q12": "KPI-Erreichung beim Pilot",
-      "gov.sih.q13": "Beschaffungsbereitschaft",
-      "gov.sih.q14": "Skalierungsbereitschaft",
-
       "gov.con.title": "Regulatorische Konsultationen",
       "gov.con.desc": "Offizielle Stellungnahmefenster, die diese Regeln geprägt haben oder prägen werden.",
       "gov.con.window": "Zeitraum",
@@ -1619,7 +1605,7 @@
     },
 
     pt: {
-      "gov.sim.title": "Simulador de impacto de políticas",
+      "gov.sim.title": "Simulador de Impacto",
       "gov.sim.desc": "Escolha uma regulamentação e teste uma mudança sob estresse.",
       "gov.sim.selectPolicy": "Regulamentação",
       "gov.sim.changeType": "Tipo de mudança",
@@ -1646,7 +1632,7 @@
       "gov.sim.none": "Sem regulamentação focal",
       "gov.sim.error": "Esta mudança não se aplica aqui — ajuste os parâmetros.",
 
-      "gov.anz.title": "Analisador de políticas",
+      "gov.anz.title": "Inteligência de Políticas",
       "gov.anz.desc": "Respostas diretas sobre cada regra que afeta você.",
       "gov.anz.q1": "Quais regras se aplicam a mim?",
       "gov.anz.q2": "Por que se aplicam ao meu produto?",
@@ -1658,7 +1644,7 @@
       "gov.anz.topDim": "Dimensão mais forte",
       "gov.anz.openDetail": "Abrir detalhes da norma",
 
-      "gov.stk.title": "Quem é afetado",
+      "gov.stk.title": "Análise de Partes Interessadas",
       "gov.stk.desc": "Todos os grupos que este pacote regulatório toca.",
       "gov.stk.group": "Grupo",
       "gov.stk.who": "Quem são",
@@ -1668,7 +1654,7 @@
       "gov.stk.showDetail": "Mostrar detalhe por regra",
       "gov.stk.hideDetail": "Ocultar detalhe",
 
-      "gov.out.title": "O que pode acontecer",
+      "gov.out.title": "Modelagem de Resultados",
       "gov.out.desc": "Consequências modeladas em três horizontes.",
       "gov.out.tabShort": "0–6 meses",
       "gov.out.tabMid": "6–18 meses",
@@ -1677,7 +1663,7 @@
       "gov.out.severity": "Severidade",
       "gov.out.policyCol": "Regra relacionada",
 
-      "gov.ind.title": "Impacto setorial",
+      "gov.ind.title": "Análise de Carga Setorial",
       "gov.ind.desc": "Carga regulatória em todos os setores monitorados.",
       "gov.ind.colIndustry": "Setor",
       "gov.ind.colAffected": "Regras",
@@ -1689,7 +1675,7 @@
       "gov.ind.drivers": "Principais fatores",
       "gov.ind.chartTitle": "Carga composta por setor",
 
-      "gov.cmp.title": "Comparar cenários",
+      "gov.cmp.title": "Comparação de Cenários",
       "gov.cmp.desc": "Linha de base versus até três mudanças modeladas.",
       "gov.cmp.baselineName": "Linha de base atual",
       "gov.cmp.builder": "Criar um cenário",
@@ -1706,7 +1692,7 @@
       "gov.cmp.mVerdict": "Veredito",
       "gov.cmp.chartTitle": "Comparação de cenários",
 
-      "gov.scn.title": "Simulador de cenários",
+      "gov.scn.title": "Simulação de Parâmetros",
       "gov.scn.desc": "Mude um parâmetro e veja as consequências em cascata.",
       "gov.scn.params": "Parâmetros",
       "gov.scn.run": "Executar simulação",
@@ -1714,7 +1700,7 @@
       "gov.scn.traceability": "Premissas e rastreabilidade",
       "gov.scn.livePkg": "Pacote simulado ao vivo",
 
-      "gov.cop.title": "Copiloto Governamental",
+      "gov.cop.title": "Assistente de Decisão",
       "gov.cop.desc": "Pergunte qualquer coisa sobre este pacote — as respostas citam as fontes.",
       "gov.cop.placeholder": "Pergunte sobre obrigações, custos, prazos…",
       "gov.cop.send": "Enviar",
@@ -1734,7 +1720,7 @@
       "gov.cop.q7": "Quais fontes são verificadas?",
       "gov.cop.q8": "Qual é o caminho crítico até o lançamento?",
 
-      "gov.con.title": "Consultas Regulatorias",
+      "gov.con.title": "Consultas Regulatórias",
       "gov.con.desc": "Janelas oficiais de comentários que moldaram ou moldarão estas regras.",
       "gov.con.window": "Janela",
       "gov.con.outcome": "Resultado",
@@ -1748,7 +1734,7 @@
     },
 
     ru: {
-      "gov.sim.title": "Симулятор воздействия политик",
+      "gov.sim.title": "Симулятор Воздействия",
       "gov.sim.desc": "Выберите акт и проверьте, как изменение повлияет на вас.",
       "gov.sim.selectPolicy": "Нормативный акт",
       "gov.sim.changeType": "Тип изменения",
@@ -1775,7 +1761,7 @@
       "gov.sim.none": "Без фокусного акта",
       "gov.sim.error": "Это изменение здесь неприменимо — скорректируйте параметры.",
 
-      "gov.anz.title": "Анализ политик",
+      "gov.anz.title": "Интеллект Политик",
       "gov.anz.desc": "Прямые ответы о каждом акте, который вас касается.",
       "gov.anz.q1": "Какие акты мне применяются?",
       "gov.anz.q2": "Почему они применяются к моему продукту?",
@@ -1787,7 +1773,7 @@
       "gov.anz.topDim": "Сильнейшее измерение",
       "gov.anz.openDetail": "Открыть детали акта",
 
-      "gov.stk.title": "Кого это касается",
+      "gov.stk.title": "Анализ Заинтересованных Сторон",
       "gov.stk.desc": "Все группы, затронутые этим пакетом норм.",
       "gov.stk.group": "Группа",
       "gov.stk.who": "Кто они",
@@ -1797,7 +1783,7 @@
       "gov.stk.showDetail": "Показать разбивку по актам",
       "gov.stk.hideDetail": "Скрыть разбивку",
 
-      "gov.out.title": "Что может произойти",
+      "gov.out.title": "Моделирование Итогов",
       "gov.out.desc": "Смоделированные последствия на трёх горизонтах.",
       "gov.out.tabShort": "0–6 месяцев",
       "gov.out.tabMid": "6–18 месяцев",
@@ -1806,7 +1792,7 @@
       "gov.out.severity": "Тяжесть",
       "gov.out.policyCol": "Связанный акт",
 
-      "gov.ind.title": "Влияние на отрасли",
+      "gov.ind.title": "Анализ Нагрузки по Отраслям",
       "gov.ind.desc": "Регуляторная нагрузка по всем отраслям базы.",
       "gov.ind.colIndustry": "Отрасль",
       "gov.ind.colAffected": "Акты",
@@ -1818,7 +1804,7 @@
       "gov.ind.drivers": "Главные драйверы",
       "gov.ind.chartTitle": "Совокупная нагрузка по отраслям",
 
-      "gov.cmp.title": "Сравнить сценарии",
+      "gov.cmp.title": "Сравнение Сценариев",
       "gov.cmp.desc": "База против до трёх смоделированных изменений.",
       "gov.cmp.baselineName": "Текущая база",
       "gov.cmp.builder": "Собрать сценарий",
@@ -1835,7 +1821,7 @@
       "gov.cmp.mVerdict": "Вердикт",
       "gov.cmp.chartTitle": "Сравнение сценариев",
 
-      "gov.scn.title": "Симулятор сценариев",
+      "gov.scn.title": "Симуляция Параметров",
       "gov.scn.desc": "Меняете один параметр — смотрите, как расходятся последствия.",
       "gov.scn.params": "Параметры",
       "gov.scn.run": "Запустить симуляцию",
@@ -1843,7 +1829,7 @@
       "gov.scn.traceability": "Допущения и прослеживаемость",
       "gov.scn.livePkg": "Живой смоделированный пакет",
 
-      "gov.cop.title": "Гос-копилот",
+      "gov.cop.title": "Помощник Решений",
       "gov.cop.desc": "Спросите о чём угодно в этом пакете — ответы ссылаются на источники.",
       "gov.cop.placeholder": "Спросите об обязательствах, стоимости, сроках…",
       "gov.cop.send": "Отправить",
@@ -1876,8 +1862,8 @@
       "gov.con.relatedRule": "Связанный акт"
     },
 
-    ja: {
-      "gov.sim.title": "政策影響シミュレーター",
+ja: {
+      "gov.sim.title": "影響シミュレーター",
       "gov.sim.desc": "規制をひとつ選び、変更の影響をストレステストします。",
       "gov.sim.selectPolicy": "規制",
       "gov.sim.changeType": "変更タイプ",
@@ -1904,7 +1890,7 @@
       "gov.sim.none": "対象規制なし",
       "gov.sim.error": "この変更はここでは適用できません — パラメータを調整してください。",
 
-      "gov.anz.title": "政策アナライザー",
+      "gov.anz.title": "政策インテリジェンス",
       "gov.anz.desc": "自社に関わるすべての規制への率直な回答。",
       "gov.anz.q1": "どの規制が適用されますか？",
       "gov.anz.q2": "なぜ自社製品に適用されるのですか？",
@@ -1916,7 +1902,7 @@
       "gov.anz.topDim": "最も強いディメンション",
       "gov.anz.openDetail": "規制の詳細を開く",
 
-      "gov.stk.title": "影響を受ける対象",
+      "gov.stk.title": "ステークホルダー分析",
       "gov.stk.desc": "この規制パッケージが触れるすべてのグループ。",
       "gov.stk.group": "グループ",
       "gov.stk.who": "どのような主体か",
@@ -1935,7 +1921,7 @@
       "gov.out.severity": "重大度",
       "gov.out.policyCol": "関連規制",
 
-      "gov.ind.title": "業界への影響",
+      "gov.ind.title": "業界負担分析",
       "gov.ind.desc": "追跡対象すべての業界における規制負荷。",
       "gov.ind.colIndustry": "業界",
       "gov.ind.colAffected": "規制数",
@@ -1964,7 +1950,7 @@
       "gov.cmp.mVerdict": "判定",
       "gov.cmp.chartTitle": "シナリオ比較チャート",
 
-      "gov.scn.title": "シナリオ・シミュレーター",
+      "gov.scn.title": "パラメータシミュレーション",
       "gov.scn.desc": "パラメータを1つ変えると、結果がどう波及するかを確認できます。",
       "gov.scn.params": "パラメータ",
       "gov.scn.run": "シミュレーション実行",
@@ -1972,7 +1958,7 @@
       "gov.scn.traceability": "前提とトレーサビリティ",
       "gov.scn.livePkg": "ライブ・シミュレーションパッケージ",
 
-      "gov.cop.title": "政府コパイロット",
+      "gov.cop.title": "意思決定アシスタント",
       "gov.cop.desc": "このパッケージについて何でも質問 — 回答は出典付き。",
       "gov.cop.placeholder": "義務・費用・期限について質問…",
       "gov.cop.send": "送信",
@@ -1992,7 +1978,7 @@
       "gov.cop.q7": "どのソースが確認済みですか？",
       "gov.cop.q8": "ローンチまでのクリティカルパスは？",
 
-      "gov.con.title": "パブリックコメント",
+      "gov.con.title": "規制関係協議",
       "gov.con.desc": "これらの規則を形作った／形作る公式の意見募集期間。",
       "gov.con.window": "募集期間",
       "gov.con.outcome": "結果",
@@ -2006,7 +1992,7 @@
     },
 
     zh: {
-      "gov.sim.title": "政策影响模拟器",
+      "gov.sim.title": "影响模拟器",
       "gov.sim.desc": "选择一项法规，对某项变化做压力测试。",
       "gov.sim.selectPolicy": "法规",
       "gov.sim.changeType": "变化类型",
@@ -2033,7 +2019,7 @@
       "gov.sim.none": "无焦点法规",
       "gov.sim.error": "该变化不适用于此 — 请调整参数。",
 
-      "gov.anz.title": "政策分析器",
+      "gov.anz.title": "政策情报",
       "gov.anz.desc": "对每一条涉及你的规则的直接解答。",
       "gov.anz.q1": "哪些规则适用于我？",
       "gov.anz.q2": "为什么它们适用于我的产品？",
@@ -2045,7 +2031,7 @@
       "gov.anz.topDim": "最强维度",
       "gov.anz.openDetail": "查看法规详情",
 
-      "gov.stk.title": "谁会受到影响",
+      "gov.stk.title": "利益相关方分析",
       "gov.stk.desc": "这套监管包涉及的每一个群体。",
       "gov.stk.group": "群体",
       "gov.stk.who": "他们是谁",
@@ -2064,7 +2050,7 @@
       "gov.out.severity": "严重程度",
       "gov.out.policyCol": "相关规则",
 
-      "gov.ind.title": "行业影响",
+      "gov.ind.title": "行业负担分析",
       "gov.ind.desc": "所有跟踪行业的监管负担。",
       "gov.ind.colIndustry": "行业",
       "gov.ind.colAffected": "规则数",
@@ -2093,7 +2079,7 @@
       "gov.cmp.mVerdict": "结论",
       "gov.cmp.chartTitle": "场景对比图",
 
-      "gov.scn.title": "情景模拟器",
+      "gov.scn.title": "参数模拟",
       "gov.scn.desc": "改变一个参数，观察后果如何连锁扩散。",
       "gov.scn.params": "参数",
       "gov.scn.run": "运行模拟",
@@ -2101,7 +2087,7 @@
       "gov.scn.traceability": "假设与可追溯性",
       "gov.scn.livePkg": "实时模拟数据包",
 
-      "gov.cop.title": "政务副驾",
+      "gov.cop.title": "决策助手",
       "gov.cop.desc": "关于这个包的一切都可以问 — 回答均附引用来源。",
       "gov.cop.placeholder": "询问义务、成本、截止日期…",
       "gov.cop.send": "发送",
@@ -2134,8 +2120,8 @@
       "gov.con.relatedRule": "相关规则"
     },
 
-    ko: {
-      "gov.sim.title": "정책 영향 시뮬레이터",
+ko: {
+      "gov.sim.title": "영향 시뮬레이터",
       "gov.sim.desc": "규제를 하나 선택하고 변경 영향을 스트레스 테스트합니다.",
       "gov.sim.selectPolicy": "규제",
       "gov.sim.changeType": "변경 유형",
@@ -2162,7 +2148,7 @@
       "gov.sim.none": "대상 규제 없음",
       "gov.sim.error": "이 변경은 여기에 적용되지 않습니다 — 매개변수를 조정하세요.",
 
-      "gov.anz.title": "정책 분석기",
+      "gov.anz.title": "정책 인텔리전스",
       "gov.anz.desc": "당신에게 적용되는 모든 규칙에 대한 직설적인 답변.",
       "gov.anz.q1": "어떤 규칙이 저에게 적용되나요?",
       "gov.anz.q2": "왜 우리 제품에 적용되나요?",
@@ -2174,7 +2160,7 @@
       "gov.anz.topDim": "가장 강한 차원",
       "gov.anz.openDetail": "규제 상세 열기",
 
-      "gov.stk.title": "영향받는 대상",
+      "gov.stk.title": "이해관계자 분석",
       "gov.stk.desc": "이 규제 패키지가 닿는 모든 그룹.",
       "gov.stk.group": "그룹",
       "gov.stk.who": "누구인가",
@@ -2193,7 +2179,7 @@
       "gov.out.severity": "심각도",
       "gov.out.policyCol": "관련 규칙",
 
-      "gov.ind.title": "산업 영향",
+      "gov.ind.title": "산업 부담 분석",
       "gov.ind.desc": "추적 중인 모든 산업의 규제 부담.",
       "gov.ind.colIndustry": "산업",
       "gov.ind.colAffected": "규칙 수",
@@ -2222,7 +2208,7 @@
       "gov.cmp.mVerdict": "판정",
       "gov.cmp.chartTitle": "시나리오 비교 차트",
 
-      "gov.scn.title": "시나리오 시뮬레이터",
+      "gov.scn.title": "파라미터 시뮬레이션",
       "gov.scn.desc": "매개변수 하나를 바꾸고 결과가 어떻게 연쇄되는지 보세요.",
       "gov.scn.params": "매개변수",
       "gov.scn.run": "시뮬레이션 실행",
@@ -2230,7 +2216,7 @@
       "gov.scn.traceability": "가정과 추적성",
       "gov.scn.livePkg": "실시간 시뮬레이션 패키지",
 
-      "gov.cop.title": "정부 코파일럿",
+      "gov.cop.title": "의사결정 어시스턴트",
       "gov.cop.desc": "이 패키지에 대해 무엇이든 물어보세요 — 답변에는 출처가 표시됩니다.",
       "gov.cop.placeholder": "의무, 비용, 기한에 대해 물어보세요…",
       "gov.cop.send": "보내기",
@@ -2241,7 +2227,7 @@
       "gov.cop.citations": "인용된 규제",
       "gov.cop.disclaimer": "답변은 수집된 규제만 근거로 하며, 모델 추정치는 표시됩니다.",
       "gov.cop.error": "코파일럿을 현재 사용할 수 없습니다.",
-      "gov.cop.q1": "가장 큰 컴플라이언스 리スク는 무엇인가요?",
+      "gov.cop.q1": "가장 큰 컴플라이언스 리스크는 무엇인가요?",
       "gov.cop.q2": "컴플라이언스 비용은 얼마인가요?",
       "gov.cop.q3": "출시까지 얼마나 걸리나요?",
       "gov.cop.q4": "이 패키지는 누구에게 영향을 주나요?",
@@ -2264,7 +2250,7 @@
     },
 
     hi: {
-      "gov.sim.title": "नीति प्रभाव सिमुलेटर",
+      "gov.sim.title": "प्रभाव सिमुलेटर",
       "gov.sim.desc": "एक नियम चुनें और किसी बदलाव का स्ट्रेस-टेस्ट करें।",
       "gov.sim.selectPolicy": "नियम",
       "gov.sim.changeType": "बदलाव का प्रकार",
@@ -2291,7 +2277,7 @@
       "gov.sim.none": "कोई फ़ोकस नियम नहीं",
       "gov.sim.error": "यह बदलाव यहाँ लागू नहीं — पैरामीटर बदलें।",
 
-      "gov.anz.title": "नीति विश्लेषक",
+      "gov.anz.title": "नीति इंटेलिजेंस",
       "gov.anz.desc": "हर उस नियम पर सीधे उत्तर जो आप पर लागू होता है।",
       "gov.anz.q1": "कौन से नियम मुझ पर लागू होते हैं?",
       "gov.anz.q2": "वे मेरे उत्पाद पर क्यों लागू होते हैं?",
@@ -2303,7 +2289,7 @@
       "gov.anz.topDim": "सबसे प्रबल आयाम",
       "gov.anz.openDetail": "नियम विवरण खोलें",
 
-      "gov.stk.title": "किन पर असर",
+      "gov.stk.title": "हितधारक विश्लेषण",
       "gov.stk.desc": "इस नियम-पैकेज से छुने वाले सभी समूह।",
       "gov.stk.group": "समूह",
       "gov.stk.who": "वे कौन हैं",
@@ -2322,7 +2308,7 @@
       "gov.out.severity": "गंभीरता",
       "gov.out.policyCol": "संबंधित नियम",
 
-      "gov.ind.title": "उद्योग प्रभाव",
+      "gov.ind.title": "उद्योग बोझ विश्लेषण",
       "gov.ind.desc": "ट्रैक किए गए हर उद्योग पर नियामकीय भार।",
       "gov.ind.colIndustry": "उद्योग",
       "gov.ind.colAffected": "नियम",
@@ -2351,7 +2337,7 @@
       "gov.cmp.mVerdict": "निर्णय",
       "gov.cmp.chartTitle": "परिदृश्य तुलना",
 
-      "gov.scn.title": "परिदृश्य सिमुलेटर",
+      "gov.scn.title": "पैरामीटर सिमुलेशन",
       "gov.scn.desc": "एक पैरामीटर बदलें और देखें परिणाम कैसे फैलते हैं।",
       "gov.scn.params": "पैरामीटर",
       "gov.scn.run": "सिमुलेशन चलाएँ",
@@ -2359,7 +2345,7 @@
       "gov.scn.traceability": "मान्यताएँ और अनुरेखण",
       "gov.scn.livePkg": "लाइव सिम्युलेटेड पैकेज",
 
-      "gov.cop.title": "सरकारी कोपायलट",
+      "gov.cop.title": "निर्णय सहायक",
       "gov.cop.desc": "इस पैकेज पर कुछ भी पूछें — उत्तर स्रोतों का हवाला देते हैं।",
       "gov.cop.placeholder": "दायित्व, लागत, समय-सीमा के बारे में पूछें…",
       "gov.cop.send": "भेजें",
@@ -2379,7 +2365,7 @@
       "gov.cop.q7": "कौन से स्रोत सत्यापित हैं?",
       "gov.cop.q8": "लॉन्च तक का महत्वपूर्ण पथ क्या है?",
 
-      "gov.con.title": "जनसुनवाई",
+      "gov.con.title": "नियामक परामर्श",
       "gov.con.desc": "आधिकारिक सुझाव-अवधि जिन्होंने इन नियमों को आकार दिया या देंगे।",
       "gov.con.window": "अवधि",
       "gov.con.outcome": "परिणाम",
@@ -2393,7 +2379,7 @@
     },
 
     mr: {
-      "gov.sim.title": "धोरण परिणाम सिम्युलेटर",
+      "gov.sim.title": "परिणाम सिम्युलेटर",
       "gov.sim.desc": "एक नियम निवडा आणि बदलाची कसोटी घ्या.",
       "gov.sim.selectPolicy": "नियम",
       "gov.sim.changeType": "बदलाचा प्रकार",
@@ -2420,7 +2406,7 @@
       "gov.sim.none": "केंद्रित नियम नाही",
       "gov.sim.error": "हा बदल येथे लागू होत नाही — पॅरामीटर्स बदला.",
 
-      "gov.anz.title": "धोरण विश्लेषक",
+      "gov.anz.title": "धोरण माहिती",
       "gov.anz.desc": "तुम्हाला लागू होणाऱ्या प्रत्येक नियमावर प्रत्यक्ष उत्तरे.",
       "gov.anz.q1": "कोणते नियम मला लागू होतात?",
       "gov.anz.q2": "ते माझ्या उत्पादनावर का लागू होतात?",
@@ -2432,7 +2418,7 @@
       "gov.anz.topDim": "सर्वात मजबूत मिती",
       "gov.anz.openDetail": "नियम तपशील उघडा",
 
-      "gov.stk.title": "कोणावर परिणाम",
+      "gov.stk.title": "हितधारक विश्लेषण",
       "gov.stk.desc": "या नियम-संचाने स्पर्श केलेले सर्व गट.",
       "gov.stk.group": "गट",
       "gov.stk.who": "ते कोण आहेत",
@@ -2451,7 +2437,7 @@
       "gov.out.severity": "तीव्रता",
       "gov.out.policyCol": "संबंधित नियम",
 
-      "gov.ind.title": "उद्योग परिणाम",
+      "gov.ind.title": "उद्योग बोझ विश्लेषण",
       "gov.ind.desc": "मागोव्यातील प्रत्येक उद्योगावरील नियामक भार.",
       "gov.ind.colIndustry": "उद्योग",
       "gov.ind.colAffected": "नियम",
@@ -2480,7 +2466,7 @@
       "gov.cmp.mVerdict": "निष्कर्ष",
       "gov.cmp.chartTitle": "परिदृश्य तुलना आलेख",
 
-      "gov.scn.title": "परिदृश्य सिम्युलेटर",
+      "gov.scn.title": "पॅरामीटर सिम्युलेशन",
       "gov.scn.desc": "एक पॅरामीटर बदला आणि परिणाम कसे पसरतात ते पहा.",
       "gov.scn.params": "पॅरामीटर्स",
       "gov.scn.run": "सिम्युलेशन चालवा",
@@ -2488,7 +2474,7 @@
       "gov.scn.traceability": "गृहीतके आणि पार्श्वभूमी",
       "gov.scn.livePkg": "थेट सिम्युलेटेड संच",
 
-      "gov.cop.title": "शासकीय कोपायलट",
+      "gov.cop.title": "निर्णय सहायक",
       "gov.cop.desc": "या संचाबद्दल काहीही विचारा — उत्तरांमध्ये स्रोतांचा उल्लेख असतो.",
       "gov.cop.placeholder": "बंधने, खर्च, मुदतीबद्दल विचारा…",
       "gov.cop.send": "पाठवा",
@@ -2508,7 +2494,7 @@
       "gov.cop.q7": "कोणते स्रोत पडताळलेले आहेत?",
       "gov.cop.q8": "प्रक्षेपणापर्यंतचा महत्त्वाचा मार्ग कोणता?",
 
-      "gov.con.title": "सर्वसाधारण सूचना",
+      "gov.con.title": "नियामक परामर्श",
       "gov.con.desc": "या नियमांना आकार दिलेल्या किंवा देणाऱ्या अधिकृत सुचना-कालावधी.",
       "gov.con.window": "कालावधी",
       "gov.con.outcome": "निकाल",

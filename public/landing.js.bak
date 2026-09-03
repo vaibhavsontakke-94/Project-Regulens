@@ -32,6 +32,11 @@
   /* ── helpers ───────────────────────────────────────────── */
   function $$(sel) { return Array.prototype.slice.call(root.querySelectorAll(sel)); }
 
+  function fillStaticTexts() {
+    $$("[data-i18n]").forEach(function (el) { el.textContent = tk(el.getAttribute("data-i18n")); });
+    $$("[data-i18n-title]").forEach(function (el) { el.setAttribute("title", tk(el.getAttribute("data-i18n-title"))); });
+    $$("[data-i18n-aria]").forEach(function (el) { el.setAttribute("aria-label", tk(el.getAttribute("data-i18n-aria"))); });
+  }
 
   /* ── headline letter split ─────────────────────────────── */
   var headEl = document.getElementById("landingHeadline");
@@ -127,7 +132,7 @@
     langSel.addEventListener("change", function () {
       if (!RL.setLang) return;
       RL.setLang(langSel.value);
-      /* instant swap, no replay */
+      fillStaticTexts();          /* instant swap, no replay */
       renderHeadline(false);
     });
   }
@@ -191,23 +196,8 @@
   }
 
   /* ── boot sequence ─────────────────────────────────────── */
-  function whenReguLensReady(cb) {
-    if (window.ReguLens && typeof window.ReguLens.t === "function") {
-      cb();
-      return;
-    }
-    var timer = setInterval(function () {
-      if (window.ReguLens && typeof window.ReguLens.t === "function") {
-        clearInterval(timer);
-        cb();
-      }
-    }, 10);
-    setTimeout(function () { clearInterval(timer); }, 5000);
-  }
-
-  whenReguLensReady(function () {
-    renderHeadline(true);
-  });
+  fillStaticTexts();
+  renderHeadline(true);
 
   requestAnimationFrame(function () {
     requestAnimationFrame(function () {
