@@ -9,7 +9,6 @@
 (function () {
   "use strict";
 
-  const RC = () => window.ReguLensCharts || {};
   const GOV_VIEWS = [
     "gov-analyzer", "policy-simulator", "gov-stakeholders",
     "gov-outcomes", "industry-impact", "compare-scenarios", "gov-scenario",
@@ -550,6 +549,7 @@ case "gov-analyzer": renderAnalyzer(pkgReady); break;
   function renderIndustry(pkg) {
     const head = $("govIndHead");
     const tbody = $("govIndTbody");
+    const summaryEl = $("industrySummaryCards");
     if (!head || !tbody) return;
     const rows = [...(pkg.industryMatrix || [])].sort((a, b) => b.burdenScore - a.burdenScore);
     const myId = pkg.context.industryId;
@@ -573,29 +573,25 @@ case "gov-analyzer": renderAnalyzer(pkgReady); break;
         <td>${r.readinessEstimate}%</td>
         <td>${lvlBadge(r.riskLevel)}</td>
       </tr>`).join("");
-    drawIndustryChart(pkg);
-  }
-  function drawIndustryChart(pkg) {
-    const rc = RC();
-    if (!$("chartIndustryBurden")) return;
-    if (!rc.createBarChart) return;
-    const rows = (Array.isArray(pkg.industryMatrix) ? pkg.industryMatrix.slice() : [])
-      .filter((r) => r && r.industryId && Number.isFinite(Number(r.burdenScore)))
-      .sort((a, b) => Number(b.burdenScore) - Number(a.burdenScore))
-      .slice(0, 10)
-      .map((r) => ({
-        id: r.industryId,
-        name: String(r.industryName || r.industryId),
-        score: Math.max(0, Math.min(100, Number(r.burdenScore))),
-      }));
-    if (!rows.length) { setChartState("chartIndustryBurden", "gov.empty.generic"); return; }
-    drawGovChartSafe("chartIndustryBurden", () => rc.createBarChart(
-      "chartIndustryBurden",
-      rows.map((r) => r.name),
-      rows.map((r) => r.score),
-      rows.map((r) => (r.id === pkg.context.industryId ? "#6366f1" : r.score >= 78 ? "#dc2626" : r.score >= 58 ? "#f97316" : "#94a3b8")),
-      { yMax: 100 }
-    ));
+
+    if (summaryEl && rows.length) {
+      const topRows = rows.slice(0, 5);
+      summaryEl.innerHTML = `
+        <div class="chart-card summary-card">
+          <div class="summary-title">${T("gov.ind.chartTitle")}</div>
+          <div class="summary-stats">
+            ${topRows.map(r => `
+              <div class="summary-stat ${r.burdenScore >= 78 ? 'critical' : r.burdenScore >= 58 ? 'important' : 'standard'}">
+                <span class="summary-stat-value">${r.burdenScore}/100</span>
+                <span class="summary-stat-label">${esc(r.industryName)}${r.industryId === myId ? ` ${T("gov.ind.yourIndustry")}` : ''}</span>
+              </div>
+            `).join('')}
+          </div>
+        </div>
+      `;
+    } else if (summaryEl) {
+      summaryEl.innerHTML = "";
+    }
   }
 
   /* ════════════════ MODULE: COMPARE SCENARIOS ════════════════ */
@@ -676,7 +672,7 @@ case "gov-analyzer": renderAnalyzer(pkgReady); break;
     const res = S.cmpResult;
     const cols = ["—"].concat(res ? res.scenarios.map((s, i) => s.error ? `S${i + 1}` : `S${i + 1}`) : []);
     head.innerHTML = `<th></th><th>${esc(T("gov.cmp.baselineName"))}</th>` + (res ? res.scenarios.map((s, i) => `<th>S${i + 1}${s.error ? " ⚠" : ""}</th>`).join("") : "");
-    if (!res) { tbody.innerHTML = `<tr><td colspan="2">${emptyHtml()}</td></tr>`; setChartState("chartCompareGov", "gov.empty.generic"); return; }
+    if (!res) { tbody.innerHTML = `<tr><td colspan="2">${emptyHtml()}</td></tr>`; return; }
     tbody.innerHTML =
       metricRow(T("gov.cmp.mCost"), (x) => x.cost != null ? money(x.cost) : null) +
       metricRow(T("gov.cmp.mDays"), (x) => x.days != null ? `${x.days} <small>${esc(T("gov.common.days"))}</small>` : null) +
@@ -686,10 +682,7 @@ case "gov-analyzer": renderAnalyzer(pkgReady); break;
     drawCompareChart(res);
   }
   function drawCompareChart(res) {
-    const rc = RC();
-    if (!$("chartCompareGov") || !rc.createGroupedBarChart) return;
     if (!res || !res.baseline || !Array.isArray(res.scenarios) || !res.scenarios.length) {
-      setChartState("chartCompareGov", "gov.empty.generic");
       return;
     }
     const base = res.baseline;
@@ -703,46 +696,22 @@ case "gov-analyzer": renderAnalyzer(pkgReady); break;
       data: series.map((sr) => s.error ? null : rel(s[sr.key], sr.base)),
       color: ["#6366f1", "#06b6d4", "#f97316"][i % 3],
     })));
-    drawGovChartSafe("chartCompareGov", () => rc.createGroupedBarChart("chartCompareGov", labels, datasets, {}));
-  }
-  function destroyGovChart(canvasId) {
-    const rc = RC();
-    if (!rc) return;
-    try {
-      /* Use trackChart with a self-destroying placeholder to properly clear the
-         registry slot. trackChart will destroy the old instance before storing. */
-      var placeholder = { destroy: function() {} };
-      if (rc.trackChart) rc.trackChart(canvasId, placeholder);
-    } catch (_) { /* ignore cleanup errors */ }
-  }
-  /* chart container state helpers: empty / failed messages replace the canvas content */
-  function setChartState(canvasId, msgKey) {
-    destroyGovChart(canvasId);
-    const cv = $(canvasId);
-    if (!cv) return;
-    const cont = cv.closest(".chart-card") || cv.parentElement;
-    if (!cont) return;
-    cont.querySelectorAll(".gov-chart-empty").forEach((n) => n.remove());
-    if (msgKey) {
-      const note = document.createElement("p");
-      note.className = "gov-chart-empty";
-      note.textContent = T(msgKey);
-      cont.appendChild(note);
-    }
-  }
-  function clearChartState(canvasId) {
-    const cv = $(canvasId);
-    if (!cv) return;
-    const cont = cv.closest(".chart-card") || cv.parentElement;
-    if (cont) cont.querySelectorAll(".gov-chart-empty").forEach((n) => n.remove());
-  }
-  function drawGovChartSafe(canvasId, fn) {
-    clearChartState(canvasId);
-    try {
-      fn();
-    } catch (err) {
-      console.error("[gov] chart render failed:", err);
-      setChartState(canvasId, "gov.common.error");
+    
+    const compareSummaryEl = $("compareSummaryCards");
+    if (compareSummaryEl) {
+      compareSummaryEl.innerHTML = `
+        <div class="chart-card summary-card">
+          <div class="summary-title">${T("gov.cmp.chartTitle")}</div>
+          <div class="summary-stats">
+            ${datasets.slice(1).map((ds, i) => `
+              <div class="summary-stat ${ds.color === '#6366f1' ? 'critical' : ds.color === '#06b6d4' ? 'important' : 'standard'}">
+                <span class="summary-stat-value">${ds.label}</span>
+                <span class="summary-stat-label">${labels.map((l, j) => `${l}: ${ds.data[j] !== null ? ds.data[j] + '%' : '—'}`).join(' · ')}</span>
+              </div>
+            `).join('')}
+          </div>
+        </div>
+      `;
     }
   }
   function setBusy(id, busy) {

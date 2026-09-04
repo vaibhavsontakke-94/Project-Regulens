@@ -523,30 +523,14 @@
           <span data-i18n="disclaimer.dashboard">ReguLens provides regulatory intelligence and decision support; final legal/compliance decisions should be verified with qualified professionals or authoritative regulatory sources.</span>
         </div>
 
-        <!-- Analytics Charts -->
+        <!-- Analytics Summary -->
         <div class="chart-section" id="dashboardCharts">
           <div class="chart-section-title">
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 20V10"/><path d="M12 20V4"/><path d="M6 20v-6"/></svg>
             <span data-i18n="dashboard.analyticsOverview">Analytics Overview</span>
           </div>
           <div class="metric-row" id="dashboardMetrics"></div>
-          <div class="chart-grid">
-            <div class="chart-card">
-              <div class="chart-card-title" data-i18n="dashboard.complianceStatus">Compliance Status</div>
-              <div class="chart-container chart-container-sm"><canvas id="chartComplianceStatus"></canvas></div>
-              <div class="chart-insight" data-canvas-id="chartComplianceStatus" id="insightChartComplianceStatus"></div>
-            </div>
-            <div class="chart-card">
-              <div class="chart-card-title" data-i18n="dashboard.priorityDistribution">Priority Distribution</div>
-              <div class="chart-container chart-container-sm"><canvas id="chartPriorityDist"></canvas></div>
-              <div class="chart-insight" data-canvas-id="chartPriorityDist" id="insightChartPriorityDist"></div>
-            </div>
-            <div class="chart-card">
-              <div class="chart-card-title" data-i18n="dashboard.complianceProgress">Compliance Progress</div>
-              <div class="chart-container chart-container-sm"><canvas id="chartComplianceProgress"></canvas></div>
-              <div class="chart-insight" data-canvas-id="chartComplianceProgress" id="insightChartComplianceProgress"></div>
-            </div>
-          </div>
+          <div class="chart-grid" id="dashboardSummaryCards"></div>
         </div>
 
         <!-- Footer status -->
@@ -743,7 +727,7 @@
 
           <div class="fb-grid">
             <div class="card fb-gauge-card">
-              <canvas id="fbGaugeCanvas" height="150" aria-hidden="true"></canvas>
+              <div class="fb-gauge-text" id="fbFitScore">—</div>
               <p class="fb-gauge-label" data-i18n="feas.fitScore">Market fit score</p>
             </div>
             <div class="card fb-stats-card">
@@ -786,7 +770,7 @@
             <p class="page-desc" data-i18n="guide.desc">Your launch path as a sequential checklist, generated from your analysis. Progress is saved locally.</p>
           </div>
           <div class="guide-progress">
-            <canvas id="guideGauge" height="120" aria-hidden="true"></canvas>
+            <div class="guide-progress-text" id="guideProgressText">0%</div>
             <span class="guide-progress-label" id="guideProgressLabel">0/0</span>
             <button class="btn btn-outline btn-sm" id="guideResetBtn" data-i18n="guide.reset">Reset progress</button>
           </div>
@@ -886,7 +870,7 @@
             <p class="page-desc" data-i18n="bh.desc">A live scorecard computed from your compliance progress, gaps, risks and documentation — plus integrity signals.</p>
           </div>
           <div class="guide-progress">
-            <canvas id="bhGaugeCanvas" height="130" aria-hidden="true"></canvas>
+            <div class="bh-score-text" id="bhScoreText">—</div>
             <span class="chip" id="bhGrade"></span>
             <span class="guide-progress-label" id="bhStatusLabel"></span>
           </div>
@@ -1027,20 +1011,12 @@
             <span data-i18n="gap.analytics">Gap Analytics</span>
           </div>
           <div class="metric-row" id="gapMetrics"></div>
-          <div class="chart-grid">
-            <div class="chart-card">
-              <div class="chart-card-title" data-i18n="gap.severityChart">Severity Distribution</div>
-              <div class="chart-container chart-container-sm"><canvas id="chartGapSeverity"></canvas></div>
-              <div class="chart-insight" data-canvas-id="chartGapSeverity" id="insightChartGapSeverity"></div>
-            </div>
-          </div>
+          <div class="chart-grid" id="gapSummaryCards"></div>
           <div class="chart-card" id="countryCompareCard">
             <div class="chart-card-title" data-i18n="gap.compareTitle">Origin vs Target Market</div>
             <p class="page-desc" id="compareSub"></p>
             <p class="page-desc hidden" id="compareSameNote"></p>
             <div class="metric-row" id="compareMetrics"></div>
-            <div class="chart-container"><canvas id="chartCountryCompare"></canvas></div>
-            <div class="chart-insight" data-canvas-id="chartCountryCompare" id="insightChartCountryCompare"></div>
             <table class="req-table" id="compareTable">
               <thead><tr>
                 <th data-i18n="gap.category">Category</th>
@@ -1238,13 +1214,7 @@
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 20V10"/><path d="M12 20V4"/><path d="M6 20v-6"/></svg>
             <span data-i18n="impact.analytics">Impact Analytics</span>
           </div>
-          <div class="chart-grid">
-            <div class="chart-card">
-              <div class="chart-card-title">Risk Matrix (Probability × Impact)</div>
-              <div class="chart-container"><canvas id="chartRiskMatrix"></canvas></div>
-              <div class="chart-insight" data-canvas-id="chartRiskMatrix" id="insightChartRiskMatrix"></div>
-            </div>
-          </div>
+          <div class="chart-grid" id="impactSummaryCards"></div>
         </div>
       </section>
 
@@ -1354,11 +1324,7 @@
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 20V10"/><path d="M12 20V4"/><path d="M6 20v-6"/></svg>
             <span data-i18n="gov.ind.chartTitle">Composite burden by industry</span>
           </div>
-          <div class="chart-grid">
-            <div class="chart-card">
-              <div class="chart-container"><canvas id="chartIndustryBurden"></canvas></div>
-            </div>
-          </div>
+          <div class="chart-grid" id="industrySummaryCards"></div>
         </div>
         </div>
       </section>
@@ -1407,11 +1373,7 @@
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 20V10"/><path d="M12 20V4"/><path d="M6 20v-6"/></svg>
             <span data-i18n="gov.cmp.chartTitle">Scenario comparison</span>
           </div>
-          <div class="chart-grid">
-            <div class="chart-card">
-              <div class="chart-container"><canvas id="chartCompareGov"></canvas></div>
-            </div>
-          </div>
+          <div class="chart-grid" id="compareSummaryCards"></div>
         </div>
         </div>
       </section>
@@ -1582,18 +1544,7 @@
 
         <div id="riskDataWrap" class="hidden">
           <div class="stats-row" id="riskStatsRow"></div>
-          <div class="grid grid-2">
-            <div class="card chart-card">
-              <div class="card-head"><h3 class="card-title" data-i18n="risk.matrix.title">Probability × Impact</h3></div>
-              <div class="chart-box tall"><canvas id="riskMatrixCanvas"></canvas></div>
-              <div class="chart-insight" data-canvas-id="riskMatrixCanvas" id="insightriskMatrixCanvas"></div>
-            </div>
-            <div class="card chart-card">
-              <div class="card-head"><h3 class="card-title" data-i18n="risk.dist.title">Severity Distribution</h3></div>
-              <div class="chart-box tall"><canvas id="riskDistCanvas"></canvas></div>
-              <div class="chart-insight" data-canvas-id="riskDistCanvas" id="insightriskDistCanvas"></div>
-            </div>
-          </div>
+          <div class="grid grid-2" id="riskSummaryCards"></div>
           <div class="card table-card">
             <div class="card-head"><h3 class="card-title" data-i18n="risk.register.title">Risk Register</h3></div>
             <table class="req-table">
@@ -1645,7 +1596,7 @@
             <p class="page-desc" data-i18n="dc.desc">The evidence your requirements imply — with starting-point templates for each document type.</p>
           </div>
           <div class="guide-progress">
-            <canvas id="dcGaugeCanvas" height="120" aria-hidden="true"></canvas>
+            <div class="dc-coverage-text" id="dcCoverageText">—</div>
             <span class="guide-progress-label" id="dcCoverageLabel"></span>
             <button class="btn btn-outline btn-sm" data-goto="document-library" data-i18n="dc.openLibrary">Open library</button>
           </div>
@@ -1715,7 +1666,7 @@
             <p class="page-desc" data-i18n="ih.desc">How fundable your project looks today, what investors will probe, and a one-pager draft built from your numbers.</p>
           </div>
           <div class="guide-progress">
-            <canvas id="ihGaugeCanvas" height="120" aria-hidden="true"></canvas>
+            <div class="ih-score-text" id="ihScoreText">—</div>
             <button class="btn btn-primary" id="ihGenBrief" data-i18n="ih.generate">Generate one-pager draft</button>
             <span class="t-status" id="ihStatus"></span>
           </div>
@@ -2040,7 +1991,6 @@
 
 <script src="https://www.gstatic.com/firebasejs/10.12.5/firebase-app-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/10.12.5/firebase-auth-compat.js"></script>
-<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.7/dist/chart.umd.min.js"></script>
 <script src="firebase/config.js"></script>
 <script src="firebase/auth.js"></script>
 <script src="/core/regulens-core.js"></script>
@@ -2048,8 +1998,6 @@
 <script src="i18n/gov-bundle.js?v=1"></script>
   <script src="i18n/core-bundle.js?v=3"></script>
   <script src="i18n/landing-bundle.js?v=1"></script>
-<script src="charts.js?v=2"></script>
-<script src="insights.js?v=1"></script>
 <script src="copilot.js?v=2"></script>
 <script src="registration.js?v=1"></script>
 <script src="app.js?v=47"></script>

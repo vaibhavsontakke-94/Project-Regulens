@@ -5325,10 +5325,8 @@ els.verdictText.textContent = !hasData
     });
     els.fbRecs.classList.toggle("hidden", !(f.recommendations || []).length);
 
-    if (window.ReguLensCharts) {
-      chartGuard("fbGaugeCanvas", Number.isFinite(f.marketFitScore));
-      window.ReguLensCharts.createGaugeChart("fbGaugeCanvas", f.marketFitScore || 0, 100, t("feas.fitScore"));
-    }
+    const fbFitScore = document.getElementById("fbFitScore");
+    if (fbFitScore) fbFitScore.textContent = Number.isFinite(f.marketFitScore) ? f.marketFitScore + "%" : "—";
   }
 
   async function runFeasibility() {
@@ -5415,7 +5413,6 @@ els.verdictText.textContent = !hasData
     if (!actions.length) {
       els.guideWrap.classList.add("hidden");
       els.guideEmptyState.classList.remove("hidden");
-      chartGuard("guideGauge", false);
       return;
     }
     els.guideEmptyState.classList.add("hidden");
@@ -5487,10 +5484,8 @@ els.verdictText.textContent = !hasData
     const label = document.getElementById("guideProgressLabel");
     if (label) label.textContent = done + "/" + total;
     const pct = total ? Math.round((done / total) * 100) : 0;
-    chartGuard("guideGauge", total > 0);
-    if (window.ReguLensCharts) {
-      window.ReguLensCharts.createGaugeChart("guideGauge", pct, 100, pct + "%");
-    }
+    const guideProgressText = document.getElementById("guideProgressText");
+    if (guideProgressText) guideProgressText.textContent = pct + "%";
   }
 
   els.guideResetBtn.addEventListener("click", () => {
@@ -5724,7 +5719,6 @@ els.verdictText.textContent = !hasData
     if (!health) {
       els.bhWrap.classList.add("hidden");
       els.bhEmptyState.classList.remove("hidden");
-      chartGuard("bhGaugeCanvas", false);
       return;
     }
     els.bhEmptyState.classList.add("hidden");
@@ -5738,10 +5732,9 @@ els.verdictText.textContent = !hasData
     const statusKey = health.overall >= 70 ? "bh.status.healthy" : health.overall >= 45 ? "bh.status.attention" : "bh.status.critical";
     els.bhStatusLabel.textContent = t(statusKey);
 
-    chartGuard("bhGaugeCanvas", true);
-    if (window.ReguLensCharts) {
-      window.ReguLensCharts.createGaugeChart("bhGaugeCanvas", health.overall, 100, t("bh.score"));
-    }
+    /* score text */
+    const bhScoreText = document.getElementById("bhScoreText");
+    if (bhScoreText) bhScoreText.textContent = health.overall + "/100";
 
     /* component bars */
     els.bhBars.innerHTML = "";
@@ -5848,7 +5841,6 @@ els.verdictText.textContent = !hasData
     if (!reqs.length) {
       els.dcWrap.classList.add("hidden");
       els.dcEmptyState.classList.remove("hidden");
-      chartGuard("dcGaugeCanvas", false);
       return;
     }
     els.dcEmptyState.classList.add("hidden");
@@ -5857,10 +5849,8 @@ els.verdictText.textContent = !hasData
     const docsCount = Array.isArray(docs) ? docs.length : 0;
     const target = Math.max(3, reqs.length);
     const coverage = Math.min(100, Math.round((docsCount / target) * 100));
-    chartGuard("dcGaugeCanvas", true);
-    if (window.ReguLensCharts) {
-      window.ReguLensCharts.createGaugeChart("dcGaugeCanvas", coverage, 100, coverage + "%");
-    }
+    const dcCoverageText = document.getElementById("dcCoverageText");
+    if (dcCoverageText) dcCoverageText.textContent = coverage + "%";
     els.dcCoverageLabel.textContent = tf("dc.coverage", { n: docsCount, m: target });
 
     els.dcRows.innerHTML = "";
@@ -6060,16 +6050,13 @@ els.verdictText.textContent = !hasData
     if (!ir) {
       els.ihWrap.classList.add("hidden");
       els.ihEmptyState.classList.remove("hidden");
-      chartGuard("ihGaugeCanvas", false);
       return;
     }
     els.ihEmptyState.classList.add("hidden");
     els.ihWrap.classList.remove("hidden");
 
-    chartGuard("ihGaugeCanvas", true);
-    if (window.ReguLensCharts) {
-      window.ReguLensCharts.createGaugeChart("ihGaugeCanvas", ir.score, 100, ir.score + "%");
-    }
+    const ihScoreText = document.getElementById("ihScoreText");
+    if (ihScoreText) ihScoreText.textContent = ir.score + "%";
 
     const counts = ir.h.counts;
     els.ihStatsRow.innerHTML =
@@ -6459,11 +6446,6 @@ els.verdictText.textContent = !hasData
     applyTheme(theme);
     syncThemeSeg(theme);
     window.setTimeout(() => els.body.classList.remove("theme-swap"), 300);
-
-    // Reconnect charts with new theme colors (wait for 300ms CSS transition to finish)
-    if (window.ReguLensCharts) {
-      setTimeout(() => window.ReguLensCharts.reconnectAllCharts(), 350);
-    }
   }
 
   function syncThemeSeg(theme) {
@@ -7204,60 +7186,15 @@ els.verdictText.textContent = !hasData
      7 Compare Scenarios: grouped bar
       â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â• */
 
-  /* â”€â”€â”€â”€â”€â”€â”€â”€â”€ Graph Insight Engine wiring â”€â”€â”€â”€â”€â”€â”€â”€â”€ */
-  function updateChartInsight(canvasId, data, extra) {
-    if (!window.ReguLensInsights) return;
-    const insight = window.ReguLensInsights.generateInsight(canvasId, data, t, extra);
-    const containerId = "insight" + canvasId.charAt(0).toUpperCase() + canvasId.slice(1);
-    window.ReguLensInsights.renderInsight(containerId, insight);
-  }
-
-  /* Shows an honest empty state instead of a fake/blank graph.
-     While an analysis is running it shows a loading state instead. */
-  function chartGuard(id, hasData, message) {
-    const canvas = document.getElementById(id);
-    if (!canvas) return false;
-    const box = canvas.closest(".chart-container") || canvas.parentElement;
-    let msg = box ? box.querySelector(".chart-empty") : null;
-    if (!hasData) {
-      canvas.classList.add("hidden");
-      /* destroy any existing chart on this canvas to prevent stale instances */
-      if (window.ReguLensCharts && window.ReguLensCharts.destroyChart) {
-        try {
-          window.ReguLensCharts.destroyChart(id);
-        } catch (_) { /* ignore */ }
-      }
-      if (box && !msg) {
-        msg = document.createElement("div");
-        msg.className = "chart-empty";
-        box.appendChild(msg);
-      }
-      if (msg) {
-        if (!analysisData && analysisRunning) {
-          msg.innerHTML = '<span class="spinner" aria-hidden="true"></span> ' + esc(t("charts.loading"));
-        } else {
-          msg.textContent = message || t("charts.empty");
-        }
-      }
-      return false;
-    }
-    canvas.classList.remove("hidden");
-    if (msg) msg.remove();
-    return true;
-  }
-
   function renderDashboardCharts() {
     const metricsEl = document.getElementById('dashboardMetrics');
+    const summaryEl = document.getElementById('dashboardSummaryCards');
     const d = analysisData;
     if (!d) {
-      chartGuard('chartComplianceStatus', false);
-      chartGuard('chartPriorityDist', false);
-      chartGuard('chartComplianceProgress', false);
       if (metricsEl) metricsEl.innerHTML = "";
+      if (summaryEl) summaryEl.innerHTML = "";
       return;
     }
-    if (!window.ReguLensCharts) return;
-    const RC = window.ReguLensCharts;
     const stats = d.stats || {};
 
     if (metricsEl) {
@@ -7289,38 +7226,55 @@ els.verdictText.textContent = !hasData
       `;
     }
 
-    // 1 Â· Compliance Status Donut
-    if (chartGuard('chartComplianceStatus', (stats.total || 0) > 0)) {
-      RC.createDonutChart('chartComplianceStatus',
-        [t('req.statusCompleted'), t('req.statusInProgress'), t('req.statusPending'), t('req.statusNA')],
-        [stats.completed || 0, stats.inProgress || 0, stats.pending || 0, stats.nA || 0],
-        [RC.getColors().completed, RC.getColors().inProgress, RC.getColors().pending, RC.getColors().notApplicable],
-        { centreTitle: t('charts.total') }
-      );
+    if (summaryEl && stats.total > 0) {
+      const compliancePct = stats.total ? Math.round((stats.completed / stats.total) * 100) : 0;
+      summaryEl.innerHTML = `
+        <div class="chart-card summary-card">
+          <div class="summary-title">${t('dashboard.complianceStatus')}</div>
+          <div class="summary-stats">
+            <div class="summary-stat">
+              <span class="summary-stat-value">${stats.completed || 0}</span>
+              <span class="summary-stat-label">${t('req.statusCompleted')}</span>
+            </div>
+            <div class="summary-stat">
+              <span class="summary-stat-value">${stats.inProgress || 0}</span>
+              <span class="summary-stat-label">${t('req.statusInProgress')}</span>
+            </div>
+            <div class="summary-stat">
+              <span class="summary-stat-value">${stats.pending || 0}</span>
+              <span class="summary-stat-label">${t('req.statusPending')}</span>
+            </div>
+            <div class="summary-stat">
+              <span class="summary-stat-value">${stats.nA || 0}</span>
+              <span class="summary-stat-label">${t('req.statusNA')}</span>
+            </div>
+          </div>
+          <div class="summary-progress">
+            <div class="summary-bar"><div class="summary-bar-fill" style="width: ${compliancePct}%"></div></div>
+            <span class="summary-pct">${compliancePct}% ${t('dashboard.complianceProgress')}</span>
+          </div>
+        </div>
+        <div class="chart-card summary-card">
+          <div class="summary-title">${t('dashboard.priorityDistribution')}</div>
+          <div class="summary-stats">
+            <div class="summary-stat critical">
+              <span class="summary-stat-value">${stats.critical || 0}</span>
+              <span class="summary-stat-label">${t('req.critical')}</span>
+            </div>
+            <div class="summary-stat important">
+              <span class="summary-stat-value">${stats.important || 0}</span>
+              <span class="summary-stat-label">${t('req.important')}</span>
+            </div>
+            <div class="summary-stat standard">
+              <span class="summary-stat-value">${stats.standard || 0}</span>
+              <span class="summary-stat-label">${t('req.standard')}</span>
+            </div>
+          </div>
+        </div>
+      `;
+    } else if (summaryEl) {
+      summaryEl.innerHTML = "";
     }
-
-    // 2 Â· Priority Distribution Bar
-    if (chartGuard('chartPriorityDist', (stats.total || 0) > 0)) {
-      RC.createBarChart('chartPriorityDist',
-        [t('req.critical'), t('req.important'), t('req.standard')],
-        [stats.critical || 0, stats.important || 0, stats.standard || 0],
-        [RC.getColors().critical, RC.getColors().high, RC.getColors().medium]
-      );
-    }
-
-    // 3 Â· Compliance Progress (action progress)
-    if (chartGuard('chartComplianceProgress', (stats.total || 0) > 0)) {
-      RC.createProgressChart('chartComplianceProgress',
-        stats.completed || 0,
-        stats.total || 1,
-        t('dashboard.complianceProgress')
-      );
-    }
-
-    /* chart insights */
-    updateChartInsight('chartComplianceStatus', d);
-    updateChartInsight('chartPriorityDist', d);
-    updateChartInsight('chartComplianceProgress', d);
   }
 
   function renderGapCharts() {
@@ -7328,6 +7282,7 @@ els.verdictText.textContent = !hasData
 
     // Gap metrics cards
     const gapMetricsEl = document.getElementById('gapMetrics');
+    const gapSummaryEl = document.getElementById('gapSummaryCards');
     const norm = (g) => String(g.severity || g.priority || "").toLowerCase();
     const critical = gaps.filter(g => norm(g) === 'critical').length;
     const high = gaps.filter(g => norm(g) === 'high' || norm(g) === 'important').length;
@@ -7341,19 +7296,37 @@ els.verdictText.textContent = !hasData
       `;
     }
 
-    // 4 Â· Severity Distribution
-    if (!window.ReguLensCharts) return;
-    const RC = window.ReguLensCharts;
-    if (chartGuard('chartGapSeverity', gaps.length > 0)) {
-      RC.createBarChart('chartGapSeverity',
-        [t('gap.critical'), t('gap.high'), t('gap.mediumLow')],
-        [critical, high, mediumLow],
-        [RC.getColors().critical, RC.getColors().high, RC.getColors().medium]
-      );
+    if (gapSummaryEl && gaps.length > 0) {
+      gapSummaryEl.innerHTML = `
+        <div class="chart-card summary-card">
+          <div class="summary-title">${t('gap.severityChart')}</div>
+          <div class="summary-stats">
+            <div class="summary-stat critical">
+              <span class="summary-stat-value">${critical}</span>
+              <span class="summary-stat-label">${t('gap.critical')}</span>
+            </div>
+            <div class="summary-stat important">
+              <span class="summary-stat-value">${high}</span>
+              <span class="summary-stat-label">${t('gap.high')}</span>
+            </div>
+            <div class="summary-stat standard">
+              <span class="summary-stat-value">${mediumLow}</span>
+              <span class="summary-stat-label">${t('gap.mediumLow')}</span>
+            </div>
+          </div>
+          <div class="summary-list">
+            ${gaps.slice(0, 5).map(g => `
+              <div class="summary-item">
+                <span class="sev-badge sev-${String(g.severity || 'medium').toLowerCase()}">${esc(String(g.severity || 'medium'))}</span>
+                <span class="summary-item-title">${esc(g.title || g.name || '—')}</span>
+              </div>
+            `).join('')}
+          </div>
+        </div>
+      `;
+    } else if (gapSummaryEl) {
+      gapSummaryEl.innerHTML = "";
     }
-
-    /* chart insight */
-    updateChartInsight('chartGapSeverity', analysisData);
   }
 
   /* â”€â”€â”€â”€â”€â”€â”€â”€â”€ Gap Analysis: Origin vs Target market comparison â”€â”€â”€â”€â”€â”€â”€â”€â”€
@@ -7375,9 +7348,7 @@ els.verdictText.textContent = !hasData
   }
 
   function renderCountryCompareFromCache(data) {
-    const RC = window.ReguLensCharts;
-    if (!RC || !data || !Array.isArray(data.markets) || !data.markets.length) {
-      chartGuard('chartCountryCompare', false);
+    if (!data || !Array.isArray(data.markets) || !data.markets.length) {
       return;
     }
     const origin = data.markets[0];
@@ -7439,41 +7410,41 @@ els.verdictText.textContent = !hasData
       ).join("");
     }
 
-    if (chartGuard('chartCountryCompare', catRows.length > 0)) {
-      const num = (v) => (Number.isFinite(Number(v)) ? Number(v) : 0);
-      const tooltipCallbacks = {
-        title: function (items) {
-          return items.length ? String(items[0].label) : "";
-        },
-        label: function (item) {
-          const i = item.dataIndex;
-          const row = catRows[i] || {};
-          const isOrigin = item.datasetIndex === 0;
-          const market = isOrigin ? origin : target;
-          const score = isOrigin ? row.oScore : row.tScore;
-          const reqs = isOrigin ? row.oReqs : row.tReqs;
-          const lines = [
-            (market ? compareMarketLabel(market) : item.dataset.label) + ": " + num(score) + "/100",
-            t("gap.applicableReqs") + ": " + fmtNum(reqs),
-          ];
-          if (target) {
-            const d = num(row.delta);
-            lines.push(t("gap.compareGap") + " (" + t("gap.compareTarget") + " âˆ’ " + t("gap.compareOrigin") + "): " + (d > 0 ? "+" : "") + d);
-          }
-          return lines;
-        },
-      };
-      const datasets = [
-        { label: compareMarketLabel(origin), data: data.series.origin, color: RC.getColors().primary },
-      ];
-      if (target) {
-        datasets.push({ label: compareMarketLabel(target), data: data.series.target, color: RC.getColors().orange });
-      }
-      RC.createGroupedBarChart('chartCountryCompare', data.categories, datasets, {
-        yMax: 100,
-        yLabel: t("gap.avgBurden"),
-        tooltipCallbacks,
-      });
+    const compareSummaryEl = document.getElementById('compareSummaryCards');
+    if (compareSummaryEl && catRows.length > 0) {
+      compareSummaryEl.innerHTML = `
+        <div class="chart-card summary-card">
+          <div class="summary-title">${t('gap.compareTitle')}</div>
+          <div class="summary-stats">
+            <div class="summary-stat">
+              <span class="summary-stat-value">${origin.avgBurden}/100</span>
+              <span class="summary-stat-label">${t('gap.avgBurden')} â€” ${t('gap.compareOrigin')}</span>
+            </div>
+            ${target ? `
+            <div class="summary-stat">
+              <span class="summary-stat-value">${target.avgBurden}/100</span>
+              <span class="summary-stat-label">${t('gap.avgBurden')} â€” ${t('gap.compareTarget')}</span>
+            </div>
+            <div class="summary-stat">
+              <span class="summary-stat-value">${catRows.length}</span>
+              <span class="summary-stat-label">${t('gap.cmp.categories')}</span>
+            </div>
+            <div class="summary-stat">
+              <span class="summary-stat-value">${compareMarketLabel(higherMarket)}</span>
+              <span class="summary-stat-label">${t('gap.cmp.higherBurden')}</span>
+            </div>
+            ${largestGapRow && largestGapRow.category ? `
+            <div class="summary-stat">
+              <span class="summary-stat-value">${largestGapRow.category} (Î” ${Math.abs(largestGapRow.delta)})</span>
+              <span class="summary-stat-label">${t('gap.cmp.largestGap')}</span>
+            </div>
+            ` : ''}
+            ` : ''}
+          </div>
+        </div>
+      `;
+    } else if (compareSummaryEl) {
+      compareSummaryEl.innerHTML = "";
     }
 
     const tbody = document.getElementById("compareTbody");
@@ -7508,24 +7479,12 @@ els.verdictText.textContent = !hasData
 
     const note = document.getElementById("compareMethodology");
     if (note) note.textContent = data.methodology || t("gap.methodologyNote");
-
-    /* chart insight */
-    updateChartInsight('chartCountryCompare', analysisData, {
-      originName: origin ? compareMarketLabel(origin) : "",
-      targetName: target ? compareMarketLabel(target) : "",
-      categories: data.categories,
-      catRows: catRows,
-    });
   }
 
   async function renderCountryCompare() {
     try {
-    const canvasEl = document.getElementById('chartCountryCompare');
-    if (!canvasEl || !window.ReguLensCharts) return;
-
     const d = analysisData;
     if (!d || (!d.targetId && !d.target)) {
-      chartGuard('chartCountryCompare', false);
       const tb = document.getElementById("compareTbody");
       if (tb) tb.innerHTML = "";
       const mx = document.getElementById("compareMetrics");
@@ -7553,7 +7512,6 @@ els.verdictText.textContent = !hasData
       countryCompareCache = { key, data };
       renderCountryCompareFromCache(data);
     } catch {
-      chartGuard('chartCountryCompare', false, t("gap.compareError"));
       const tb = document.getElementById("compareTbody");
       if (tb) tb.innerHTML = "";
     }
@@ -7621,20 +7579,52 @@ els.verdictText.textContent = !hasData
   }
 
   function renderRiskMatrix() {
-    if (!analysisData) { chartGuard('chartRiskMatrix', false); return; }
-    if (!window.ReguLensCharts) return;
-    const RC = window.ReguLensCharts;
+    if (!analysisData) return;
     const risks = analysisData.riskMatrix || analysisData.risks || [];
-    if (!chartGuard('chartRiskMatrix', Array.isArray(risks) && risks.length > 0)) return;
-    RC.createRiskMatrix('chartRiskMatrix', risks, {
-      xLabel: t("charts.probability"),
-      yLabel: t("charts.impact"),
-      severityLabel: t("risk.col.severity"),
-      mitigationLabel: t("charts.mitigation"),
-    });
-
-    /* chart insight */
-    updateChartInsight('chartRiskMatrix', analysisData);
+    
+    const impactSummaryEl = document.getElementById('impactSummaryCards');
+    if (impactSummaryEl && Array.isArray(risks) && risks.length > 0) {
+      const dist = { critical: 0, high: 0, medium: 0, low: 0 };
+      risks.forEach((r) => {
+        const k = String(r.severity || "medium").toLowerCase();
+        if (dist[k] !== undefined) dist[k] += 1;
+      });
+      const openCount = risks.filter((r) => String(r.status || "Open").toLowerCase() === "open").length;
+      
+      impactSummaryEl.innerHTML = `
+        <div class="chart-card summary-card">
+          <div class="summary-title">${t('risk.matrix.title')}</div>
+          <div class="summary-stats">
+            <div class="summary-stat critical">
+              <span class="summary-stat-value">${dist.critical}</span>
+              <span class="summary-stat-label">${t('gap.critical')}</span>
+            </div>
+            <div class="summary-stat important">
+              <span class="summary-stat-value">${dist.high}</span>
+              <span class="summary-stat-label">${t('gap.high')}</span>
+            </div>
+            <div class="summary-stat standard">
+              <span class="summary-stat-value">${dist.medium}</span>
+              <span class="summary-stat-label">${t('gap.medium')}</span>
+            </div>
+            <div class="summary-stat">
+              <span class="summary-stat-value">${dist.low}</span>
+              <span class="summary-stat-label">${t('sev.low')}</span>
+            </div>
+          </div>
+          <div class="summary-list">
+            ${risks.slice(0, 5).map(r => `
+              <div class="summary-item">
+                <span class="sev-badge sev-${String(r.severity || 'medium').toLowerCase()}">${esc(sevLabel(String(r.severity || 'medium').toLowerCase()))}</span>
+                <span class="summary-item-title">${esc(r.title || r.name || '—')} (P: ${r.probability}, I: ${r.impact})</span>
+              </div>
+            `).join('')}
+          </div>
+        </div>
+      `;
+    } else if (impactSummaryEl) {
+      impactSummaryEl.innerHTML = "";
+    }
   }
 
   /* â”€â”€â”€â”€â”€â”€â”€â”€â”€ Risk & Business Health module â”€â”€â”€â”€â”€â”€â”€â”€â”€ */
@@ -7642,6 +7632,7 @@ els.verdictText.textContent = !hasData
   function renderRiskMatrixView() {
     const wrap = document.getElementById("riskDataWrap");
     const empty = document.getElementById("riskEmptyState");
+    const summaryEl = document.getElementById("riskSummaryCards");
     if (!wrap || !empty) return;
     const risks =
       analysisData && Array.isArray(analysisData.riskMatrix) ? analysisData.riskMatrix : [];
@@ -7676,6 +7667,53 @@ els.verdictText.textContent = !hasData
         .join("");
     }
 
+    if (summaryEl) {
+      summaryEl.innerHTML = `
+        <div class="chart-card summary-card">
+          <div class="summary-title">${t('risk.matrix.title')}</div>
+          <div class="summary-stats">
+            <div class="summary-stat critical">
+              <span class="summary-stat-value">${dist.critical}</span>
+              <span class="summary-stat-label">${t('gap.critical')}</span>
+            </div>
+            <div class="summary-stat important">
+              <span class="summary-stat-value">${dist.high}</span>
+              <span class="summary-stat-label">${t('gap.high')}</span>
+            </div>
+            <div class="summary-stat standard">
+              <span class="summary-stat-value">${dist.medium}</span>
+              <span class="summary-stat-label">${t('gap.medium')}</span>
+            </div>
+            <div class="summary-stat">
+              <span class="summary-stat-value">${dist.low}</span>
+              <span class="summary-stat-label">${t('sev.low')}</span>
+            </div>
+          </div>
+        </div>
+        <div class="chart-card summary-card">
+          <div class="summary-title">${t('risk.dist.title')}</div>
+          <div class="summary-stats">
+            <div class="summary-stat critical">
+              <span class="summary-stat-value">${dist.critical}</span>
+              <span class="summary-stat-label">${t('gap.critical')}</span>
+            </div>
+            <div class="summary-stat important">
+              <span class="summary-stat-value">${dist.high}</span>
+              <span class="summary-stat-label">${t('gap.high')}</span>
+            </div>
+            <div class="summary-stat standard">
+              <span class="summary-stat-value">${dist.medium}</span>
+              <span class="summary-stat-label">${t('gap.medium')}</span>
+            </div>
+            <div class="summary-stat">
+              <span class="summary-stat-value">${dist.low}</span>
+              <span class="summary-stat-label">${t('sev.low')}</span>
+            </div>
+          </div>
+        </div>
+      `;
+    }
+
     const tbody = document.getElementById("riskTbody");
     if (tbody) {
       tbody.innerHTML = risks
@@ -7694,26 +7732,6 @@ els.verdictText.textContent = !hasData
         })
         .join("");
     }
-
-    if (!window.ReguLensCharts) return;
-    const RC = window.ReguLensCharts;
-    RC.createRiskMatrix("riskMatrixCanvas", risks, {
-      xLabel: t("charts.probability"),
-      yLabel: t("charts.impact"),
-      severityLabel: t("risk.col.severity"),
-      mitigationLabel: t("charts.mitigation"),
-    });
-    RC.createDonutChart(
-      "riskDistCanvas",
-      [t("gap.critical"), t("gap.high"), t("gap.medium"), t("gap.low")],
-      [dist.critical, dist.high, dist.medium, dist.low],
-      [RC.getColors().critical, RC.getColors().high, RC.getColors().medium, RC.getColors().low],
-      { centreTitle: t("charts.total") }
-    );
-
-    /* chart insights */
-    updateChartInsight('riskMatrixCanvas', analysisData);
-    updateChartInsight('riskDistCanvas', analysisData);
   }
 
   /* â”€â”€â”€â”€â”€â”€â”€â”€â”€ public API (consumed by regulens.js experience layer) â”€â”€â”€â”€â”€â”€â”€â”€â”€ */
