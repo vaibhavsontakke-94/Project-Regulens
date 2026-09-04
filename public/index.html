@@ -250,6 +250,10 @@
       </button>
 
       <span class="nav-label" data-i18n="nav.group.government">GOVERNMENT</span>
+      <button class="nav-item" data-view="gov-command">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M3 21h18"/><path d="M5 21V7a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2v14"/><path d="M9 7V5a2 2 0 0 1 2-2h2a2 2 0 0 1 2 2v2"/><path d="M9 12h6"/><path d="M9 16h6"/></svg>
+        <span data-i18n="nav.govCommand">Gov Procurement Command Center</span>
+      </button>
       <button class="nav-item" data-module="gov-market">
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M12 2v20M2 12h20M8 12l4 4 8-8"/></svg>
         <span data-i18n="nav.module.govMarket">Market Intelligence</span>
@@ -1468,6 +1472,17 @@
         </div>
       </section>
 
+      <!-- ───────────── GOVERNMENT PROCUREMENT COMMAND CENTER ───────────── -->
+      <section class="view hidden" id="view-gov-command">
+        <div class="page-head">
+          <div class="page-head-left">
+            <nav class="crumbs"><a href="#" class="crumb" data-goto="dashboard">Dashboard</a><span class="crumb-sep">/</span><span class="crumb crumb-current" data-i18n="nav.govCommand">Government Procurement Command Center</span></nav>
+            <h1 class="page-title" data-i18n="nav.govCommand">Government Procurement Command Center</h1>
+          </div>
+        </div>
+        <div id="govCommandBody"></div>
+      </section>
+
       <!-- ───────────── INNOVATION PROCUREMENT (SIH26136) ───────────── -->
       <section class="view hidden" id="view-sih-procurement">
         <div class="page-head">
@@ -2009,6 +2024,7 @@
   <script src="sih-eligibility.js?v=1"></script>
   <script src="sih-matching.js?v=1"></script>
   <script src="sih-evaluation.js?v=1"></script>
+  <script src="gov-command.js?v=1"></script>
           <script src="regulens.js?v=45"></script>
           <script src="landing.js?v=1"></script>
 </body>

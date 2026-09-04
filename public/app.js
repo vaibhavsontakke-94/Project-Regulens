@@ -303,6 +303,7 @@
   /* â”€â”€â”€â”€â”€â”€â”€â”€â”€ i18n â”€â”€â”€â”€â”€â”€â”€â”€â”€ */
   const I18N = {
     en: {
+      "nav.govCommand": "Gov Procurement Command Center",
       "nav.dashboard": "Dashboard",
       "settings.title": "Settings",
       "settings.general": "General",
@@ -2688,6 +2689,7 @@
     "sih-eligibility",
     "sih-matching",
     "sih-evaluation",
+    "gov-command",
     "agent-intelligence",
     "risk-matrix",
     "business-health",
@@ -2859,6 +2861,7 @@
     "sih-eligibility": "Eligibility Assessment",
     "sih-matching": "Solution Matching",
     "sih-evaluation": "Solution Evaluation",
+    "gov-command": "Government Procurement Command Center",
     "risk-matrix": "Risk Matrix",
     network: "Growth & Partnerships",
     settings: t("settings.title"),
@@ -2972,6 +2975,12 @@
     if (view === "sih-evaluation") {
       if (window.SIHEvaluation) {
         window.SIHEvaluation.render("sih-evaluation");
+      }
+      return;
+    }
+    if (view === "gov-command") {
+      if (window.GovCommand) {
+        window.GovCommand.render();
       }
       return;
     }
