@@ -570,42 +570,98 @@
           </div>
         </div>
         <div class="registration-stepper">
-          <div class="stepper-header">
-            <div class="step-number">01</div>
-            <div class="step-label" data-i18n="regPortal.step1">Organization Details</div>
+          <div class="stepper-step" data-step="0">
+            <div class="stepper-header">
+              <div class="step-number">01</div>
+              <div class="step-label" data-i18n="regPortal.step1">Organization Details</div>
+            </div>
           </div>
           <div class="stepper-line"></div>
-          <div class="step-number">02</div>
-          <div class="step-label" data-i18n="regPortal.step2">Business Information</div>
+          <div class="stepper-step" data-step="1">
+            <div class="stepper-header">
+              <div class="step-number">02</div>
+              <div class="step-label" data-i18n="regPortal.step2">Business Information</div>
+            </div>
+          </div>
           <div class="stepper-line"></div>
-          <div class="step-number">03</div>
-          <div class="step-label" data-i18n="regPortal.step3">Solutions & Products</div>
+          <div class="stepper-step" data-step="2">
+            <div class="stepper-header">
+              <div class="step-number">03</div>
+              <div class="step-label" data-i18n="regPortal.step3">Solutions & Products</div>
+            </div>
+          </div>
           <div class="stepper-line"></div>
-          <div class="step-number">04</div>
-          <div class="step-label" data-i18n="regPortal.step4">Technology & Capabilities</div>
+          <div class="stepper-step" data-step="3">
+            <div class="stepper-header">
+              <div class="step-number">04</div>
+              <div class="step-label" data-i18n="regPortal.step4">Technology & Capabilities</div>
+            </div>
+          </div>
           <div class="stepper-line"></div>
-          <div class="step-number">05</div>
-          <div class="step-label" data-i18n="regPortal.step5">Experience & Track Record</div>
+          <div class="stepper-step" data-step="4">
+            <div class="stepper-header">
+              <div class="step-number">05</div>
+              <div class="step-label" data-i18n="regPortal.step5">Experience & Track Record</div>
+            </div>
+          </div>
           <div class="stepper-line"></div>
-          <div class="step-number">06</div>
-          <div class="step-label" data-i18n="regPortal.step6">Financial Information</div>
+          <div class="stepper-step" data-step="5">
+            <div class="stepper-header">
+              <div class="step-number">06</div>
+              <div class="step-label" data-i18n="regPortal.step6">Financial Information</div>
+            </div>
+          </div>
           <div class="stepper-line"></div>
-          <div class="step-number">07</div>
-          <div class="step-label" data-i18n="regPortal.step7">Compliance & Certifications</div>
+          <div class="stepper-step" data-step="6">
+            <div class="stepper-header">
+              <div class="step-number">07</div>
+              <div class="step-label" data-i18n="regPortal.step7">Compliance & Certifications</div>
+            </div>
+          </div>
           <div class="stepper-line"></div>
-          <div class="step-number">08</div>
-          <div class="step-label" data-i18n="regPortal.step8">Documents & Evidence</div>
+          <div class="stepper-step" data-step="7">
+            <div class="stepper-header">
+              <div class="step-number">08</div>
+              <div class="step-label" data-i18n="regPortal.step8">Documents & Evidence</div>
+            </div>
+          </div>
           <div class="stepper-line"></div>
-          <div class="step-number">09</div>
-          <div class="step-label" data-i18n="regPortal.step9">Team & Operations</div>
+          <div class="stepper-step" data-step="8">
+            <div class="stepper-header">
+              <div class="step-number">09</div>
+              <div class="step-label" data-i18n="regPortal.step9">Team & Operations</div>
+            </div>
+          </div>
           <div class="stepper-line"></div>
-          <div class="step-number">10</div>
-          <div class="step-label" data-i18n="regPortal.step10">Review & Submit</div>
+          <div class="stepper-step" data-step="9">
+            <div class="stepper-header">
+              <div class="step-number">10</div>
+              <div class="step-label" data-i18n="regPortal.step10">Review & Submit</div>
+            </div>
+          </div>
         </div>
         <div class="card">
           <div class="card-head"><h3 class="card-title" data-i18n="regPortal.profileTitle">Profile</h3></div>
           <div class="card-body" id="registrationForm">
             <!-- Form steps will be rendered by JavaScript -->
+          </div>
+          <div class="card-foot">
+            <button class="btn btn-ghost" id="regBackBtn" type="button" style="display:none">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><line x1="19" y1="12" x2="5" y2="12"/><polyline points="12 19 5 12 12 5"/></svg>
+              <span data-i18n="regPortal.back">Back</span>
+            </button>
+            <button class="btn btn-outline" id="regSaveBtn" type="button">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2z"/><polyline points="17 21 17 13 7 13 7 21"/><polyline points="7 3 7 8 15 8"/></svg>
+              <span data-i18n="regPortal.saveDraft">Save Draft</span>
+            </button>
+            <button class="btn btn-primary" id="regNextBtn" type="button">
+              <span data-i18n="regPortal.continue">Continue</span>
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>
+            </button>
+            <button class="btn btn-primary" id="regSubmitBtn" type="button" style="display:none">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg>
+              <span data-i18n="regPortal.submit">Submit Registration</span>
+            </button>
           </div>
         </div>
         <div class="registration-progress" data-i18n="regPortal.profileCompletion">Profile Completion: 0%</div>
@@ -1995,6 +2051,7 @@
 <script src="charts.js?v=2"></script>
 <script src="insights.js?v=1"></script>
 <script src="copilot.js?v=2"></script>
+<script src="registration.js?v=1"></script>
 <script src="app.js?v=47"></script>
 <script src="government.js?v=2"></script>
 <script src="i18n/sih-bundle.js?v=1"></script>
