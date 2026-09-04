@@ -2703,10 +2703,15 @@
      existing leaf views shown as internal tabs. Leaf ids, DOM sections,
      renders and APIs stay untouched. */
   const MODULES = {
-    market: {
-      labelKey: "nav.module.market",
+    registration: {
+      labelKey: "nav.module.registration",
       defaultView: "registration-portal",
-      views: ["registration-portal", "feasibility", "setup-guide", "cost-estimator"],
+      views: ["registration-portal"],
+    },
+    launch: {
+      labelKey: "nav.module.launch",
+      defaultView: "feasibility",
+      views: ["feasibility", "setup-guide", "cost-estimator"],
     },
     compliance: {
       labelKey: "nav.module.compliance",
@@ -2722,6 +2727,18 @@
       labelKey: "nav.module.growth",
       defaultView: "network",
       views: ["network", "co-founder", "investor-hub"],
+    },
+    govMarket: {
+      labelKey: "nav.module.govMarket",
+      defaultView: "sih-procurement",
+      views: [
+        "sih-procurement",
+        "sih-startup",
+        "sih-eligibility",
+        "sih-matching",
+        "sih-evaluation",
+        "gov-workflow",
+      ],
     },
     policy: {
       labelKey: "nav.module.policy",
@@ -2767,7 +2784,7 @@
 
   /* leaf view -> i18n key for its tab caption (fallback: TITLES) */
   const LEAF_LABEL_KEYS = {
-    "registration-portal": "nav.canILaunch",
+    "registration-portal": "nav.registrationPortal",
     feasibility: "nav.feasibility",
     "setup-guide": "nav.setupGuide",
     "cost-estimator": "nav.costEstimator",
@@ -2797,6 +2814,12 @@
     network: "crumb.network",
     "co-founder": "nav.coFounder",
     "investor-hub": "nav.investorHub",
+    "sih-procurement": "gov.nav.myproblems",
+    "sih-startup": "gov.nav.findsolutions",
+    "sih-eligibility": "gov.nav.solutions",
+    "sih-matching": "nav.sihmatching",
+    "sih-evaluation": "nav.siheval",
+    "gov-workflow": "gov.nav.procurementreadiness",
   };
 
   const TITLES = {
@@ -2957,7 +2980,7 @@
       return;
     }
     if (view === "dashboard") { renderStats(); renderDashboardCharts(); }
-    else if (view === "registration-portal") renderVerdict();
+    else if (view === "registration-portal") renderRegistrationForm();
     else if (view === "feasibility") renderFeasibility();
     else if (view === "setup-guide") renderSetupGuide();
     else if (view === "requirements") renderRequirements();
