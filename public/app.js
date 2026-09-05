@@ -2791,12 +2791,9 @@
     network: "crumb.network",
     "co-founder": "nav.coFounder",
     "investor-hub": "nav.investorHub",
-    "sih-procurement": "gov.nav.myproblems",
-    "sih-startup": "gov.nav.findsolutions",
     "sih-eligibility": "gov.nav.solutions",
     "sih-matching": "nav.sihmatching",
     "sih-evaluation": "nav.siheval",
-    "gov-workflow": "gov.nav.procurementreadiness",
   };
 
   const TITLES = {

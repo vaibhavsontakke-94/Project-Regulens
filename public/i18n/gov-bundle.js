@@ -15,15 +15,7 @@
       "gov.nav.compare": "Scenario Comparison",
       "gov.nav.scenario": "Parameter Simulation",
       "gov.nav.copilot": "Decision Assistant",
-      "gov.nav.consultations": "Regulatory Consultations",
-  "gov.nav.myproblems": "Problem Definition",
-  "gov.nav.findsolutions": "Solution Discovery",
-  "gov.nav.solutions": "Solution Evaluation",
-  "gov.nav.compliancecenter": "Compliance Assessment",
-  "gov.nav.pilotmanagement": "Pilot Management",
-  "gov.nav.pilotperformance": "Pilot Performance",
-  "gov.nav.procurementreadiness": "Procurement Readiness",
-  "gov.nav.scaleintelligence": "Scale-Up Assessment"
+"gov.nav.consultations": "Regulatory Consultations",
 
       "gov.ctx.title": "Analysis Context",
       "gov.ctx.desc": "One context powers every government module.",
@@ -117,8 +109,6 @@
       "gov.nav.scenario": "Simulación de Parámetros",
       "gov.nav.copilot": "Asistente de Decisiones",
       "gov.nav.consultations": "Consultas Regulatorias",
-
-      "gov.ctx.title": "Contexto del análisis",
       "gov.ctx.desc": "Un único contexto alimenta todos los módulos gubernamentales.",
       "gov.ctx.company": "Empresa",
       "gov.ctx.product": "Producto / Servicio",
@@ -210,8 +200,6 @@
       "gov.nav.scenario": "Simulation de Paramètres",
       "gov.nav.copilot": "Assistant Décisionnel",
       "gov.nav.consultations": "Consultations Réglementaires",
-
-      "gov.ctx.title": "Contexte de l'analyse",
       "gov.ctx.desc": "Un contexte unique alimente tous les modules gouvernementaux.",
       "gov.ctx.company": "Entreprise",
       "gov.ctx.product": "Produit / Service",
@@ -303,8 +291,6 @@
       "gov.nav.scenario": "Parametersimulation",
       "gov.nav.copilot": "Entscheidungsassistent",
       "gov.nav.consultations": "Regulatorische Konsultationen",
-
-      "gov.ctx.title": "Analyse-Kontext",
       "gov.ctx.desc": "Ein Kontext versorgt alle Regierungs-Module.",
       "gov.ctx.company": "Unternehmen",
       "gov.ctx.product": "Produkt / Dienstleistung",
@@ -396,8 +382,6 @@
       "gov.nav.scenario": "Simulação de Parâmetros",
       "gov.nav.copilot": "Assistente de Decisão",
       "gov.nav.consultations": "Consultas Regulatórias",
-
-      "gov.ctx.title": "Contexto da análise",
       "gov.ctx.desc": "Um único contexto alimenta todos os módulos governamentais.",
       "gov.ctx.company": "Empresa",
       "gov.ctx.product": "Produto / Serviço",
@@ -489,8 +473,6 @@
       "gov.nav.scenario": "Симуляция Параметров",
       "gov.nav.copilot": "Помощник Решений",
       "gov.nav.consultations": "Консультации",
-
-      "gov.ctx.title": "Контекст анализа",
       "gov.ctx.desc": "Один контекст питает все государственные модули.",
       "gov.ctx.company": "Компания",
       "gov.ctx.product": "Продукт / Услуга",
@@ -582,8 +564,6 @@
       "gov.nav.scenario": "パラメータシミュレーション",
       "gov.nav.copilot": "意思決定アシスタント",
       "gov.nav.consultations": "規制関係協議",
-
-      "gov.ctx.title": "分析コンテキスト",
       "gov.ctx.desc": "ひとつのコンテキストがすべての政府モジュールを駆動します。",
       "gov.ctx.company": "会社名",
       "gov.ctx.product": "製品 / サービス",
@@ -675,8 +655,6 @@
       "gov.nav.scenario": "参数模拟",
       "gov.nav.copilot": "决策助手",
       "gov.nav.consultations": "公开征求意见",
-
-      "gov.ctx.title": "分析上下文",
       "gov.ctx.desc": "一个上下文驱动所有政府模块。",
       "gov.ctx.company": "公司",
       "gov.ctx.product": "产品 / 服务",
