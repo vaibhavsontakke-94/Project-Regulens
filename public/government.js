@@ -10,10 +10,9 @@
   "use strict";
 
   const GOV_VIEWS = [
-    "gov-analyzer", "policy-simulator", "gov-stakeholders",
+    "gov-dashboard", "gov-analyzer", "policy-simulator", "gov-stakeholders",
     "gov-outcomes", "industry-impact", "compare-scenarios", "gov-scenario",
-    "gov-scale", "gov-copilot", "gov-consultations",
-    "gov-workflow",
+    "gov-copilot", "gov-consultations", "gov-problems",
   ];
   const GOV_VIEW_TITLES = {
     "gov-analyzer": "Policy Analysis",
@@ -23,10 +22,8 @@
     "industry-impact": "Cross-Industry Burden Analysis",
     "compare-scenarios": "Scenario Comparison",
     "gov-scenario": "Parameter Simulation",
-    "gov-scale": "Scale-Up Assessment",
     "gov-copilot": "Government Decision Assistant",
     "gov-consultations": "Regulatory Consultations",
-    "gov-workflow": "Government Innovation Workflow",
   };
   const CHANGE_TYPES = ["stricter", "relaxed", "activate", "repeal"];
   const LS_KEY = "regulens.govContext.v1";
@@ -46,13 +43,6 @@
     scnResult: null,
     scnBusy: false,
     scnLastParams: null,
-    scaleResult: null,
-    scaleBusy: false,
-    scaleLevel: "pilot",
-    scaleFactors: {},
-    scaleKPIs: {},
-    clearlyLabeledProjections: {},
-    scaleRecommendation: {},
     outHorizon: "shortTerm",
     stkOpen: -1,
     anzQuery: "",
@@ -336,23 +326,18 @@
     if (force) { S.pkgKey = ""; }
     const pkgReady = await ensurePkg(force);
     fillCtxSlot(view);
-    /* Initialize workflow state if entering workflow view */
-    if (view === "gov-workflow") {
-      initWorkflow(S.pkg);
-    }
     if (!pkgReady) return; // loading/error already painted
     switch (view) {
-case "gov-analyzer": renderAnalyzer(pkgReady); break;
+      case "gov-analyzer": renderAnalyzer(pkgReady); break;
       case "policy-simulator": initSimulator(pkgReady); break;
       case "gov-stakeholders": renderStakeholders(pkgReady); break;
       case "gov-outcomes": renderOutcomes(pkgReady); break;
       case "industry-impact": renderIndustry(pkgReady); break;
       case "compare-scenarios": renderCompare(pkgReady); break;
       case "gov-scenario": initScenario(pkgReady); break;
-      case "gov-scale": initScale(pkgReady); break;
       case "gov-copilot": initCopilot(pkgReady); break;
       case "gov-consultations": renderConsultations(pkgReady); break;
-      case "gov-workflow": renderWorkflow(pkgReady); break;
+    case "gov-problems": renderGovProblems(pkgReady); break;
     }
   }
 
@@ -370,7 +355,7 @@ case "gov-analyzer": renderAnalyzer(pkgReady); break;
     ps.forEach((p) => (p.dimensions || []).forEach((dm) => { dimAgg[dm.label] = (dimAgg[dm.label] || 0) + dm.score; }));
     const dimKeys = Object.keys(dimAgg);
     const topDim = dimKeys.length ? dimKeys.sort((a, b) => dimAgg[b] - dimAgg[a])[0] : null;
-    const si = pkg.dashboard.sourceIntegrity;
+    const si = (pkg.dashboard && pkg.dashboard.sourceIntegrity) || { verified: 0, unverified: 0 };
     const q = S.anzQuery.trim().toLowerCase();
     const filtered = q
       ? ps.filter((p) => (p.title + " " + p.code + " " + p.authority + " " + p.policyType).toLowerCase().includes(q))
@@ -718,257 +703,6 @@ case "gov-analyzer": renderAnalyzer(pkgReady); break;
   }
   function renderCompare(pkg) {
     initCompareBuilder(pkg);
-  }
-
-  function renderScale(pkg) {
-    const root = $("govScaleBody");
-    if (!root) return;
-    const analysis = S.scaleAnalysis || {};
-    const recommendation = S.scaleRecommendation || {};
-    const factors = S.scaleFactors || {};
-    const kpis = S.scaleKPIs || {};
-    const projections = S.clearLabeledProjections || {};
-
-    root.innerHTML = `
-      <div class="card scn-card">
-        <div class="card-head">
-          <h3 class="card-title">${esc(T("gov.scl.title"))}</h3>
-          <span class="scenario-name">${esc(T("gov.scl.level", { level: T("gov.scl.levels." + analysis.scalingLevel) }))}</span>
-        </div>
-        <div class="table-wrap">
-          <table class="req-table factor-table">
-            <thead>
-              <tr>
-                <th>${esc(T("gov.scl.factor"))}</th>
-                <th>${esc(T("gov.scl.score"))}</th>
-                <th>${esc(T("gov.scl.label"))}</th>
-                <th>${esc(T("gov.scl.description"))}</th>
-              </tr>
-            </thead>
-            <tbody>
-              ${Object.entries(factors).map(([key, f]) => `
-                <tr>
-                  <td>${esc(T("gov.scl.factor." + key))}</td>
-                  <td>${f.score}/100</td>
-                  <td>${esc(f.label)}</td>
-                  <td>${esc(f.description)}</td>
-                </tr>`).join("")}
-            </tbody>
-          </table>
-        </div>
-        <div class="grid grid-2 gov-kpis">
-          ${statCard(kpis.usersImpacted ?? "—", T("gov.scl.kpiUsers"))}
-          ${statCard(kpis.costSaving ?? "—", T("gov.scl.kpiCostSaving"))}
-          ${statCard(kpis.efficiency ?? "—", T("gov.scl.kpiEfficiency"))}
-          ${statCard(kpis.satisfaction ?? "—", T("gov.scl.kpiSatisfaction"))}
-        </div>
-        <details class="assump-box" open>
-          <summary>${esc(T("gov.scl.assumptions"))}</summary>
-          <ul>${(analysis.assumptions || []).map((a) => `<li>${esc(a)}</li>`).join("")}</ul>
-          <p class="trace-line mono">${esc(projections.cost || "")}</p>
-        </details>
-        ${recommendation.recommendation ? `
-          <div class="rec-badge ${recommendation.recommendation.toLowerCase().replace(/\s+/g, "-")}">
-            <strong>${esc(T("gov.scl.rec." + recommendation.recommendation))}</strong>
-            ${recommendation.evidence.map((e) => `<p>${esc(e)}</p>`).join("")}
-          </div>` : ""}
-      </div>`;
-  }
-
-  /* ════════════════ SCALE & GOVERNMENT IMPACT INTELLIGENCE ════════════════ */
-  function initScale(pkg) {
-    if (!S.scaleResult) {
-      post("/api/scale/analyze", govCtx()).then((resp) => {
-        if (resp && !resp.error) {
-          S.scaleAnalysis = resp.scaleAnalysis;
-          S.scaleRecommendation = resp.recommendation;
-          S.scaleFactors = resp.scaleAnalysis ? resp.scaleAnalysis.techMetrics : {};
-          S.scaleKPIs = resp.scaleAnalysis ? resp.scaleAnalysis.impactKPIs : {};
-          S.clearLabeledProjections = resp.scaleAnalysis ? resp.scaleAnalysis.clearLabeledProjections : {};
-          S.scaleRecommendation = resp.recommendation;
-          renderScale(S.pkg);
-        }
-      });
-    } else {
-      renderScale(pkg);
-    }
-  }
-
-  /* ════════════════ GOVERNMENT INNOVATION & PROCUREMENT WORKFLOW ════════════════ */
-  function renderWorkflow(pkg) {
-    const stage = S.workflowStage || "01-register";
-    const progress = S.workflowProgress || {};
-    const pkgCtx = pkg && pkg.context ? pkg.context : {};
-    
-    /* Build stage data from actual pkg state */
-    const stageData = {
-      "01-register": {
-        title: "01 REGISTER",
-        desc: "Organization Registration",
-        status: progress["01-register"] || "pending",
-        completed: progress["01-register"] === "completed",
-        /* Connect to business registration via pkg data */
-        business: pkgCtx.company ? { name: pkgCtx.company, industry: pkgCtx.industryName || "Not specified", product: pkgCtx.product || "Not specified", teamSize: pkgCtx.teamSize || "Not specified", experienceYears: pkgCtx.experienceYears || "Not specified", certifications: pkgCtx.certifications || "Not recorded" } : null,
-        cta: "View Profile",
-        ctaUrl: "#",
-        items: []
-      },
-      "02-verify": {
-        title: "02 VERIFY",
-        desc: "Verification",
-        status: progress["02-verify"] || "pending",
-        completed: progress["02-verify"] === "completed",
-        items: []
-      },
-      "03-gov-problem": {
-        title: "03 PROBLEM DEFINITION",
-        desc: "Government Problem Definition",
-        status: progress["03-gov-problem"] || "pending",
-        completed: progress["03-gov-problem"] === "completed",
-        problem: pkgCtx.targetName ? { name: pkgCtx.targetName } : null,
-        cta: "Define Problem",
-        ctaUrl: "/#",
-        items: []
-      },
-      "04-solution-discovery": {
-        title: "04 SOLUTION DISCOVERY",
-        desc: "Solution Discovery & Matching",
-        status: progress["04-solution-discovery"] || "pending",
-        completed: progress["04-solution-discovery"] === "completed",
-        businesses: pkgCtx.matchedBusinesses || [],
-        cta: "Discover Solutions",
-        ctaUrl: "#",
-        items: []
-      },
-      "05-select-solution": {
-        title: "05 SOLUTION SELECTION",
-        desc: "Select Solution for Evaluation",
-        status: progress["05-select-solution"] || "pending",
-        completed: progress["05-select-solution"] === "completed",
-        businesses: pkgCtx.selectedBusiness ? [pkgCtx.selectedBusiness] : [],
-        cta: "Review Solutions",
-        ctaUrl: "#",
-        items: []
-      },
-      "06-analyze": {
-        title: "06 SOLUTION EVALUATION",
-        desc: "Solution Evaluation",
-        status: progress["06-analyze"] || "pending",
-        completed: progress["06-analyze"] === "completed",
-        cta: "View Evaluation",
-        ctaUrl: "#",
-        items: []
-      },
-      "07-decision": {
-        title: "07 DECISION POINT",
-        desc: "Go/No-Go Decision",
-        status: progress["07-decision"] || "pending",
-        completed: progress["07-decision"] === "completed",
-        cta: "Record Decision",
-        ctaUrl: "#",
-        items: []
-      },
-      "08-predict": {
-        title: "08 SCENARIO MODELING",
-        desc: "Scenario Modeling",
-        status: progress["08-predict"] || "pending",
-        completed: progress["08-predict"] === "completed",
-        cta: "Run Scenarios",
-        ctaUrl: "#",
-        items: []
-      },
-      "09-pilot": {
-        title: "09 PILOT EXECUTION",
-        desc: "Pilot Management",
-        status: progress["09-pilot"] || "pending",
-        completed: progress["09-pilot"] === "completed",
-        cta: "Manage Pilot",
-        ctaUrl: "#",
-        items: []
-      },
-      "10-procurement": {
-        title: "10 PROCUREMENT READINESS",
-        desc: "Procurement Readiness",
-        status: progress["10-procurement"] || "pending",
-        completed: progress["10-procurement"] === "completed",
-        cta: "Check Readiness",
-        ctaUrl: "#",
-        items: []
-      },
-      "11-scale": {
-        title: "11 SCALE-UP ASSESSMENT",
-        desc: "Scale-Up Assessment",
-        status: progress["11-scale"] || "pending",
-        completed: progress["11-scale"] === "completed",
-        cta: "Assess Scale-Up",
-        ctaUrl: "#",
-        items: []
-      }
-    };
-    
-    const current = stageData[stage] || stageData["01-register"];
-    const allStages = Object.values(stageData);
-    const completedStages = allStages.filter(s => s.completed);
-    const pendingStages = allStages.filter(s => !s.completed && s.status !== "completed");
-    
-    /* Determine progress bar widths */
-    const stageOrder = ["01-register", "02-verify", "03-gov-problem", "04-solution-discovery", "05-select-solution", "06-analyze", "07-decision", "08-predict", "09-pilot", "10-procurement", "11-scale"];
-    const stageProgress = stageOrder.map((s, i) => {
-      const d = stageData[s];
-      const isCompleted = d.completed;
-      const isCurrent = s === stage;
-      const pct = isCompleted ? 100 : isCurrent ? 100 : Math.round(((i + 1) / stageOrder.length) * 100);
-      return { stage: s, percent: pct, completed: isCompleted, current: isCurrent };
-    });
-    
-    /* Count actual completed from pkg if available */
-    let actualCompleted = 0;
-    if (pkg) {
-      /* Try to derive from pkg state */
-      const dv = pkg.dashboard || {};
-      const st = dv.stats || {};
-      /* Use dashboard stats if available */
-      if (st.total) actualCompleted = Math.min(actualCompleted + 1, 11);
-    }
-    
-    /* Build the HTML */
-    const stagesHTML = allStages.map((s, i) => {
-      const isCompleted = s.completed;
-      const isCurrent = s.title === current.title;
-      const cls = isCompleted ? "completed" : isCurrent ? "current" : "";
-      const pct = stageProgress.find(sp => sp.stage === s.title.replace(/^0\d+\s*/, ""))?.percent || (isCompleted ? 100 : 0);
-      return `
-        <div class="workflow-stage ${cls}" data-stage="${s.title.replace(/^0\d+\s*/, "")}" style="--progress:${pct}%">
-          <div class="stage-number">${s.title}</div>
-          <div class="stage-desc">${s.desc}</div>
-          <span class="stage-status ${isCompleted ? "completed" : "pending"}">${esc(T(`gov.wf.${s.title.replace(/^0\d+\s*/, "").toLowerCase()}`) || s.desc)}</span>
-        </div>
-      `;
-    }).join("");
-    
-    /* CTA button */
-    const ctaBtn = current.cta ? `
-      <button class="btn workflow-cta" data-stage="${current.title.replace(/^0\d+\s*/, "")}">
-        ${esc(current.cta)}
-      </button>` : "";
-    
-    return `
-      <div class="workflow-visualization">
-        <div class="workflow-header">
-          <h2>${esc(T("gov.wf.title") || "Government Innovation & Procurement Workflow")}</h2>
-          <p>${esc(T("gov.wf.subtitle") || "From Government Problem to Verified Solution, Pilot, Procurement & Scale")}</p>
-        </div>
-        <div class="workflow-stages">
-          ${stagesHTML}
-        </div>
-        ${ctaBtn}
-        <div class="workflow-progress-bar">
-          <div class="progress-fill" style="width: ${stageProgress.reduce((sum, sp) => sum + sp.percent, 0) / stageProgress.length}%"></div>
-        </div>
-        <div class="workflow-status">
-          ${completedStages.length} of ${allStages.length} stages completed
-        </div>
-      </div>`;
   }
 
   /* ════════════════ MODULE: SCENARIO SIMULATOR ════════════════ */
@@ -1409,15 +1143,6 @@ case "gov-analyzer": renderAnalyzer(pkgReady); break;
     };
   };
 
-  function initWorkflow(pkg) {
-    /* Derive workflow stage from actual pkg state */
-    if (pkg && pkg.context) {
-      S.workflowStage = "01-register"; // default
-      /* Could derive from pkg state: problems, pilots, etc. */
-    }
-    renderWorkflow(pkg);
-  }
-
   function init() {
     wireModalOnce();
     // re-render active gov view when language changes (app.js calls refresh())
@@ -1425,12 +1150,111 @@ case "gov-analyzer": renderAnalyzer(pkgReady); break;
 
   init();
 
-  const API = {
-    render,
-    refresh,
-    retry,
-    openPolicyModal,
-    gotoSimulator,
-  };
-  window.ReguLensGov = API;
-})();
+  /* ════════════════ GOVERNMENT PROBLEM MANAGEMENT ════════════════ */
+  async function renderGovProblems(pkg) {
+    const root = $("govProblemsBody");
+    if (!root) return;
+    const ur = await user();
+    if (!ur) { root.innerHTML = errorHtml("gov.common.unauthenticated"); return; }
+    const orgId = bodyUuid(req.query, "organizationId", { required: true });
+    await memberOf(req, orgId, ur);
+    let problems = await activeStore.listProblems(orgId);
+    const hay = (s) => String(s || "").toLowerCase();
+    const q = String((req.query.q || "")).trim().toLowerCase();
+    if (q) {
+      problems = problems.filter((p) =>
+        hay(p.title).includes(q) || hay(p.problemStatement).includes(q) ||
+        hay(p.currentState).includes(q) || hay(p.desiredState).includes(q) ||
+        hay(p.sector).includes(q) || hay(p.department).includes(q)
+      );
+    }
+    if (req.query.status) {
+      const status = String(req.query.status).trim().toUpperCase();
+      problems = problems.filter((p) => hay(p.status) === status);
+    }
+    if (req.query.sector) {
+      const sector = String(req.query.sector).trim().toLowerCase();
+      problems = problems.filter((p) => hay(p.sector).includes(sector));
+    }
+    const statuses = [...new Set(problems.map((p) => p.status))];
+    root.innerHTML = `
+      <div class="gov-problems-wrapper">
+        ${statuses.length ? `
+          <div class="gov-problems-filters">
+            <button class="btn btn-ghost filter-btn ${!req.query.status ? "active" : ""}" data-filter="all">${esc(T("gov.common.all"))}</button>
+            ${statuses.map((s) => `
+              <button class="btn btn-ghost filter-btn ${req.query.status && String(req.query.status).trim().toUpperCase() === s ? "active" : ""}" data-filter="${s}">${esc(T("gov.status." + s))}</button>`).join("")}
+            <button class="btn btn-ghost filter-btn" data-filter="draft">${esc(T("gov.status.Draft"))}</button>
+          </div>` : ""}
+        <div class="gov-problems-list">
+          ${problems.length ? problems.map((p) => `
+            <div class="gov-problem-item" data-problem-id="${p.id}">
+              <div class="gov-problem-header">
+                <h3 class="gov-problem-title">${esc(p.title)}</h3>
+                <span class="gov-problem-status status-pill status-${normalizeStatus(p.status)}">${esc(T("gov.status." + p.status))}</span>
+              </div>
+              <div class="gov-problem-meta">
+                <span>${esc(p.department || "")}</span>
+                <span>${esc(p.sector || "")}</span>
+                <span>${esc(p.estimatedBudget || 0)}${esc(p.currency || " INR")}</span>
+              </div>
+              <p class="gov-problem-desc">${esc(p.problemStatement || "").substring(0, 200)}${esc(p.problemStatement || "").length > 200 ? "..." : ""}</p>
+              <div class="gov-problem-actions">
+                <button class="btn btn-sm btn-view" data-problem-id="${p.id}">${esc(T("gov.view"))}</button>
+                ${p.status === "DRAFT" ? `<button class="btn btn-sm btn-edit" data-problem-id="${p.id}">${esc(T("gov.edit"))}</button>` : ""}
+                ${p.status === "DRAFT" ? `<button class="btn btn-sm btn-delete" data-problem-id="${p.id}">${esc(T("gov.delete"))}</button>` : ""}
+                ${p.status !== "PUBLISHED" ? `<button class="btn btn-sm btn-publish" data-problem-id="${p.id}">${esc(T("gov.publish"))}</button>` : `<button class="btn btn-sm btn-unpublish" data-problem-id="${p.id}">${esc(T("gov.unpublish"))}</button>`}
+                <button class="btn btn-sm btn-detail" data-problem-id="${p.id}">${esc(T("gov.details"))}</button>
+              </div>
+            </div>`).join("") : `<p class="gov-empty">No problems found. <button class="btn btn-primary" onclick="window.ReguLensGov.newProblem()">${esc(T("gov.newProblem"))}</button></p>`}
+        </div>`;
+    root.querySelectorAll(".btn-view").forEach((b) => b.onclick = () => openProblem(pb.dataset.problemId));
+    root.querySelectorAll(".btn-edit").forEach((b) => b.onclick = () => editProblem(pb.dataset.problemId));
+    root.querySelectorAll(".btn-delete").forEach((b) => b.onclick = () => deleteProblem(pb.dataset.problemId));
+    root.querySelectorAll(".btn-publish").forEach((b) => b.onclick = () => publishProblem(pb.dataset.problemId));
+    root.querySelectorAll(".btn-unpublish").forEach((b) => b.onclick = () => unpublishProblem(pb.dataset.problemId));
+    root.querySelectorAll(".btn-detail").forEach((b) => b.onclick = () => showProblemDetail(pb.dataset.problemId));
+    root.querySelectorAll(".filter-btn").forEach((b) => b.onclick = () => {
+      document.querySelectorAll(".filter-btn.active").forEach((btn) => btn.classList.remove("active"));
+      b.classList.add("active");
+      renderGovProblems(pkg);
+    });
+  }
+
+  /* API helpers for problem operations */
+  async function apiProblem(id, method, body) {
+    const res = await fetch(`/api/sih/problems/${id}${method === "GET" ? "" : method}`, {
+      method,
+      headers: { "Content-Type": "application/json" },
+      body: body ? JSON.stringify(body) : undefined,
+    });
+    if (!res.ok) {
+      const err = await res.json();
+      throw new Error((err && err.error) || `HTTP ${res.status}`);
+    }
+    return res.json();
+  }
+
+  async function listProblems(orgId) {
+    const res = await fetch(`/api/sih/problems?organizationId=${orgId}`, {
+      headers: { "Authorization": `Bearer ${S.ctx.token}` },
+    });
+    if (!res.ok) throw new Error("Failed to list problems");
+    return res.json();
+  }
+
+  function normalizeStatus(s) { return s.toLowerCase().replace(/ /g, "-"); }
+
+  function toast(msg) { ... }  // reuse existing toast
+
+  /* Problem CRUD actions */
+  async function openProblem(id) { /* navigate to detail */ }
+  async function editProblem(id) { const data = await apiProblem(id, "PATCH", { status: "SUBMITTED" }); renderGovProblems(); }
+  async function deleteProblem(id) { await apiProblem(id, "DELETE"); renderGovProblems(); }
+  async function publishProblem(id) { await apiProblem(id, "POST", { status: "APPROVED" }); renderGovProblems(); }
+  async function unpublishProblem(id) { await apiProblem(id, "POST", { status: "APPROVED" }); renderGovProblems(); }
+  async function showProblemDetail(id) { /* show modal with problem data */ }
+
+  /* new problem form */
+  function newProblem() { /* open modal/form to create new problem */ }
+}

@@ -590,6 +590,36 @@
     }
   }
 
+  async function problemLifecycleAction(root, action) {
+    const el = $("#gwfProg", root);
+    const set = (m, cls) => { if (el) el.innerHTML = `<div class="gwf-log-${cls || "info"}">${esc(m)}</div>`; };
+    const p = state.problem;
+    if (!p) return;
+    const prompts = {
+      unpublish: "Unpublish this problem? It returns to APPROVED for editing / re-publishing. The live challenge is not modified.",
+      archive: "Archive this problem? It stays in the audit record but leaves the active workflow.",
+      delete: "Permanently DELETE this draft problem? This cannot be undone.",
+    };
+    if (!window.confirm(prompts[action])) return;
+    try {
+      const patched = action === "delete"
+        ? await api("/problems/" + p.id, { method: "DELETE" })
+        : await api("/problems/" + p.id + "/" + action, { method: "POST" });
+      set(action === "delete" ? "Draft problem deleted." : "Problem status is now " + (patched.status || "updated") + ".", "ok");
+      await refreshOverview();
+      if (action === "delete") {
+        state.problem = null;
+        try { localStorage.removeItem(KEY_PROBLEM); } catch (_) {}
+        renderSearch(root);
+      } else {
+        state.problem = Object.assign({}, state.problem, patched);
+        renderWorkspace(root);
+      }
+    } catch (err) {
+      set("Action failed \u2014 " + (err.message || String(err)), "bad");
+    }
+  }
+
   /* ═══════════════ intents (Command Center navigation) ═══════════════ */
 
   function readIntent() { try { return localStorage.getItem(KEY_INTENT) || ""; } catch (_) { return ""; } }
@@ -683,7 +713,14 @@
             ${p.status === "DRAFT" ? `<button type="button" class="btn btn-secondary btn-sm" data-gwf-submit-problem>Submit for Review</button>` : ""}
             ${p.status === "SUBMITTED" ? `<button type="button" class="btn btn-secondary btn-sm" data-gwf-approve-problem>Approve Problem</button>` : ""}
             ${!["PUBLISHED", "IN_CHALLENGE", "CLOSED", "ARCHIVED"].includes(p.status) ? `<button type="button" class="btn btn-primary btn-sm" data-gwf-publish-problem>Publish Problem</button>` : ""}
-            <span class="gcc-cell-sub">${esc(p.status === "PUBLISHED" || p.status === "IN_CHALLENGE" ? "Live \u2014 solutions can apply through the published innovation challenge." : "Draft stage \u2014 publishing creates and activates the live innovation challenge for this problem.")}</span>
+            ${p.status === "PUBLISHED" ? `<button type="button" class="btn btn-secondary btn-sm" data-gwf-unpublish-problem>Unpublish</button>` : ""}
+            ${!["ARCHIVED"].includes(p.status) ? `<button type="button" class="btn btn-secondary btn-sm" data-gwf-archive-problem>Archive</button>` : ""}
+            ${p.status === "DRAFT" ? `<button type="button" class="btn btn-secondary btn-sm" data-gwf-delete-problem>Delete draft</button>` : ""}
+            <span class="gcc-cell-sub">${esc(
+              p.status === "PUBLISHED" || p.status === "IN_CHALLENGE" ? "Live \u2014 solutions can apply through the published innovation challenge. Unpublish pulls the problem back to APPROVED."
+              : p.status === "ARCHIVED" ? "Archived \u2014 retained in the audit record but no longer part of active workflows."
+              : "Draft stage \u2014 publishing creates and activates the live innovation challenge for this problem."
+            )}</span>
           </div>
           <div id="gwfProg"></div>
         </section>
@@ -751,6 +788,12 @@
     if (approveBtn) approveBtn.addEventListener("click", () => stepProblem(root, "approve"));
     const publishBtn = $("[data-gwf-publish-problem]", root);
     if (publishBtn) publishBtn.addEventListener("click", () => publishProblemAction(root));
+    const unpublishBtn = $("[data-gwf-unpublish-problem]", root);
+    if (unpublishBtn) unpublishBtn.addEventListener("click", () => problemLifecycleAction(root, "unpublish"));
+    const archiveBtn = $("[data-gwf-archive-problem]", root);
+    if (archiveBtn) archiveBtn.addEventListener("click", () => problemLifecycleAction(root, "archive"));
+    const deleteBtn = $("[data-gwf-delete-problem]", root);
+    if (deleteBtn) deleteBtn.addEventListener("click", () => problemLifecycleAction(root, "delete"));
     $("[data-gwf-find]", root).addEventListener("click", () => findSolutionsAction(root));
     $("[data-gwf-new-pilot]", root).addEventListener("click", () => newPilotModal(root));
     $("[data-gwf-decide]", root).addEventListener("click", () => decisionModal(root));

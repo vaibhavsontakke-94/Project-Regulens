@@ -168,8 +168,16 @@
     </section>`;
 
     /* ── exec KPI cards ── */
+    const KPI_INTENT = {
+      activeProblems: "search", solutionsReceived: "find", eligibleSolutions: "find",
+      activePilots: "pilots", completedPilots: "pilots", procurementReady: "ready",
+      pendingDecisions: "decisions", estimatedValue: "decide",
+    };
     const kpiCards = kpis
-      .map((k) => `<div class="gcc-kpi"><div class="gcc-kpi-value">${k.valueKind === "money" ? money(k.value) : num(k.value)}</div><div class="gcc-kpi-label">${esc(k.label)}</div></div>`)
+      .map((k) => {
+        const intent = KPI_INTENT[k.key] || "search";
+        return `<div class="gcc-kpi gcc-kpi-clickable" data-gcc-kpi="${esc(intent)}" title="Open ${esc(k.label)} in the Problem Workspace" role="button" tabindex="0"><div class="gcc-kpi-value">${k.valueKind === "money" ? money(k.value) : num(k.value)}</div><div class="gcc-kpi-label">${esc(k.label)}</div></div>`;
+      })
       .join("");
 
     /* ── pipeline stepper ── */
@@ -518,6 +526,11 @@
 
     root.querySelectorAll("[data-gcc-go]").forEach((b) => {
       b.addEventListener("click", () => goIntent(b.dataset.gccGo));
+    });
+    root.querySelectorAll("[data-gcc-kpi]").forEach((b) => {
+      const go = () => goIntent(b.dataset.gccKpi);
+      b.addEventListener("click", go);
+      b.addEventListener("keydown", (e) => { if (e.key === "Enter" || e.key === " ") { e.preventDefault(); go(); } });
     });
   }
 

@@ -423,6 +423,9 @@
 }
 .gcc-kpi-value { font-size: 1.7rem; font-weight: 800; letter-spacing: -0.02em; line-height: 1.1; }
 .gcc-kpi-label { font-size: 0.76rem; color: var(--text-muted, #6b7280); }
+.gcc-kpi-clickable { cursor: pointer; transition: border-color 0.15s ease, transform 0.15s ease, box-shadow 0.15s ease; }
+.gcc-kpi-clickable:hover { border-color: var(--gov-accent, #1a56db); box-shadow: 0 3px 10px rgba(13, 20, 36, 0.08); transform: translateY(-1px); }
+.gcc-kpi-clickable:focus-visible { outline: 2px solid var(--gov-accent, #1a56db); outline-offset: 2px; }
 
 .gcc-pipeline { display: grid; grid-template-columns: repeat(auto-fit, minmax(110px, 1fr)); gap: 10px; }
 .gcc-stage { position: relative; display: flex; flex-direction: column; gap: 7px; min-width: 0; }
