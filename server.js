@@ -30,12 +30,19 @@ const PORT = process.env.PORT || 3000;
 
 app.use(express.json({ type: "application/json", limit: "2mb" }));
 
-/* Serve index.html at root - MUST be before static middleware */
+/* Serve index.html at root */
 app.get("/", (req, res) => {
-  res.sendFile(path.join(__dirname, "public", "index.html"));
+  const indexPath = path.resolve(__dirname, "public", "index.html");
+  res.sendFile(indexPath, (err) => {
+    if (err) {
+      console.error('Error sending index.html:', err);
+      res.status(500).send('Error loading page');
+    }
+  });
 });
 
-app.use(express.static(path.join(__dirname, "public")));
+/* Do NOT use express.static for the public directory to avoid API route interception.
+   Instead, serve specific assets explicitly if needed. */
 
 /* Serve the shared core to the browser as a classic script (window.RegulensCore). */
 app.get("/core/regulens-core.js", (req, res) => {
@@ -43,26 +50,7 @@ app.get("/core/regulens-core.js", (req, res) => {
   res.sendFile(path.join(__dirname, "lib", "regulens-core.cjs"));
 });
 
-app.get("/api/health", (req, res) => {
-  res.json({ ok: true, ai: ai.isConfigured(), time: new Date().toISOString() });
-});
-
 /* ───────── input sanitization ───────── */
-const MAX_STR_LEN = 200;
-function sanitizeStr(v, max = MAX_STR_LEN) {
-  return String(v || "").trim().slice(0, max);
-}
-function sanitizeObj(obj, keys, max = MAX_STR_LEN) {
-  const out = {};
-  for (const k of keys) out[k] = sanitizeStr(obj[k], max);
-  return out;
-}
-function hashStr(s) {
-  let h = 0;
-  for (let i = 0; i < s.length; i++) { h = (h << 5) - h + s.charCodeAt(i); h |= 0; }
-  return Math.abs(h);
-}
-
 const STYLES = {
   friendly: "warm, friendly, and supportive, like a helpful conversation partner",
   professional: "clear, professional, and precise",
