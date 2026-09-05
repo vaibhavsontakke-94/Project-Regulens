@@ -13,12 +13,14 @@
     }
   }
 
+  /* â”€â”€â”€â”€â”€â”€â”€â”€â”€ toast timer â”€â”€â”€â”€â”€â”€â”€â”€â”€ */
+  let toastTimer = null;
+  
   /* â”€â”€â”€â”€â”€â”€â”€â”€â”€ element refs â”€â”€â”€â”€â”€â”€â”€â”€â”€ */
   const els = {
     body: document.body,
     sidebar: document.getElementById("sidebar"),
     overlay: document.getElementById("sidebarOverlay"),
-    menuBtn: document.getElementById("menuBtn"),
     navItems: Array.from(document.querySelectorAll(".nav-item")),
     views: Array.from(document.querySelectorAll(".view")),
     userBtn: document.getElementById("userBtn"),
@@ -26,7 +28,6 @@
     userMenuSignOut: document.getElementById("userMenuSignOut"),
     langBtn: document.getElementById("langBtn"),
     langMenu: document.getElementById("langMenu"),
-    searchInput: document.getElementById("searchInput"),
     downloadReportBtn: document.getElementById("downloadReportBtn"),
     bookCallBtn: null,
     uploadDocBtn: document.getElementById("uploadDocBtn"),
@@ -276,8 +277,6 @@
     if (els.setDensity) els.setDensity.value = settings.density;
     els.body.classList.toggle("density-compact", settings.density === "compact");
     els.body.classList.toggle("density-spacious", settings.density === "spacious");
-    if (settings.theme === "dark") els.body.classList.add("dark");
-    else els.body.classList.remove("dark");
     syncThemeSeg(settings.theme);
     applyI18n();
     updateAccountUI();
@@ -3007,7 +3006,6 @@
   function setSidebar(open) {
     sidebarOpen = open;
     els.body.classList.toggle("sidebar-collapsed", !open);
-    if (els.menuBtn) els.menuBtn.setAttribute("aria-expanded", String(open));
   }
 
   function toggleSidebar() {
@@ -3018,9 +3016,6 @@
     if (mqMobile.matches) setSidebar(false);
   }
 
-  if (els.menuBtn) {
-    els.menuBtn.addEventListener("click", toggleSidebar);
-  }
   if (els.overlay) {
     els.overlay.addEventListener("click", () => setSidebar(false));
   }
@@ -6360,7 +6355,6 @@ els.verdictText.textContent = !hasData
   });
 
   /* â”€â”€â”€â”€â”€â”€â”€â”€â”€ toast â”€â”€â”€â”€â”€â”€â”€â”€â”€ */
-  let toastTimer = null;
   function toast(message) {
     els.toast.textContent = message;
     els.toast.classList.remove("hidden");

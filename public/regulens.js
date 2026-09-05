@@ -213,14 +213,6 @@ items.push({ group: "Modules", icon: ICONS.industry, label: "Market Intelligence
       if (e.target === root) close();
     });
 
-    const btn = document.getElementById("rlCommandBtn");
-    if (btn) btn.addEventListener("click", (e) => {
-      if (e.target.id === "searchInput") return;
-      open();
-    });
-    const searchInput = document.getElementById("searchInput");
-    if (searchInput) searchInput.addEventListener("focus", open);
-
     root.setAttribute("role", "dialog");
     return { open, close };
   })();
