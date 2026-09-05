@@ -304,6 +304,7 @@
   const I18N = {
     en: {
       "nav.govCommand": "Gov Procurement Command Center",
+      "nav.govWorkflow": "Problem Intelligence",
       "nav.dashboard": "Dashboard",
       "settings.title": "Settings",
       "settings.general": "General",
@@ -2690,6 +2691,7 @@
     "sih-matching",
     "sih-evaluation",
     "gov-command",
+    "gov-workflow",
     "agent-intelligence",
     "risk-matrix",
     "business-health",
@@ -2862,6 +2864,7 @@
     "sih-matching": "Solution Matching",
     "sih-evaluation": "Solution Evaluation",
     "gov-command": "Government Procurement Command Center",
+    "gov-workflow": "Problem Intelligence",
     "risk-matrix": "Risk Matrix",
     network: "Growth & Partnerships",
     settings: t("settings.title"),
@@ -2981,6 +2984,12 @@
     if (view === "gov-command") {
       if (window.GovCommand) {
         window.GovCommand.render();
+      }
+      return;
+    }
+    if (view === "gov-workflow") {
+      if (window.GovWorkflow) {
+        window.GovWorkflow.render();
       }
       return;
     }
