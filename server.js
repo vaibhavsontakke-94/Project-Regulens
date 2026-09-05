@@ -4,6 +4,7 @@ import { fileURLToPath } from "node:url";
 import * as store from "./lib/store.js";
 import * as ai from "./lib/groq.js";
 import * as auth from "./lib/auth.js";
+import * as au from "./lib/sih-auth.js";
 import { migratePasswordUser } from "./lib/migrate.js";
 import { toPublicError } from "./lib/errors.js";
 import { nextAnalysisId, logAnalysisEvent } from "./lib/analysis-log.js";
@@ -1528,8 +1529,25 @@ app.post("/api/scale/policy-impact", (req, res) => {
 /* ───────── SIH26136 — startup procurement foundation (additive API) ─────────
    Mounted at /api/sih. Kept additive: it adds new routes and tables only
    and reuses the existing Firebase auth, Supabase client, AppError and
-   logging conventions. No AI is used anywhere in this layer. */
-app.use("/api/sih", createSihRouter());
+   logging conventions. No AI is used anywhere in this layer.
+   Development mode: accepts a Bearer token starting with "dev-" for
+   testing without a Firebase project. */
+app.use("/api/sih", createSihRouter({ 
+  resolveUser: async (req) => {
+    const authorization = req.get("authorization");
+    let token = null;
+    if (authorization && String(authorization).startsWith("Bearer ")) {
+      token = String(authorization).slice(7).trim();
+    }
+    // Development bypass: tokens starting with "dev-" are accepted
+    if (token && token.startsWith("dev-")) {
+      return { id: token.slice(4), email: "dev@test.local", name: "Developer" };
+    }
+    // Normal Firebase auth flow
+    if (!token) return null;
+    return au.defaultResolveUser(req);
+  }
+}));
 
 app.use((err, req, res, next) => {
   if (res.headersSent) {
