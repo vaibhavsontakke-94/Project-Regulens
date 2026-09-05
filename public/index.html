@@ -258,7 +258,7 @@
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.3-4.3"/><path d="M8 11h6"/><path d="M11 8v6"/></svg>
         <span data-i18n="nav.govWorkflow">Problem Intelligence</span>
       </button>
-      <button class="nav-item" data-module="gov-market">
+      <button class="nav-item" data-module="govMarket">
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M12 2v20M2 12h20M8 12l4 4 8-8"/></svg>
         <span data-i18n="nav.module.govMarket">Market Intelligence</span>
       </button>
@@ -793,79 +793,6 @@
 
         <div class="hidden" id="guideWrap">
           <div id="guidePhases"></div>
-        </div>
-      </section>
-
-<!-- ───────────── POLICY INQUIRY ───────────── -->
-      <section class="view hidden" id="view-policy-checker">
-        <div class="page-head">
-          <div class="page-head-left">
-            <nav class="crumbs"><a href="#" class="crumb" data-goto="dashboard">Dashboard</a><span class="crumb-sep">/</span><span class="crumb crumb-current" data-i18n="crumb.policyChecker">Policy Inquiry</span></nav>
-            <h1 class="page-title" data-i18n="pc.title">Policy Inquiry</h1>
-            <p class="page-desc" data-i18n="pc.desc">Ask a concrete policy or compliance question about a target market and get a grounded answer.
-          </div>
-        </div>
-        </div>
-
-        <div class="card">
-          <div class="card-head"><h3 class="card-title" data-i18n="pc.formTitle">Your Question</h3></div>
-          <div class="analysis-form">
-            <div class="set-row">
-              <span class="set-label" data-i18n="pc.target">Target Market</span>
-              <select class="select" id="pcTarget"></select>
-            </div>
-            <div class="set-row" id="pcTargetRegionRow" style="display:none">
-              <span class="set-label" id="pcTargetRegionLabel">Region</span>
-              <select class="select" id="pcTargetRegion"></select>
-            </div>
-            <div class="set-row">
-              <span class="set-label" data-i18n="pc.industry">Industry (optional)</span>
-              <select class="select" id="pcIndustry"></select>
-            </div>
-            <div class="set-row">
-              <span class="set-label" data-i18n="pc.product">Product Context (optional)</span>
-              <input class="set-input" id="pcProduct" data-i18n-ph="pc.productPh" placeholder="e.g. mobile app processing health data" />
-            </div>
-            <div class="set-row">
-              <span class="set-label" data-i18n="pc.question">Question</span>
-              <textarea class="set-input" id="pcQuestion" rows="3" data-i18n-ph="pc.questionPh" placeholder="e.g. Can customer data be transferred from this market to our servers abroad?"></textarea>
-            </div>
-            <div class="sim-actions">
-              <button class="btn btn-primary" id="pcRunBtn" data-i18n="pc.run">Check Policy</button>
-              <span class="t-status" id="pcRunStatus"></span>
-            </div>
-          </div>
-        </div>
-
-        <div class="empty-state hidden" id="pcEmptyState">
-          <div class="empty-icon">🏛️</div>
-          <h3 data-i18n="pc.emptyTitle">No policy check yet</h3>
-          <p data-i18n="pc.emptyText">Ask about licensing, data transfers, employment rules, taxes — anything policy-related for your target market.</p>
-        </div>
-
-        <div class="hidden" id="pcResultWrap">
-          <div class="fb-verdict tone-conditional pc-answer-block">
-            <div class="fb-verdict-head">
-              <span class="chip chip-blue" id="pcTopic"></span>
-              <span class="fb-mode-badge" id="pcMode"></span>
-            </div>
-            <p class="fb-summary pc-answer" id="pcAnswer"></p>
-          </div>
-          <div class="fb-cols">
-            <div class="card">
-              <div class="card-head"><h3 class="card-title" data-i18n="pc.obligations">Obligations</h3></div>
-              <ul class="fb-list fb-list-check" id="pcObligations"></ul>
-            </div>
-            <div class="card">
-              <div class="card-head"><h3 class="card-title" data-i18n="pc.watchouts">Watch-outs</h3></div>
-              <ul class="fb-list fb-list-x" id="pcWatchouts"></ul>
-            </div>
-          </div>
-          <div class="card">
-            <div class="card-head"><h3 class="card-title" data-i18n="pc.followUp">Suggested follow-ups</h3></div>
-            <ol class="fb-recs" id="pcFollowUp"></ol>
-            <p class="fb-disclaimer" data-i18n="pc.disclaimer">Answers are guidance only — confirm with official sources before acting.</p>
-          </div>
         </div>
       </section>
 

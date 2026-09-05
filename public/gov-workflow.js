@@ -12,6 +12,7 @@
   const BASE = "/api/sih";
   const KEY_ORG = "gcc.selectedOrg";
   const KEY_PROBLEM = "gwf.selectedProblem";
+  const KEY_INTENT = "gwf.intent";
 
   const $ = (sel, root) => (root || document).querySelector(sel);
   const esc = (v) =>
@@ -299,6 +300,10 @@
           <div class="gwf-eyebrow">REGULENS \u00b7 GOVERNMENT PROBLEM SEARCH</div>
           <h1 class="gwf-h1">${esc(org.name || "Government")}</h1>
           <p class="gwf-sub">Search the live problem register. Every record below is real \u2014 opening a problem opens its full discovery-to-decision workspace.</p>
+          <div class="gwf-actionbar">
+            <button type="button" class="btn btn-primary" data-gwf-create>Create Government Problem</button>
+            <span class="gcc-cell-sub">Drafts a real problem record; publish it from the workspace to open its innovation challenge.</span>
+          </div>
         </div>
         <div class="gwf-search-bar">
           <input class="input gwf-search-input" id="gwfSearchInput" placeholder="Search by problem title, sector, description, region\u2026" autocomplete="off">
@@ -311,6 +316,7 @@
     const run = () => { if ($("#gwfSearchInput", root).value && $("#gwfSearchInput", root).value.trim().length) doSearch(root); else showAll(root); };
     input.addEventListener("keydown", (e) => { if (e.key === "Enter") run(); });
     $("[data-gwf-search]", root).addEventListener("click", run);
+    $("[data-gwf-create]", root).addEventListener("click", () => problemModal(root));
     $("[data-gwf-open-command]", root).addEventListener("click", () => { try { window.ReguLens.navigate("gov-command"); } catch (_) {} });
     input.focus();
     showAll(root);
@@ -435,6 +441,207 @@
     renderSearch(root);
   }
 
+  /* ═══════════════ problem lifecycle (create / edit / publish) ═══════════════ */
+
+  const DEFAULT_EVAL_CRITERIA = [
+    { key: "problem_fit", label: "Problem Fit", description: "How well the solution addresses the stated problem", weight: 20 },
+    { key: "technical_capability", label: "Technical Capability", description: "Feasibility and soundness of the technical approach", weight: 15 },
+    { key: "innovation", label: "Innovation", description: "Novelty relative to existing solutions", weight: 15 },
+    { key: "scalability", label: "Scalability", description: "Ability to scale to the target geography/population", weight: 15 },
+    { key: "security", label: "Security", description: "Data protection and cybersecurity posture", weight: 10 },
+    { key: "compliance", label: "Compliance", description: "Alignment with applicable standards and rules", weight: 10 },
+    { key: "deployment_readiness", label: "Deployment Readiness", description: "Readiness to pilot within a short timeline", weight: 10 },
+    { key: "expected_impact", label: "Expected Impact", description: "Expected improvement against success metrics", weight: 5 },
+  ];
+
+  function problemModal(root, existing) {
+    const p = existing || {};
+    const wrap = document.createElement("div");
+    wrap.className = "gwf-modal";
+    wrap.innerHTML = `
+      <div class="gwf-modal-card" role="dialog" aria-modal="true" aria-label="${esc(existing ? "Edit Government Problem" : "Create Government Problem")}">
+        <div class="gwf-modal-head"><h3 class="gwf-modal-title">${esc(existing ? "Edit Government Problem \u00b7 " + p.status : "Create Government Problem")}</h3><button type="button" class="gwf-modal-close" data-gwf-close aria-label="Close">\u00d7</button></div>
+        <div class="gwf-modal-body">
+          <div class="gwf-form-grid">
+            <label class="gwf-field gwf-field-full"><span class="gwf-field-label">Problem Title *</span><input class="input" id="gwfP.title" value="${esc(p.title || "")}"></label>
+            <label class="gwf-field"><span class="gwf-field-label">Department</span><input class="input" id="gwfP.department" value="${esc(p.department || "")}"></label>
+            <label class="gwf-field"><span class="gwf-field-label">Location</span><input class="input" id="gwfP.location" value="${esc(p.location || p.geography || "")}"></label>
+            <label class="gwf-field"><span class="gwf-field-label">Sector</span><input class="input" id="gwfP.sector" value="${esc(p.sector || "")}"></label>
+            <label class="gwf-field gwf-field-full"><span class="gwf-field-label">Problem Description *</span><textarea class="textarea" id="gwfP.statement" rows="3">${esc(p.problemStatement || "")}</textarea></label>
+            <label class="gwf-field gwf-field-full"><span class="gwf-field-label">Current Situation</span><textarea class="textarea" id="gwfP.current" rows="2">${esc(p.currentSituation || p.currentState || "")}</textarea></label>
+            <label class="gwf-field gwf-field-full"><span class="gwf-field-label">Required Technology</span><input class="input" id="gwfP.tech" value="${esc(p.requiredTechnology || "")}"></label>
+            <label class="gwf-field"><span class="gwf-field-label">Budget Min (\u20b9)</span><input class="input" type="number" min="0" id="gwfP.budgetMin" value="${p.budgetMin != null ? p.budgetMin : ""}"></label>
+            <label class="gwf-field"><span class="gwf-field-label">Budget Max (\u20b9)</span><input class="input" type="number" min="0" id="gwfP.budgetMax" value="${p.budgetMax != null ? p.budgetMax : ""}"></label>
+            <label class="gwf-field"><span class="gwf-field-label">Pilot Duration (Days)</span><input class="input" type="number" min="1" id="gwfP.days" value="${p.pilotDurationDays || 90}"></label>
+            <label class="gwf-field"><span class="gwf-field-label">Priority (auto)</span><input class="input" disabled value="Derived live from pipeline state"></label>
+            <label class="gwf-field gwf-field-full"><span class="gwf-field-label">Expected Outcome</span><textarea class="textarea" id="gwfP.outcome" rows="2">${esc(p.expectedOutcome || "")}</textarea></label>
+            <label class="gwf-field gwf-field-full"><span class="gwf-field-label">Eligibility Criteria</span><textarea class="textarea" id="gwfP.elig" rows="2">${esc(p.eligibilityCriteria || "")}</textarea></label>
+            <label class="gwf-field gwf-field-full"><span class="gwf-field-label">Success Criteria (one per line)</span><textarea class="textarea" id="gwfP.success" rows="3">${esc((p.expectedKpis || []).join("\n"))}</textarea></label>
+          </div>
+          <div id="gwfProblemMsg"></div>
+          <div class="gwf-modal-actions">
+            <button type="button" class="btn btn-secondary" data-gwf-cancel>Cancel</button>
+            <button type="button" class="btn btn-primary" data-gwf-save>${esc(existing ? "Save changes" : "Save as Draft")}</button>
+          </div>
+        </div>
+      </div>`;
+    root.appendChild(wrap);
+
+    const close = () => wrap.remove();
+    $("[data-gwf-close]", wrap).addEventListener("click", close);
+    $("[data-gwf-cancel]", wrap).addEventListener("click", close);
+    wrap.addEventListener("click", (e) => { if (e.target === wrap) close(); });
+    $("[data-gwf-save]", wrap).addEventListener("click", async () => {
+      const msg = $("#gwfProblemMsg", wrap);
+      const val = (id) => ($("#gwfP." + id, wrap) || {}).value || "";
+      const title = String(val("title") || "").trim();
+      const statement = String(val("statement") || "").trim();
+      if (!title || !statement) { msg.innerHTML = '<div class="gwf-log-bad">Problem Title and Problem Description are required.</div>'; return; }
+      const budgetMin = val("budgetMin") === "" ? null : Number(val("budgetMin"));
+      const budgetMax = val("budgetMax") === "" ? null : Number(val("budgetMax"));
+      if (budgetMin != null && budgetMax != null && budgetMax < budgetMin) { msg.innerHTML = '<div class="gwf-log-bad">Budget maximum must be >= budget minimum.</div>'; return; }
+      const surnameBtn = $("[data-gwf-save]", wrap);
+      surnameBtn.disabled = true;
+      const payload = {
+        title,
+        problemStatement: statement,
+        department: val("department") || undefined,
+        location: val("location") || undefined,
+        sector: val("sector") || undefined,
+        currentSituation: val("current") || undefined,
+        requiredTechnology: val("tech") || undefined,
+        budgetMin, budgetMax,
+        expectedOutcome: val("outcome") || undefined,
+        pilotDurationDays: Number(val("days")) || 90,
+        eligibilityCriteria: val("elig") || undefined,
+        expectedKpis: val("success").split(/\n+/).map((s) => s.trim()).filter(Boolean),
+        organizationId: state.orgId,
+        status: existing ? undefined : "DRAFT",
+      };
+      try {
+        if (existing) {
+          await api("/problems/" + p.id, { method: "PATCH", body: payload });
+        } else {
+          await api("/problems", { method: "POST", body: payload });
+        }
+        close();
+        await refreshOverview();
+        if (existing) renderWorkspace(root);
+        else renderSearch(root);
+      } catch (err) {
+        msg.innerHTML = '<div class="gwf-log-bad">Save failed \u2014 ' + esc(err.message || String(err)) + "</div>";
+        surnameBtn.disabled = false;
+      }
+    });
+  }
+
+  async function stepProblem(root, step) {
+    const el = $("#gwfProg", root);
+    const set = (m, cls) => { if (el) el.innerHTML = `<div class="gwf-log-${cls || "info"}">${esc(m)}</div>`; };
+    try {
+      const res = await api("/problems/" + state.problem.id + "/" + step, { method: "POST" });
+      set(step === "submit-review" ? "Submitted for review \u2014 status is now " + res.status : "Approved \u2014 status is now " + res.status, "ok");
+      await refreshOverview();
+      renderWorkspace(root);
+    } catch (err) {
+      set("Action failed \u2014 " + (err.message || String(err)), "bad");
+    }
+  }
+
+  async function publishProblemAction(root) {
+    const el = $("#gwfProg", root);
+    const set = (m, cls) => { if (el) el.innerHTML = `<div class="gwf-log-${cls || "info"}">${esc(m)}</div>`; };
+    const step = (m) => set(m, "info");
+    try {
+      let p = await api("/problems/" + state.problem.id);
+      if (p.status === "DRAFT") { await api("/problems/" + p.id + "/submit-review", { method: "POST" }); p.status = "SUBMITTED"; step("Problem submitted for review."); }
+      if (p.status === "SUBMITTED") { await api("/problems/" + p.id + "/approve", { method: "POST" }); p.status = "APPROVED"; step("Problem approved."); }
+
+      let gen = await api("/problems/" + p.id + "/generate-challenge", { method: "POST", body: { persist: true } });
+      let ch = gen.draft || gen;
+      step("Innovation challenge generated (" + (ch.challengeCode || ch.id) + ").");
+
+      const fw = ch.evaluationFramework && ch.evaluationFramework.criteria && ch.evaluationFramework.criteria.length
+        ? ch.evaluationFramework : { criteria: DEFAULT_EVAL_CRITERIA };
+      const patchCh = { evaluationFramework: fw };
+      if (!String(ch.objective || "").trim() && String(p.expectedOutcome || "").trim()) patchCh.objective = String(p.expectedOutcome).trim();
+      if (!(ch.expectedOutcomes || []).length && String(p.expectedOutcome || "").trim()) patchCh.expectedOutcomes = [String(p.expectedOutcome).trim()];
+      if (!(ch.successMetrics || []).length && Array.isArray(p.expectedKpis) && p.expectedKpis.length) patchCh.successMetrics = p.expectedKpis;
+      if (Object.keys(patchCh).length) ch = await api("/challenges/" + ch.id, { method: "PATCH", body: patchCh });
+
+      if (ch.challengeStatus === "DRAFT") { ch = await api("/challenges/" + ch.id + "/submit-review", { method: "POST" }); step("Challenge under review."); }
+      if (ch.challengeStatus === "REVIEW") { ch = await api("/challenges/" + ch.id + "/approve", { method: "POST" }); step("Challenge approved."); }
+      if (ch.challengeStatus === "APPROVED") {
+        try {
+          ch = await api("/challenges/" + ch.id + "/publish", { method: "POST" });
+        } catch (perr) {
+          set("Publish blocked \u2014 " + (perr.message || String(perr)) + (perr.validation ? " \u2014 " + perr.validation.errors.join("; ") : ""), "bad");
+          return;
+        }
+        step("Challenge published \u2014 solutions can now apply.");
+      }
+
+      await api("/problems/" + p.id, { method: "PATCH", body: { status: "PUBLISHED", estimatedBudget: p.estimatedBudget || (p.budgetMax || p.budgetMin) || 0 } });
+      step("Problem is now PUBLISHED with a live challenge.", "ok");
+      await refreshOverview();
+      renderWorkspace(root);
+    } catch (err) {
+      set("Publish failed \u2014 " + (err.message || String(err)), "bad");
+    }
+  }
+
+  /* ═══════════════ intents (Command Center navigation) ═══════════════ */
+
+  function readIntent() { try { return localStorage.getItem(KEY_INTENT) || ""; } catch (_) { return ""; } }
+  function setIntent(v) { try { if (v) localStorage.setItem(KEY_INTENT, v); else localStorage.removeItem(KEY_INTENT); } catch (_) {} }
+
+  function priorityPick(kind) {
+    const o = state.overview || {};
+    const problems = o.problems || [];
+    const challenges = o.challenges || [];
+    const pilots = o.pilots || [];
+    const rows = problems.map((p) => {
+      const chs = challenges.filter((c) => c.problemId === p.id);
+      const apps = chs.reduce((s, c) => s + (c.applicationCount || 0), 0);
+      const elig = chs.reduce((s, c) => s + (c.eligibleCount || 0), 0);
+      const pls = pilots.filter((pl) => (pl.problem && pl.problem.id === p.id) || chs.some((c) => c.id === pl.challengeId));
+      const ready = pls.filter((pl) => pl.readiness && (pl.readiness.status === "READY" || pl.readiness.status === "READY_WITH_CONDITIONS"));
+      return { p, apps, elig, pilots: pls.length, ready: ready.length, pending: ready.length > 0 };
+    });
+    const any = (f) => rows.find(f);
+    if (kind === "find" || kind === "applications") return any((r) => r.apps > 0 || r.elig > 0);
+    if (kind === "pilots") return any((r) => r.pilots > 0);
+    if (kind === "ready" || kind === "decisions" || kind === "decide") return any((r) => r.pending);
+    return rows[0];
+  }
+
+  async function applyIntent(body) {
+    const intent = readIntent();
+    setIntent("");
+    if (!intent) return;
+    if (intent === "search") {
+      if (state.problem) { state.problem = null; try { localStorage.removeItem(KEY_PROBLEM); } catch (_) {} renderSearch(body); }
+      return;
+    }
+    if (intent === "create") {
+      if (state.problem) { state.problem = null; try { localStorage.removeItem(KEY_PROBLEM); } catch (_) {} renderSearch(body); }
+      problemModal(body);
+      return;
+    }
+    if (intent.indexOf("open:") === 0) {
+      const id = intent.slice(5);
+      if (state.problem && state.problem.id === id) renderWorkspace(body);
+      else await selectProblem(id);
+      return;
+    }
+    const pick = priorityPick(intent);
+    if (intent === "find" || intent === "applications" || intent === "pilots" || intent === "ready" || intent === "decisions" || intent === "decide") {
+      if (pick && (!state.problem || state.problem.id !== pick.p.id)) await selectProblem(pick.p.id);
+      const sec = { find: "gwf-find", applications: "gwf-find", pilots: "gwf-pilots", ready: "gwf-outcome", decisions: "gwf-outcome", decide: "gwf-outcome" }[intent];
+      if (sec) { const el = document.getElementById(sec); if (el) setTimeout(() => el.scrollIntoView({ behavior: "smooth", block: "start" }), 180); }
+    }
+  }
+
   /* ═════════════════════ WORKSPACE SCREEN ═════════════════════ */
   function renderWorkspace(root) {
     const v = vm();
@@ -471,6 +678,14 @@
             <div class="gcc-hero-meta"><div class="gcc-pct">Raised ${fmtDate(p.createdAt)}</div></div>
           </div>
           ${(p.objectives || p.desiredOutcomes) ? `<div class="gwf-objectives"><strong>Objectives:</strong> ${esc(p.objectives || JSON.stringify(p.desiredOutcomes) || "")}</div>` : ""}
+          <div class="gwf-actionbar gwf-problem-actions">
+            <button type="button" class="btn btn-secondary btn-sm" data-gwf-edit-problem>Edit Problem</button>
+            ${p.status === "DRAFT" ? `<button type="button" class="btn btn-secondary btn-sm" data-gwf-submit-problem>Submit for Review</button>` : ""}
+            ${p.status === "SUBMITTED" ? `<button type="button" class="btn btn-secondary btn-sm" data-gwf-approve-problem>Approve Problem</button>` : ""}
+            ${!["PUBLISHED", "IN_CHALLENGE", "CLOSED", "ARCHIVED"].includes(p.status) ? `<button type="button" class="btn btn-primary btn-sm" data-gwf-publish-problem>Publish Problem</button>` : ""}
+            <span class="gcc-cell-sub">${esc(p.status === "PUBLISHED" || p.status === "IN_CHALLENGE" ? "Live \u2014 solutions can apply through the published innovation challenge." : "Draft stage \u2014 publishing creates and activates the live innovation challenge for this problem.")}</span>
+          </div>
+          <div id="gwfProg"></div>
         </section>
 
         <section class="gcc-section" id="gwf-lifecycle">
@@ -528,6 +743,14 @@
     root.querySelectorAll("[data-gwf-back]").forEach((b) => b.addEventListener("click", () => backToSearch(root)));
     root.querySelectorAll("[data-gwf-refresh]").forEach((b) => b.addEventListener("click", async () => { await refreshOverview(); renderWorkspace(root); }));
     root.querySelectorAll("[data-gwf-open-command]").forEach((b) => b.addEventListener("click", () => { try { window.ReguLens.navigate("gov-command"); } catch (_) {} }));
+    const editBtn = $("[data-gwf-edit-problem]", root);
+    if (editBtn) editBtn.addEventListener("click", () => problemModal(root, state.problem));
+    const submitBtn = $("[data-gwf-submit-problem]", root);
+    if (submitBtn) submitBtn.addEventListener("click", () => stepProblem(root, "submit-review"));
+    const approveBtn = $("[data-gwf-approve-problem]", root);
+    if (approveBtn) approveBtn.addEventListener("click", () => stepProblem(root, "approve"));
+    const publishBtn = $("[data-gwf-publish-problem]", root);
+    if (publishBtn) publishBtn.addEventListener("click", () => publishProblemAction(root));
     $("[data-gwf-find]", root).addEventListener("click", () => findSolutionsAction(root));
     $("[data-gwf-new-pilot]", root).addEventListener("click", () => newPilotModal(root));
     $("[data-gwf-decide]", root).addEventListener("click", () => decisionModal(root));
@@ -1217,7 +1440,12 @@
     const chosen = orgs.find((o) => o.id === saved && o.orgType === "GOVERNMENT") || orgs.find((o) => o.orgType === "GOVERNMENT") || orgs[0];
     try { localStorage.setItem(KEY_ORG, chosen.id); } catch (_) {}
     await load(body, chosen.id);
+    await applyIntent(body);
   }
 
-  window.GovWorkflow = { render };
+  window.GovWorkflow = {
+    render,
+    intent: (i) => { setIntent(i); return render(); },
+    open: (id) => { setIntent("open:" + id); return render(); },
+  };
 })();

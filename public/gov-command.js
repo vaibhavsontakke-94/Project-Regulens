@@ -152,6 +152,20 @@
     let ats = "";
     for (const k of ["gcc-header", "gcc-exec", "gcc-pipeline", "gcc-portfolio", "gcc-urgency", "gcc-discovery", "gcc-evaluation", "gcc-compliance", "gcc-pilots", "gcc-performance", "gcc-outcome", "gcc-readiness", "gcc-decision", "gcc-insights", "gcc-actions"]) ats += `<button class="gcc-jump" data-goto-section="${k}">${k.replace("gcc-", "").toUpperCase()}</button>`;
     const jumpBar = `<div class="gcc-jumpbar">${ats}</div>`;
+    const quickBar = `<section class="gcc-section" id="gcc-quick">
+      <div class="gcc-jumpbar-head">
+        <div><div class="gcc-eyebrow">QUICK ACTIONS</div><div class="gcc-cell-sub">Every button opens a live Government workspace \u2014 no dead ends.</div></div>
+      </div>
+      <div class="gcc-quickbar">
+        <button type="button" class="btn btn-primary" data-gcc-go="create">Create Government Problem</button>
+        <button type="button" class="btn btn-secondary" data-gcc-go="search">Search Problems</button>
+        <button type="button" class="btn btn-secondary" data-gcc-go="find">Find Solutions</button>
+        <button type="button" class="btn btn-secondary" data-gcc-go="applications">Review Applications</button>
+        <button type="button" class="btn btn-secondary" data-gcc-go="pilots">Create / Review Pilots</button>
+        <button type="button" class="btn btn-secondary" data-gcc-go="ready">Review Procurement Ready</button>
+        <button type="button" class="btn btn-secondary" data-gcc-go="decisions">Pending Decisions</button>
+      </div>
+    </section>`;
 
     /* ── exec KPI cards ── */
     const kpiCards = kpis
@@ -334,16 +348,19 @@
     const insightList = insights.length ? insights.map((i) => `<li class="gcc-insight">${esc(i)}</li>`).join("") : empty("No insights yet.");
 
     const order = { HIGH: 0, MEDIUM: 1, INFO: 2 };
+    const actionIntent = (kind) => ({ DECISION: "decide", PILOT: "pilots", CONDITIONS: "ready", VALIDATION: "ready" }[kind] || "decide");
     const actionList = actions.length
       ? actions.slice().sort((a, b) => (order[a.priority] ?? 3) - (order[b.priority] ?? 3)).map((a) => `<li class="gcc-action gcc-action-${String(a.priority).toLowerCase()}">
           <span class="gcc-action-pri">${esc(a.priority)}</span>
           <span class="gcc-action-k">${esc(a.kind || "ACTION")}</span>
           <div class="gcc-action-body"><strong>${esc(a.subject)}</strong> ${esc(a.text)}<div class="gcc-cell-sub">${esc(a.target || "")} &#8212; ${esc(a.recommendation || "")}</div></div>
+          <button type="button" class="btn btn-secondary btn-sm gcc-action-go" data-gcc-go="${esc(actionIntent(a.kind))}">Open</button>
         </li>`).join("")
       : empty("No open actions. The portfolio is up to date.");
 
     const html = `
       ${jumpBar}
+      ${quickBar}
       <section class="gcc-section" id="gcc-header">
         <div class="gcc-hero">
           <div>
@@ -483,6 +500,33 @@
       });
     });
     root.querySelectorAll("table.gcc-table").forEach((tb) => attachSorters(tb));
+
+    const stageMap = {
+      problem: "gcc-portfolio", discovery: "gcc-discovery", eligible: "gcc-discovery", eligibility: "gcc-discovery",
+      evaluation: "gcc-evaluation", pilot: "gcc-pilots", validation: "gcc-outcome",
+      readiness: "gcc-readiness", decision: "gcc-decision", scale: "gcc-readiness", outcome: "gcc-outcome",
+    };
+    root.querySelectorAll(".gcc-stage").forEach((cell) => {
+      cell.addEventListener("click", () => {
+        const label = ((cell.querySelector(".gcc-stage-label") || {}).textContent || "").toLowerCase();
+        const key = Object.keys(stageMap).find((k) => label.indexOf(k) !== -1);
+        const target = stageMap[key] || "gcc-portfolio";
+        const el = document.getElementById(target);
+        if (el) el.scrollIntoView({ behavior: "smooth", block: "start" });
+      });
+    });
+
+    root.querySelectorAll("[data-gcc-go]").forEach((b) => {
+      b.addEventListener("click", () => goIntent(b.dataset.gccGo));
+    });
+  }
+
+  function goIntent(intent) {
+    const navigate = window.ReguLens && typeof window.ReguLens.navigate === "function" ? window.ReguLens.navigate.bind(window.ReguLens) : null;
+    if (!navigate) return;
+    navigate("gov-workflow");
+    const wf = window.GovWorkflow;
+    if (wf && typeof wf.intent === "function") setTimeout(() => wf.intent(intent), 60);
   }
 
   function showState(root, kind, message, detail, actionsHtml) {

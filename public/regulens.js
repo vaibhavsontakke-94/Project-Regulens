@@ -83,7 +83,6 @@ items.push({ group: "Modules", icon: ICONS.industry, label: "Market Intelligence
       items.push({ group: "Modules", icon: ICONS.launch, label: "Decision Support Assistant", hint: "module", keywords: "decision support assistant chat agents history", run: () => api.navigate("assistant") });
       items.push({ group: "Modules", icon: ICONS.docs, label: "Documents & Evidence", hint: "module", keywords: "documents evidence checklist templates library files workspace", run: () => api.navigate("doc-checklist") });
       items.push({ group: "Navigate", icon: ICONS.launch, label: "Business Feasibility Assessment", hint: "market", keywords: "feasibility assessment idea evaluate viability", run: () => api.navigate("feasibility") });
-      items.push({ group: "Navigate", icon: ICONS.watch, label: "Country Policy Inquiry", hint: "compliance", keywords: "policy checker country question ai", run: () => api.navigate("policy-checker") });
       items.push({ group: "Navigate", icon: ICONS.industry, label: "Business Health Scorecard", hint: "risk", keywords: "business health scorecard signals fraud", run: () => api.navigate("business-health") });
       items.push({ group: "Navigate", icon: ICONS.user, label: "Team Role Finder", hint: "growth", keywords: "team role finder cofounder roles search brief", run: () => api.navigate("co-founder") });
       items.push({ group: "Navigate", icon: ICONS.gap, label: "Investor Readiness Assessment", hint: "growth", keywords: "investor readiness assessment one pager pitch fundraise", run: () => api.navigate("investor-hub") });

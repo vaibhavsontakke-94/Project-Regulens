@@ -415,14 +415,6 @@ body.dark .module-tab.active {
   color: var(--text-2);
 }
 
-/* ═══════════════ policy checker ═══════════════ */
-
-.pc-answer-block { border-left-color: var(--primary-600); }
-.pc-answer {
-  white-space: pre-line;
-  font-size: 14px;
-}
-
 /* ═══════════════ business health monitor ═══════════════ */
 
 .bh-bar-row {

@@ -506,6 +506,17 @@
 .gcc-action-body { font-size: 0.86rem; }
 .gcc-empty { text-align: center; padding: 22px 12px; font-size: 0.84rem; color: var(--text-muted, #6b7280); }
 
+.gcc-jumpbar-head { display: flex; align-items: center; justify-content: space-between; gap: 12px; margin-bottom: 10px; }
+.gcc-quickbar { display: flex; gap: 10px; flex-wrap: wrap; }
+.gcc-stage { cursor: pointer; }
+.gcc-stage:hover .gcc-stage-label { color: var(--primary, #2563eb); }
+.gcc-stage:active { opacity: 0.8; }
+.gcc-action { align-items: center; }
+.gcc-action-go { flex: 0 0 auto; }
+.btn-sm { font-size: 0.74rem; padding: 4px 10px; }
+.gwf-problem-actions { border-style: solid; }
+.gwf-problem-actions .gcc-cell-sub { font-size: 0.78rem; }
+
 @media (max-width: 980px) {
   .gcc-grid-2 { grid-template-columns: 1fr; }
   .gcc-hero-meta { text-align: left; }
@@ -566,6 +577,10 @@
 
 .gwf-field { display: block; margin-bottom: 12px; }
 .gwf-field-label { display: block; font-size: 0.78rem; font-weight: 700; margin-bottom: 5px; color: var(--text-muted, #6b7280); }
+.gwf-form-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 6px 16px; }
+.gwf-field-full { grid-column: 1 / -1; }
+.gwf-field .input, .gwf-field .textarea { width: 100%; }
+@media (max-width: 720px) { .gwf-form-grid { grid-template-columns: 1fr; } }
 .gwf-grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
 .gwf-score-row { display: grid; grid-template-columns: 110px 1fr; gap: 8px; }
 

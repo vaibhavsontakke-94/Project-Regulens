@@ -160,23 +160,6 @@
     guideWrap: document.getElementById("guideWrap"),
     guidePhases: document.getElementById("guidePhases"),
     guideResetBtn: document.getElementById("guideResetBtn"),
-    pcTarget: document.getElementById("pcTarget"),
-    pcTargetRegion: document.getElementById("pcTargetRegion"),
-    pcTargetRegionRow: document.getElementById("pcTargetRegionRow"),
-    pcTargetRegionLabel: document.getElementById("pcTargetRegionLabel"),
-    pcIndustry: document.getElementById("pcIndustry"),
-    pcProduct: document.getElementById("pcProduct"),
-    pcQuestion: document.getElementById("pcQuestion"),
-    pcRunBtn: document.getElementById("pcRunBtn"),
-    pcRunStatus: document.getElementById("pcRunStatus"),
-    pcEmptyState: document.getElementById("pcEmptyState"),
-    pcResultWrap: document.getElementById("pcResultWrap"),
-    pcTopic: document.getElementById("pcTopic"),
-    pcMode: document.getElementById("pcMode"),
-    pcAnswer: document.getElementById("pcAnswer"),
-    pcObligations: document.getElementById("pcObligations"),
-    pcWatchouts: document.getElementById("pcWatchouts"),
-    pcFollowUp: document.getElementById("pcFollowUp"),
     bhEmptyState: document.getElementById("bhEmptyState"),
     bhWrap: document.getElementById("bhWrap"),
     bhStatsRow: document.getElementById("bhStatsRow"),
@@ -2596,13 +2579,6 @@
         }
       } catch (e) { console.warn("[charts] feasibility render error:", e); }
       try { if (currentView === "setup-guide") renderSetupGuide(); } catch (e) { console.warn("[charts] setup-guide error:", e); }
-      try {
-        if (currentView === "policy-checker") {
-          populatePolicyForm();
-          const pc = loadCachedPolicy();
-          if (pc) renderPolicyResult(pc);
-        }
-      } catch (e) { console.warn("[charts] policy-checker error:", e); }
       try { if (currentView === "business-health") renderBusinessHealth(); } catch (e) { console.warn("[charts] business-health error:", e); }
       try { if (currentView === "doc-checklist") renderDocChecklist(); } catch (e) { console.warn("[charts] doc-checklist error:", e); }
       try { if (currentView === "co-founder") renderCoFounder(); } catch (e) { console.warn("[charts] co-founder error:", e); }
@@ -2666,7 +2642,6 @@
     "feasibility",
     "setup-guide",
     "requirements",
-    "policy-checker",
     "gap-analysis",
     "action-plan",
     "business-health",
@@ -2720,7 +2695,7 @@
     compliance: {
       labelKey: "nav.module.compliance",
       defaultView: "requirements",
-      views: ["requirements", "policy-checker", "gap-analysis", "action-plan"],
+      views: ["requirements", "gap-analysis", "action-plan"],
     },
     risk: {
       labelKey: "nav.module.risk",
@@ -2793,7 +2768,6 @@
     "setup-guide": "nav.setupGuide",
     "cost-estimator": "nav.costEstimator",
     requirements: "nav.requirements",
-    "policy-checker": "nav.policyChecker",
     "gap-analysis": "nav.gapAnalysis",
     "action-plan": "nav.actionPlan",
     "regulation-watch": "nav.regWatch",
@@ -2834,7 +2808,6 @@
     "registration-portal": "Organization Registration",
     feasibility: "Business Feasibility Assessment",
     "setup-guide": "Launch Setup Guide",
-    "policy-checker": "Country Policy Inquiry",
     "business-health": "Business Health Scorecard",
     "agent-intelligence": "Multi-Agent Analysis",
     requirements: "Compliance Requirements",
@@ -2998,11 +2971,10 @@
       return;
     }
     if (view === "dashboard") { renderStats(); renderDashboardCharts(); }
-    else if (view === "registration-portal") renderRegistrationForm();
+    else if (view === "registration-portal") { if (window.RegistrationPortal) window.RegistrationPortal.init(); }
     else if (view === "feasibility") renderFeasibility();
     else if (view === "setup-guide") renderSetupGuide();
     else if (view === "requirements") renderRequirements();
-    else if (view === "policy-checker") renderPolicyChecker();
     else if (view === "gap-analysis") { renderGaps(); renderGapCharts(); renderCountryCompare(); }
     else if (view === "action-plan") { renderActions(); renderActionCharts(); renderPlanTimeline(); }
     else if (view === "business-health") renderBusinessHealth();
@@ -3380,7 +3352,6 @@
       [els.aiTarget, els.aiTargetRegion, els.aiTargetRegionRow, els.aiTargetRegionLabel],
       [els.fbOrigin, els.fbOriginRegion, els.fbOriginRegionRow, els.fbOriginRegionLabel],
       [els.fbTarget, els.fbTargetRegion, els.fbTargetRegionRow, els.fbTargetRegionLabel],
-      [els.pcTarget, els.pcTargetRegion, els.pcTargetRegionRow, els.pcTargetRegionLabel],
     ];
     pairs.forEach(([countrySel, regionSel, rowEl, labelEl]) => {
       if (!countrySel || !rowEl) return;
@@ -5151,9 +5122,6 @@ els.verdictText.textContent = !hasData
     els.fbTarget.addEventListener("change", () => {
       handleTargetCountryChange(els.fbTarget, els.fbTargetRegion, els.fbTargetRegionRow, els.fbTargetRegionLabel);
     });
-    els.pcTarget.addEventListener("change", () => {
-      handleTargetCountryChange(els.pcTarget, els.pcTargetRegion, els.pcTargetRegionRow, els.pcTargetRegionLabel);
-    });
     if (els.aiOrigin.value) {
       const cc = getCountryCode(els.aiOrigin.value);
       populateRegionDropdown(els.aiOriginRegion, cc);
@@ -5510,125 +5478,6 @@ els.verdictText.textContent = !hasData
     saveGuideDone(new Set());
     renderSetupGuide();
   });
-
-  /* â”€â”€â”€â”€â”€â”€â”€â”€â”€ AI country policy checker â”€â”€â”€â”€â”€â”€â”€â”€â”€ */
-  const PC_KEY = "regulens.policyCheck.v1";
-
-  function loadCachedPolicy() {
-    try {
-      const raw = localStorage.getItem(PC_KEY);
-      if (!raw) return null;
-      const data = JSON.parse(raw);
-      if (data && data.check && data.check.answer) return data;
-    } catch {}
-    return null;
-  }
-
-  function populatePolicyForm() {
-    if (els.pcTarget && !els.pcTarget.options.length) {
-      const ph = document.createElement("option");
-      ph.value = "";
-      ph.disabled = true;
-      ph.selected = true;
-      ph.textContent = t("feas.selectMarket");
-      els.pcTarget.appendChild(ph);
-      TARGET_MARKETS.forEach((m) => {
-        const opt = document.createElement("option");
-        opt.value = m.id;
-        opt.textContent = m.name;
-        els.pcTarget.appendChild(opt);
-      });
-    }
-    if (els.pcIndustry && !els.pcIndustry.options.length) {
-      const any = document.createElement("option");
-      any.value = "";
-      any.textContent = t("pc.anyIndustry");
-      els.pcIndustry.appendChild(any);
-      INDUSTRIES.forEach((ind) => {
-        const opt = document.createElement("option");
-        opt.value = ind.id;
-        opt.textContent = ind.name;
-        els.pcIndustry.appendChild(opt);
-      });
-    }
-    if (analysisData) {
-      if (analysisData.targetId && !els.pcTarget.value) els.pcTarget.value = analysisData.targetId;
-      if (analysisData.industry && !els.pcIndustry.value) els.pcIndustry.value = analysisData.industry;
-      if (analysisData.product && !els.pcProduct.value) els.pcProduct.value = analysisData.product;
-    }
-  }
-
-  function renderPolicyResult(data) {
-    const c = data.check || {};
-    els.pcEmptyState.classList.add("hidden");
-    els.pcResultWrap.classList.remove("hidden");
-
-    els.pcMode.textContent = data.mode === "ai" ? t("feas.modeAi") : t("feas.modeDemo");
-    els.pcTopic.textContent = c.topic || "";
-    els.pcTopic.classList.toggle("hidden", !c.topic);
-    els.pcAnswer.textContent = c.answer || "";
-
-    const fillList = (ul, items, ordered) => {
-      ul.innerHTML = "";
-      (items || []).forEach((item) => {
-        const li = document.createElement("li");
-        li.textContent = item;
-        ul.appendChild(li);
-      });
-      ul.classList.toggle("hidden", !(items || []).length);
-    };
-    fillList(els.pcObligations, c.obligations);
-    fillList(els.pcWatchouts, c.watchouts);
-    fillList(els.pcFollowUp, c.followUp);
-  }
-
-  function renderPolicyChecker() {
-    populatePolicyForm();
-    const cached = loadCachedPolicy();
-    if (cached) renderPolicyResult(cached);
-    else {
-      els.pcResultWrap.classList.add("hidden");
-      els.pcEmptyState.classList.remove("hidden");
-    }
-  }
-
-  async function runPolicyCheck() {
-    const target = els.pcTarget.value || "";
-    const question = (els.pcQuestion.value || "").trim();
-    if (!target) { toast(t("pc.errMarket")); return; }
-    if (question.length < 8) { toast(t("pc.errQuestion")); return; }
-
-    const btn = els.pcRunBtn;
-    btn.disabled = true;
-    btn.classList.add("loading");
-    btn.textContent = t("pc.running");
-    els.pcRunStatus.textContent = "";
-
-    try {
-      const res = await api("/api/policy-check", {
-        method: "POST",
-        headers: jsonHeaders,
-        body: JSON.stringify({
-          target,
-          targetRegion: els.pcTargetRegion ? els.pcTargetRegion.value : "",
-          industry: els.pcIndustry.value || "",
-          product: (els.pcProduct.value || "").trim(),
-          question,
-        }),
-      });
-      const data = await res.json();
-      try { localStorage.setItem(PC_KEY, JSON.stringify(data)); } catch {}
-      renderPolicyResult(data);
-    } catch (err) {
-      els.pcRunStatus.textContent = err.message || t("pc.errFailed");
-    } finally {
-      btn.disabled = false;
-      btn.classList.remove("loading");
-      btn.textContent = t("pc.run");
-    }
-  }
-
-  els.pcRunBtn.addEventListener("click", runPolicyCheck);
 
   /* â”€â”€â”€â”€â”€â”€â”€â”€â”€ business health monitor â”€â”€â”€â”€â”€â”€â”€â”€â”€
      Scorecard computed live from real project state: requirement
