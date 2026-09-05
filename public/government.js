@@ -337,7 +337,8 @@
       case "gov-scenario": initScenario(pkgReady); break;
       case "gov-copilot": initCopilot(pkgReady); break;
       case "gov-consultations": renderConsultations(pkgReady); break;
-    case "gov-problems": renderGovProblems(pkgReady); break;
+      case "gov-problems": renderGovProblems(pkgReady); break;
+      case "gov-dashboard": renderGovDashboard(pkgReady); break;
     }
   }
 
@@ -558,16 +559,19 @@
     if (summaryEl && rows.length) {
       const topRows = rows.slice(0, 5);
       summaryEl.innerHTML = `
-        <div class="chart-card summary-card">
-          <div class="summary-title">${T("gov.ind.chartTitle")}</div>
-          <div class="summary-stats">
-            ${topRows.map(r => `
-              <div class="summary-stat ${r.burdenScore >= 78 ? 'critical' : r.burdenScore >= 58 ? 'important' : 'standard'}">
-                <span class="summary-stat-value">${r.burdenScore}/100</span>
-                <span class="summary-stat-label">${esc(r.industryName)}${r.industryId === myId ? ` ${T("gov.ind.yourIndustry")}` : ''}</span>
-              </div>
-            `).join('')}
+        <div class="kpi-grid">
+          <div class="kpi-card">
+            <div class="kpi-title">${T("gov.ind.chartTitle")}</div>
+            <div class="kpi-value">5 of ${rows.length} Industries</div>
           </div>
+          ${topRows.map(r => `
+            <div class="kpi-progress">
+              <span class="kpi-label">${esc(r.industryName)}${r.industryId === myId ? ` ${T("gov.ind.yourIndustry")}` : ''}</span>
+              <span class="kpi-score">${r.burdenScore}/100</span>
+              <div class="kpi-bar"><div class="kpi-fill" style="width: ${r.burdenScore}%"></div></div>
+              <span class="kpi-badge ${r.burdenScore >= 78 ? 'critical' : r.burdenScore >= 58 ? 'important' : 'standard'}">${r.burdenScore >= 78 ? 'Critical' : r.burdenScore >= 58 ? 'Important' : 'Standard'}</span>
+            </div>
+          `).join('')}
         </div>
       `;
     } else if (summaryEl) {
@@ -660,37 +664,33 @@
       metricRow(T("gov.cmp.mReqs"), (x) => x.requirements != null ? x.requirements : null) +
       metricRow(T("gov.cmp.mImpact"), (x) => x.avgImpact != null ? `${x.avgImpact}/100` : null) +
       metricRow(T("gov.cmp.mVerdict"), (x) => x.verdict ? stateBadge(x.verdict) : null);
-    drawCompareChart(res);
+    drawCompareTable(res);
   }
-  function drawCompareChart(res) {
+  function drawCompareTable(res) {
     if (!res || !res.baseline || !Array.isArray(res.scenarios) || !res.scenarios.length) {
       return;
     }
     const base = res.baseline;
-    const labels = [T("gov.cmp.mCost"), T("gov.cmp.mDays"), T("gov.cmp.mReqs")].map((l) => l.replace(/\s*\(\$\)$/, ""));
-    const series = [{ key: "cost", color: "#6366f1", base: Number(base.cost) }, { key: "days", color: "#06b6d4", base: Number(base.days) }, { key: "requirements", color: "#22c55e", base: Number(base.requirements) }];
-    const rel = (val, baseVal) => (val == null || !Number.isFinite(Number(val)) || !Number.isFinite(baseVal) || baseVal <= 0) ? null : Math.round((Number(val) / baseVal) * 100);
-    const datasets = [
-      { label: T("gov.cmp.baselineName"), data: [100, 100, 100], color: "#94a3b8" },
-    ].concat(res.scenarios.map((s, i) => ({
-      label: `S${i + 1}`,
-      data: series.map((sr) => s.error ? null : rel(s[sr.key], sr.base)),
-      color: ["#6366f1", "#06b6d4", "#f97316"][i % 3],
-    })));
-    
-    const compareSummaryEl = $("compareSummaryCards");
-    if (compareSummaryEl) {
-      compareSummaryEl.innerHTML = `
-        <div class="chart-card summary-card">
-          <div class="summary-title">${T("gov.cmp.chartTitle")}</div>
-          <div class="summary-stats">
-            ${datasets.slice(1).map((ds, i) => `
-              <div class="summary-stat ${ds.color === '#6366f1' ? 'critical' : ds.color === '#06b6d4' ? 'important' : 'standard'}">
-                <span class="summary-stat-value">${ds.label}</span>
-                <span class="summary-stat-label">${labels.map((l, j) => `${l}: ${ds.data[j] !== null ? ds.data[j] + '%' : '—'}`).join(' · ')}</span>
-              </div>
-            `).join('')}
-          </div>
+    const headers = [T("gov.cmp.mCost"), T("gov.cmp.mDays"), T("gov.cmp.mReqs")].map((l) => l.replace(/\s*\(\$\)$/, ""));
+    const rows = [["Baseline", money(base.cost), `${base.days} ${T("gov.common.days")}`, base.requirements != null ? base.requirements : "—", `${(base.avgImpact || 0)}/100`, stateBadge(base.verdict)]];
+    res.scenarios.forEach((s) => {
+      const cost = s.cost != null ? money(s.cost) : "—";
+      const days = s.days != null ? `${s.days} ${T("gov.common.days")}` : "—";
+      const reqs = s.requirements != null ? s.requirements : "—";
+      const impact = s.avgImpact != null ? `${s.avgImpact}/100` : "—";
+      const verdict = s.verdict ? stateBadge(s.verdict) : "—";
+      rows.push([`Scenario ${rows.length}`, cost, days, reqs, impact, verdict]);
+    });
+    const summaryEl = $("compareSummaryCards");
+    if (summaryEl) {
+      summaryEl.innerHTML = `
+        <div class="kpi-grid">
+          ${rows.slice(1).map((row) => `
+            <div class="kpi-card">
+              <div class="kpi-title">${row[0]}</div>
+              <div class="kpi-value">${row[4]}</div>
+            </div>
+          `).join('')}
         </div>
       `;
     }
@@ -1245,16 +1245,170 @@
 
   function normalizeStatus(s) { return s.toLowerCase().replace(/ /g, "-"); }
 
-  function toast(msg) { ... }  // reuse existing toast
+  function toast(msg) {
+    const el = $("toast");
+    if (!el) return;
+    el.textContent = msg;
+    el.classList.remove("hidden");
+    clearTimeout(toast._t);
+    toast._t = setTimeout(() => el.classList.add("hidden"), 2600);
+  }
 
-  /* Problem CRUD actions */
-  async function openProblem(id) { /* navigate to detail */ }
-  async function editProblem(id) { const data = await apiProblem(id, "PATCH", { status: "SUBMITTED" }); renderGovProblems(); }
-  async function deleteProblem(id) { await apiProblem(id, "DELETE"); renderGovProblems(); }
-  async function publishProblem(id) { await apiProblem(id, "POST", { status: "APPROVED" }); renderGovProblems(); }
-  async function unpublishProblem(id) { await apiProblem(id, "POST", { status: "APPROVED" }); renderGovProblems(); }
-  async function showProblemDetail(id) { /* show modal with problem data */ }
+/* Problem CRUD actions */
+  async function openProblem(id) {
+    const data = await apiProblem(id, "GET");
+    if (window.ReguLens) window.ReguLens.navigate("gov-workflow");
+    renderGovProblems(data);
+  }
 
-  /* new problem form */
-  function newProblem() { /* open modal/form to create new problem */ }
+  /* ── Government Dashboard ── */
+  async function renderGovDashboard(pkg) {
+    const root = $("govDashboardBody");
+    if (!root) return;
+    // Load organization context (mirror sih-startup.js pattern)
+    let orgId = "";
+    try {
+      const saved = localStorage.getItem("regulens.sihgov.v1") || localStorage.getItem("gcc.selectedOrg") || "";
+      if (saved) orgId = saved;
+    } catch {}
+    if (!orgId) {
+      // Try to find first government organization
+      try {
+        const orgRes = await fetch("/api/sih/organizations", {
+          headers: { "Authorization": `Bearer ${S.ctx.token}` },
+        });
+        const orgData = orgRes.ok ? await orgRes.json() : {};
+        const govOrgs = (orgData.organizations || []).filter((o) => o.orgType === "GOVERNMENT");
+        if (govOrgs.length > 0) orgId = govOrgs[0].id;
+      } catch {}
+    }
+    if (!orgId) {
+      root.innerHTML = `<div class="gov-error"><p>No government organization selected. Please select an organization to view the dashboard.</p></div>`;
+      return;
+    }
+    try {
+      // Fetch counts from SIH APIs
+      const [probRes, chalRes, appRes, pilotRes] = await Promise.all([
+        fetch(`/api/sih/problems?organizationId=${encodeURIComponent(orgId)}`, {
+          headers: { "Authorization": `Bearer ${S.ctx.token}` },
+        }),
+        fetch(`/api/sih/challenges?organizationId=${encodeURIComponent(orgId)}`, {
+          headers: { "Authorization": `Bearer ${S.ctx.token}` },
+        }),
+        fetch(`/api/sih/applications?organizationId=${encodeURIComponent(orgId)}`, {
+          headers: { "Authorization": `Bearer ${S.ctx.token}` },
+        }),
+        fetch(`/api/sih/pilot_projects?organizationId=${encodeURIComponent(orgId)}`, {
+          headers: { "Authorization": `Bearer ${S.ctx.token}` },
+        }),
+      ]);
+      const problems = probRes.ok ? await probRes.json() : [];
+      const challenges = chalRes.ok ? await chalRes.json() : [];
+      const applications = appRes.ok ? await appRes.json() : [];
+      const pilots = pilotRes.ok ? await pilotRes.json() : [];
+
+      const problemCount = problems.length;
+      const publishedCount = problems.filter((p) => p.status === "PUBLISHED").length;
+      const draftCount = problems.filter((p) => p.status === "DRAFT").length;
+      const appCount = applications.length;
+      // Count eligible solutions (from eligibility results linked to challenges)
+      let eligibleCount = 0;
+      if (challenges.length) {
+        for (const ch of challenges) {
+          const elRes = await fetch(`/api/sih/eligibility_results?challengeId=${encodeURIComponent(ch.id)}`, {
+            headers: { "Authorization": `Bearer ${S.ctx.token}` },
+          });
+          if (elRes.ok) {
+            const elData = await elRes.json();
+            eligibleCount += (elData.results || []).filter((r) => r.passed).length;
+          }
+        }
+      }
+      const runningPilots = pilots.filter((p) => p.status === "RUNNING").length;
+      const completedPilots = pilots.filter((p) => p.status === "COMPLETED").length;
+      // Procurement-ready: pilots with readiness READY or READY_WITH_CONDITIONS
+      const procurementReady = pilots.filter((p) => p.readiness && (p.readiness.status === "READY" || p.readiness.status === "READY_WITH_CONDITIONS")).length;
+
+      // Save organization context
+      try { localStorage.setItem("regulens.sihgov.v1", orgId); } catch {}
+
+      root.innerHTML = `
+        <div class="grid grid-2">
+          <div class="card gcc-kpi-clickable" data-gcc-kpi="search" role="button" tabindex="0">
+            <div class="gcc-kpi-value">${problemCount}</div>
+            <div class="gcc-kpi-label">Problems</div>
+          </div>
+          <div class="card gcc-kpi-clickable" data-gcc-kpi="search" role="button" tabindex="0">
+            <div class="gcc-kpi-value">${publishedCount}</div>
+            <div class="gcc-kpi-label">Published Problems</div>
+          </div>
+          <div class="card gcc-kpi-clickable" data-gcc-kpi="applications" role="button" tabindex="0">
+            <div class="gcc-kpi-value">${appCount}</div>
+            <div class="gcc-kpi-label">Applications</div>
+          </div>
+          <div class="card gcc-kpi-clickable" data-gcc-kpi="pilots" role="button" tabindex="0">
+            <div class="gcc-kpi-value">${runningPilots}</div>
+            <div class="gcc-kpi-label">Active Pilots</div>
+          </div>
+          <div class="card gcc-kpi-clickable" data-gcc-kpi="pilots" role="button" tabindex="0">
+            <div class="gcc-kpi-value">${completedPilots}</div>
+            <div class="gcc-kpi-label">Completed Pilots</div>
+          </div>
+          <div class="card gcc-kpi-clickable" data-gcc-kpi="ready" role="button" tabindex="0">
+            <div class="gcc-kpi-value">${procurementReady}</div>
+            <div class="gcc-kpi-label">Procurement-Ready</div>
+          </div>
+        </div>`;
+      // Attach click handlers after rendering
+      root.querySelectorAll("[data-gcc-kpi]").forEach((b) => {
+        const go = () => goIntent(b.dataset.gccKpi);
+        b.addEventListener("click", go);
+        b.addEventListener("keydown", (e) => { if (e.key === "Enter" || e.key === " ") { e.preventDefault(); go(); } });
+      });
+    } catch (err) {
+      root.innerHTML = `<div class="gov-error"><p>Failed to load dashboard data: ${err.message || err}</p></div>`;
+    }
+  }
+}
+
+  async function editProblem(id) {
+    const data = await apiProblem(id, "PATCH", { status: "SUBMITTED" });
+    await toast("Problem updated to SUBMITTED");
+    renderGovProblems(data);
+  }
+
+  async function deleteProblem(id) {
+    await apiProblem(id, "DELETE");
+    await toast("Problem deleted");
+    renderGovProblems();
+  }
+
+  async function publishProblem(id) {
+    const data = await apiProblem(id, "POST", { status: "APPROVED" });
+    await toast("Problem approved for challenge generation");
+    renderGovProblems(data);
+  }
+
+  async function unpublishProblem(id) {
+    const data = await apiProblem(id, "POST", { status: "APPROVED" });
+    await toast("Problem unpublished, returned to APPROVED");
+    renderGovProblems(data);
+  }
+
+  async function showProblemDetail(id) {
+    const data = await apiProblem(id, "GET");
+    if (data && data.problemStatement) {
+      const modal = document.getElementById("govPolicyModal");
+      if (modal) {
+        modal.querySelector(".gov-policy-title").textContent = data.title;
+        modal.querySelector(".gov-policy-body").innerHTML = `
+          <p class="modal-text dim">${esc(data.problemStatement)}</p>
+          <p><strong>Department:</strong> ${esc(data.department || "")}</p>
+          <p><strong>Sector:</strong> ${esc(data.sector || "")}</p>
+          <p><strong>Budget:</strong> ${esc(data.estimatedBudget || 0)} ${esc(data.currency || "INR")}</p>
+        `;
+        modal.classList.remove("hidden");
+      }
+    }
+  }
 }
