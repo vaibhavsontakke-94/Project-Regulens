@@ -18,7 +18,7 @@
 </head>
 <body>
   <script>
-    (function(){try{var t=localStorage.getItem("aurora.theme");if(t==="dark"){document.body.classList.add("dark")}}catch(e){}})();
+    (function(){try{var t=localStorage.getItem("aurora.settings");var s=JSON.parse(t||"{}").theme;if(s==="dark"){document.body.classList.add("dark")}}catch(e){}})();
     (function(){try{if(window.matchMedia("(max-width: 820px)").matches){document.body.classList.add("sidebar-collapsed")}}catch(e){}})();
   </script>
 

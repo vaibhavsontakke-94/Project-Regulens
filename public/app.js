@@ -7,8 +7,8 @@
   );
   function showErr(msg) {
     const b = document.getElementById("errBadge");
-    if (b) {
-      b.textContent = "âš  " + msg;
+    if (b && typeof msg === "string" && msg.length > 0) {
+      b.textContent = msg;
       b.hidden = false;
     }
   }
@@ -3018,8 +3018,12 @@
     if (mqMobile.matches) setSidebar(false);
   }
 
-  els.menuBtn.addEventListener("click", toggleSidebar);
-  els.overlay.addEventListener("click", () => setSidebar(false));
+  if (els.menuBtn) {
+    els.menuBtn.addEventListener("click", toggleSidebar);
+  }
+  if (els.overlay) {
+    els.overlay.addEventListener("click", () => setSidebar(false));
+  }
 
   els.navItems.forEach((item) => {
     item.addEventListener("click", () => {
@@ -3057,24 +3061,32 @@
     openMenu(menu, anchor);
   }
 
-  els.userBtn.addEventListener("click", (e) => {
-    e.stopPropagation();
-    toggleMenu(els.userMenu, els.userBtn);
-  });
-  els.langBtn.addEventListener("click", (e) => {
-    e.stopPropagation();
-    toggleMenu(els.langMenu, els.langBtn);
-  });
-  els.bellBtn.addEventListener("click", (e) => {
-    e.stopPropagation();
-    toggleMenu(els.notifMenu, els.bellBtn);
-  });
+  if (els.userBtn) {
+    els.userBtn.addEventListener("click", (e) => {
+      e.stopPropagation();
+      toggleMenu(els.userMenu, els.userBtn);
+    });
+  }
+  if (els.langBtn) {
+    els.langBtn.addEventListener("click", (e) => {
+      e.stopPropagation();
+      if (els.langMenu) toggleMenu(els.langMenu, els.langBtn);
+    });
+  }
+  if (els.bellBtn) {
+    els.bellBtn.addEventListener("click", (e) => {
+      e.stopPropagation();
+      toggleMenu(els.notifMenu, els.bellBtn);
+    });
+  }
   document.addEventListener("click", closeMenus);
 
-  els.userMenuSignOut.addEventListener("click", () => {
-    closeMenus();
-    doSignOut();
-  });
+  if (els.userMenuSignOut) {
+    els.userMenuSignOut.addEventListener("click", () => {
+      closeMenus();
+      doSignOut();
+    });
+  }
 
   /* â”€â”€â”€â”€â”€â”€â”€â”€â”€ dynamic language menu â”€â”€â”€â”€â”€â”€â”€â”€â”€ */
   function renderLangMenu() {
@@ -3184,27 +3196,27 @@
 
   /* â”€â”€â”€â”€â”€â”€â”€â”€â”€ dropdown data constants â”€â”€â”€â”€â”€â”€â”€â”€â”€ */
   const TARGET_MARKETS = [
-    { id: "in", name: "ðŸ‡®ðŸ‡³ India" },
-    { id: "us", name: "ðŸ‡ºðŸ‡¸ United States" },
-    { id: "uk", name: "ðŸ‡¬ðŸ‡§ United Kingdom" },
-    { id: "ae", name: "ðŸ‡¦ðŸ‡ª UAE" },
-    { id: "de", name: "ðŸ‡©ðŸ‡ª Germany" },
-    { id: "sg", name: "ðŸ‡¸ðŸ‡¬ Singapore" },
-    { id: "au", name: "ðŸ‡¦ðŸ‡º Australia" },
-    { id: "ca", name: "ðŸ‡¨ðŸ‡¦ Canada" },
-    { id: "jp", name: "ðŸ‡¯ðŸ‡µ Japan" },
-    { id: "eu", name: "ðŸ‡ªðŸ‡º European Union" },
-    { id: "fr", name: "ðŸ‡«ðŸ‡· France" },
-    { id: "cn", name: "ðŸ‡¨ðŸ‡³ China" },
-    { id: "br", name: "ðŸ‡§ðŸ‡· Brazil" },
-    { id: "kr", name: "ðŸ‡°ðŸ‡· South Korea" },
-    { id: "sa", name: "ðŸ‡¸ðŸ‡¦ Saudi Arabia" },
-    { id: "mx", name: "ðŸ‡²ðŸ‡½ Mexico" },
-    { id: "it", name: "ðŸ‡®ðŸ‡¹ Italy" },
-    { id: "es", name: "ðŸ‡ªðŸ‡¸ Spain" },
-    { id: "nl", name: "ðŸ‡³ðŸ‡± Netherlands" },
-    { id: "se", name: "ðŸ‡¸ðŸ‡ª Sweden" },
-    { id: "ch", name: "ðŸ‡¨ðŸ‡­ Switzerland" },
+    { id: "in", name: "🇮🇳 India" },
+    { id: "us", name: "🇺🇸 United States" },
+    { id: "uk", name: "🇬🇧 United Kingdom" },
+    { id: "ae", name: "🇦🇪 UAE" },
+    { id: "de", name: "🇩🇪 Germany" },
+    { id: "sg", name: "🇸🇬 Singapore" },
+    { id: "au", name: "🇦🇺 Australia" },
+    { id: "ca", name: "🇨🇦 Canada" },
+    { id: "jp", name: "🇯🇵 Japan" },
+    { id: "eu", name: "🇪🇺 European Union" },
+    { id: "fr", name: "🇫🇷 France" },
+    { id: "cn", name: "🇨🇳 China" },
+    { id: "br", name: "🇧🇷 Brazil" },
+    { id: "kr", name: "🇰🇷 South Korea" },
+    { id: "sa", name: "🇸🇦 Saudi Arabia" },
+    { id: "mx", name: "🇲🇽 Mexico" },
+    { id: "it", name: "🇮🇹 Italy" },
+    { id: "es", name: "🇪🇸 Spain" },
+    { id: "nl", name: "🇳🇱 Netherlands" },
+    { id: "se", name: "🇸🇪 Sweden" },
+    { id: "ch", name: "🇨🇭 Switzerland" },
   ];
 
   const INDUSTRIES = [
@@ -4086,8 +4098,8 @@
   }
 
   function getMarketFlag(id) {
-    const flags = { de: "ðŸ‡©ðŸ‡ª", fr: "ðŸ‡«ðŸ‡·", us: "ðŸ‡ºðŸ‡¸", uk: "ðŸ‡¬ðŸ‡§", jp: "ðŸ‡¯ðŸ‡µ", cn: "ðŸ‡¨ðŸ‡³", in: "ðŸ‡®ðŸ‡³", br: "ðŸ‡§ðŸ‡·", au: "ðŸ‡¦ðŸ‡º", ca: "ðŸ‡¨ðŸ‡¦", kr: "ðŸ‡°ðŸ‡·", sg: "ðŸ‡¸ðŸ‡¬", ae: "ðŸ‡¦ðŸ‡ª", sa: "ðŸ‡¸ðŸ‡¦", mx: "ðŸ‡²ðŸ‡½", it: "ðŸ‡®ðŸ‡¹", es: "ðŸ‡ªðŸ‡¸", nl: "ðŸ‡³ðŸ‡±", se: "ðŸ‡¸ðŸ‡ª", ch: "ðŸ‡¨ðŸ‡­", eu: "ðŸ‡ªðŸ‡º" };
-    return flags[id] || "ðŸŒ";
+    const flags = { de: "🇩🇪", fr: "🇫🇷", us: "🇺🇸", uk: "🇬🇧", jp: "🇯🇵", cn: "🇨🇳", in: "🇮🇳", br: "🇧🇷", au: "🇦🇺", ca: "🇨🇦", kr: "🇰🇷", sg: "🇸🇦", ae: "🇦🇪", sa: "🇸🇦", mx: "🇲🇽", it: "🇮🇹", es: "🇪🇸", nl: "🇳🇱", se: "🇸🇪", ch: "🇨🇭", eu: "🇪🇺" };
+    return flags[id] || "🇮🇳";
   }
 
   function transitionReq(r, next) {

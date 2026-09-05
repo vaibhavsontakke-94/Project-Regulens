@@ -588,6 +588,12 @@
 
     const saved = (() => { try { return localStorage.getItem(KEY_ORG) || ""; } catch (_) { return ""; } })();
 
+    const auth = window.AuroraFirebase && window.AuroraFirebase.getAuth();
+    if (!auth || !auth.currentUser) {
+      showState(body, "error", "Could not load organizations.", "Detail: Not signed in");
+      return;
+    }
+
     let orgs = [];
     try {
       const r = await api("/organizations");
