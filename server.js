@@ -31,19 +31,15 @@ const PORT = process.env.PORT || 3000;
 
 app.use(express.json({ type: "application/json", limit: "2mb" }));
 
-/* Serve index.html at root */
+/* Serve index.html at root - MUST be the very first route */
 app.get("/", (req, res) => {
-  const indexPath = path.resolve(__dirname, "public", "index.html");
-  res.sendFile(indexPath, (err) => {
+  res.sendFile(path.join(__dirname, "public", "index.html"), (err) => {
     if (err) {
       console.error('Error sending index.html:', err);
-      res.status(500).send('Error loading page');
+      res.status(404).send('Page not found');
     }
   });
 });
-
-/* Do NOT use express.static for the public directory to avoid API route interception.
-   Instead, serve specific assets explicitly if needed. */
 
 /* Serve the shared core to the browser as a classic script (window.RegulensCore). */
 app.get("/core/regulens-core.js", (req, res) => {
