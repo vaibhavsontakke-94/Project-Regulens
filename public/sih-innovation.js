@@ -397,6 +397,19 @@
         renderProblemDetail(root);
       } catch (e) { toast(e.message); }
     });
+    const sd = root.querySelector("#sihSaveDraft");
+    if (sd) sd.addEventListener("click", async () => {
+      try {
+        const d = await api("POST", `/problems/${p.id}/generate-challenge`, {
+          lang: lang(),
+          structure: S.structure || undefined,
+          persist: true,
+        });
+        S.generated = d.preview;
+        toast(T("sih.savedraft_ok"));
+        await loadChallenges();
+      } catch (e) { toast(e.message); }
+    });
   }
 
   function renderStructureBlock() {

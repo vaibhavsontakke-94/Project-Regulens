@@ -242,7 +242,8 @@
       <div id="matchConfig"></div>`;
 
     const runBtn = $("runMatch");
-    if (runBtn) runBtn.addEventListener("click", async () => {
+    const rerunBtn = $("runAgain");
+    const runMatching = async () => {
       if (S.busy) return;
       S.busy = true;
       try {
@@ -252,7 +253,9 @@
         toast(tr("matching.run"));
       } catch (e) { toast(e.message); }
       S.busy = false;
-    });
+    };
+    if (runBtn) runBtn.addEventListener("click", runMatching);
+    if (rerunBtn) rerunBtn.addEventListener("click", runMatching);
 
     renderResults($("matchResults"));
     renderShortlist($("matchShortlist"));

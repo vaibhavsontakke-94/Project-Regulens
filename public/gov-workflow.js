@@ -106,7 +106,7 @@
     const pilots = (o.pilots || []).filter((p) => (p.problem && p.problem.id === pid) || chIds.has(p.challengeId));
     const assessments = ((o.procurement && o.procurement.assessments) || []).filter((a) => chIds.has(a.challengeId) || pilots.some((pl) => pl.id === a.pilotProjectId));
     const scalePlans = ((o.procurement && o.procurement.scalePlans) || []).filter((s) => pilots.some((pl) => pl.id === s.pilotProjectId));
-    return { problem, problems: (o.problems || []), challenges: ch, applications: apps, matches, eligibility, evaluations, aggregations, decisions, pilots, assessments, scalePlans };
+    return { problem, problems: (o.problems || []), challenges: ch, applications: apps, matches, eligibility, evaluations, aggregations, decisions, pilots, assessments, scalePlans, evidence: (o.evidence || []) };
   }
 
   function primaryChallenge(v) {
@@ -919,23 +919,42 @@
     ], rows);
   }
 
+  function lifestyleButtons(status, pilotId) {
+    const map = {
+      PLANNED: [["Approve", "APPROVED"], ["Cancel", "CANCELLED"]],
+      APPROVED: [["Start", "RUNNING"], ["Cancel", "CANCELLED"]],
+      RUNNING: [["Pause", "PAUSED"], ["Complete", "COMPLETED"], ["Cancel", "CANCELLED"]],
+      PAUSED: [["Resume", "RUNNING"], ["Complete", "COMPLETED"], ["Cancel", "CANCELLED"]],
+      FAILED: [["Cancel", "CANCELLED"]],
+      COMPLETED: [], CANCELLED: [],
+    };
+    return (map[status] || []).map(([label, target]) =>
+      `<button type="button" class="btn btn-secondary btn-sm" data-gwf-tx="${esc(pilotId)}|${esc(target)}">${esc(label)}</button>`).join("");
+  }
+
   function pilotsBlock(root) {
     const v = vm();
     if (!v.pilots.length) return empty("No pilots launched yet. Pick an eligible, ranked solution and press \u201cNew pilot\u201d.");
-    const rows = v.pilots.map((p) => ({
-      pilot: { html: `<strong>${esc(p.title)}</strong><div class="gcc-cell-sub">${esc(p.location || "")} \u00b7 ${esc(p.challenge ? p.challenge.title : "")}</div>` },
-      solution: esc(startupName(p.startup)),
-      status: badge(p.status || "PLANNED"),
-      score: { html: esc(num(p.overallScore)), sort: Number(p.overallScore) || 0 },
-      health: badge(p.health || "\u2014"),
-      budget: money(p.budget),
-      act: { html: `
-        <button type="button" class="btn btn-secondary btn-sm" data-gwf-kpi="${esc(p.id)}">KPI</button>
-        <button type="button" class="btn btn-secondary btn-sm" data-gwf-measure="${esc(p.id)}">Measure</button>
-        <button type="button" class="btn btn-secondary btn-sm" data-gwf-result="${esc(p.id)}">Result</button>
-        <button type="button" class="btn btn-secondary btn-sm" data-gwf-analyse="${esc(p.id)}">Analyse</button>`, sort: "" },
-      fuse: [p.title, startupName(p.startup), p.status, p.health].join(" "),
-    }));
+    const rows = v.pilots.map((p) => {
+      const hasResult = !!(p.result && p.result.id);
+      const lc = lifestyleButtons(p.status || "PLANNED", p.id);
+      return {
+        pilot: { html: `<strong>${esc(p.title)}</strong><div class="gcc-cell-sub">${esc(p.location || "")} \u00b7 ${esc(p.challenge ? p.challenge.title : "")}</div>` },
+        solution: esc(startupName(p.startup)),
+        status: badge(p.status || "PLANNED"),
+        score: { html: esc(num(p.overallScore)), sort: Number(p.overallScore) || 0 },
+        health: badge(p.health || "\u2014"),
+        budget: money(p.budget),
+        act: { html: `<div style="margin:2px 0">
+          ${lc || ""}<button type="button" class="btn btn-secondary btn-sm" data-gwf-evidence="${esc(p.id)}">Evidence</button>
+          ${hasResult ? `<button type="button" class="btn btn-primary btn-sm" data-gwf-decide-pilot="${esc(p.id)}">Decide</button>` : ""}
+          </div><button type="button" class="btn btn-secondary btn-sm" data-gwf-kpi="${esc(p.id)}">KPI</button>
+          <button type="button" class="btn btn-secondary btn-sm" data-gwf-measure="${esc(p.id)}">Measure</button>
+          <button type="button" class="btn btn-secondary btn-sm" data-gwf-result="${esc(p.id)}">Result</button>
+          <button type="button" class="btn btn-secondary btn-sm" data-gwf-analyse="${esc(p.id)}">Analyse</button>`, sort: "" },
+        fuse: [p.title, startupName(p.startup), p.status, p.health].join(" "),
+      };
+    });
     return dataTable([
       { key: "pilot", label: "Pilot" }, { key: "solution", label: "Solution" }, { key: "status", label: "Status" },
       { key: "score", label: "Score" }, { key: "health", label: "Health" }, { key: "budget", label: "Budget" }, { key: "act", label: "Actions" },
@@ -976,12 +995,13 @@
     const ready = v.pilots.filter((p) => p.readiness && (p.readiness.status === "READY" || p.readiness.status === "READY_WITH_CONDITIONS"));
     if (ready.length) {
       out += `<div class="gwf-readiness">${head("Procurement Readiness", "Gateway to Government decision")}` + dataTable([
-        { key: "pilot", label: "Pilot / Solution" }, { key: "readiness", label: "Readiness" }, { key: "risk", label: "Risk" }, { key: "conditions", label: "Conditions" },
+        { key: "pilot", label: "Pilot / Solution" }, { key: "readiness", label: "Readiness" }, { key: "risk", label: "Risk" }, { key: "conditions", label: "Conditions" }, { key: "act", label: "Actions" },
       ], ready.map((p) => ({
         pilot: `<strong>${esc(p.title)}</strong><div class="gcc-cell-sub">${esc(startupName(p.startup))}</div>`,
         readiness: badge(p.readiness.status),
         risk: badge(p.readiness.riskLevel || "\u2014"),
         conditions: esc((p.readiness.conditions || []).join("; ") || "\u2014"),
+        act: { html: `<button type="button" class="btn btn-secondary btn-sm" data-gwf-evidence="${esc(p.id)}">Evidence</button> <button type="button" class="btn btn-primary btn-sm" data-gwf-decide-pilot="${esc(p.id)}">Decide</button>`, sort: "" },
         fuse: [p.title, p.readiness.status, (p.readiness.conditions || []).join(" ")].join(" "),
       }))) + `</div>`;
     }
@@ -998,10 +1018,12 @@
   function decisionsBlock(v) {
     if (!v.decisions.length) return empty("No formal Government decisions recorded yet.");
     return v.decisions.slice(0, 12).map((d) => `<div class="gcc-decision">
-      <div class="gcc-decision-top">${badge(d.decisionType || d.status)} <span class="gcc-decision-t">${esc(v.challenges.find((c) => c.id === d.challengeId) ? v.challenges.find((c) => c.id === d.challengeId).title : (d.challengeId || ""))}</span></div>
-      <div class="gcc-decision-sub"><strong>${esc(startupName(d.startup))}</strong> \u00b7 decided by ${esc(d.decidedBy || d.actorName || "\u2014")} \u00b7 ${fmtDate(d.createdAt || d.reviewedAt)}</div>
-      <div class="gcc-decision-verdict">${esc(d.decision || d.status || "\u2014")}</div>
+      <div class="gcc-decision-top">${badge(d.decisionType || d.decision || d.status)} <span class="gcc-decision-t">${esc(v.challenges.find((c) => c.id === d.challengeId) ? v.challenges.find((c) => c.id === d.challengeId).title : (d.challengeId || ""))}</span>${d.stage ? ` <span class="gcc-badge gcc-badge-info">${esc(d.stage)}</span>` : ""}</div>
+      <div class="gcc-decision-sub"><strong>${esc(startupName(d.startup) || d.startupId || "\u2014")}</strong> \u00b7 decided by ${esc(d.decidedBy || d.actorName || "\u2014")} \u00b7 ${fmtDate(d.createdAt || d.reviewedAt)}</div>
+      <div class="gcc-decision-verdict">${esc(d.decision || d.verdict || d.status || "\u2014")}</div>
       <div class="gcc-cell-sub">${esc(d.reason || "")}</div>
+      ${(d.conditions && d.conditions.length) ? `<div class="gcc-cell-sub"><strong>Conditions:</strong> ${esc(d.conditions.join("; "))}</div>` : ""}
+      ${(d.warnings && d.warnings.length) ? `<div class="gcc-cell-sub" style="color:#b3261e">${esc(d.warnings.join(" "))}</div>` : ""}
     </div>`).join("");
   }
 
@@ -1013,6 +1035,12 @@
     root.querySelectorAll("[data-gwf-measure]").forEach((b) => b.addEventListener("click", () => measureModal(root, b.dataset.gwfMeasure)));
     root.querySelectorAll("[data-gwf-result]").forEach((b) => b.addEventListener("click", () => resultModal(root, b.dataset.gwfResult)));
     root.querySelectorAll("[data-gwf-analyse]").forEach((b) => b.addEventListener("click", () => analyseModal(root, b.dataset.gwfAnalyse)));
+    root.querySelectorAll("[data-gwf-tx]").forEach((b) => b.addEventListener("click", () => {
+      const pair = String(b.dataset.gwfTx || "").split("|");
+      if (pair.length === 2) transitionPilot(root, pair[0], pair[1]);
+    }));
+    root.querySelectorAll("[data-gwf-evidence]").forEach((b) => b.addEventListener("click", () => evidenceModal(b.dataset.gwfEvidence)));
+    root.querySelectorAll("[data-gwf-decide-pilot]").forEach((b) => b.addEventListener("click", () => procurementDecisionModal(b.dataset.gwfDecidePilot)));
     root.querySelectorAll("table.gcc-table").forEach((tb) => attachSorters(tb));
   }
 
@@ -1158,7 +1186,6 @@
         ${fieldWrap("Location", textInput("location", "District", ""))}
         ${fieldWrap("Duration (days)", textInput("durationDays", "90", ""))}
         ${fieldWrap("Budget (INR)", textInput("budget", "200000", ""))}
-        ${fieldWrap("Status", selInput("status", [["PLANNED", "PLANNED"], ["RUNNING", "RUNNING"]], ""))}
       </div>
       <div class="gwf-modal-actions"><button type="button" class="btn btn-primary" data-gwf-create-pilot>Create pilot</button></div>
       <div id="gwfPilotMsg"></div>`, { width: 620 });
@@ -1176,7 +1203,7 @@
           challengeId, startupId, organizationId: orgId,
           title: f("title") || "Government pilot",
           location: f("location") || undefined,
-          status: f("status") || "PLANNED",
+          status: "PLANNED",
         };
         const d = Number(f("durationDays")); if (d) body.durationDays = d;
         const b = Number(f("budget")); if (b) body.budget = b;
@@ -1277,6 +1304,168 @@
         renderWorkspace(document.getElementById("govWorkflowBody"));
       } catch (err) {
         $("#gwfResultMsg", wrap).innerHTML = `<div class="gwf-log-bad">${esc(err.message)}</div>`;
+      }
+    });
+  }
+
+  /* ───────────── pilot lifecycle transitions ───────────── */
+  async function transitionPilot(root, pilotId, targetStatus) {
+    const v = vm();
+    const p = (v.pilots || []).find((x) => x.id === pilotId);
+    if (!p) { toast("Pilot not found.", "warn"); return; }
+    const from = p.status || "PLANNED";
+    const wrap = modal("Transition pilot", `
+      <div class="gwf-sol-row"><strong>${esc(from)}</strong> \u2192 <strong>${esc(targetStatus)}</strong><div class="gcc-cell-sub">${esc(p.title)}</div></div>
+      ${fieldWrap("Reason (recorded in audit trail)", `<textarea class="textarea input" name="reason" rows="3" placeholder="${esc(p.title + " \u00b7 " + from + " \u2192 " + targetStatus + " (Government action)")}"></textarea>`)}
+      <div class="gwf-modal-actions"><button type="button" class="btn btn-primary" data-gwf-tx-save>Confirm transition</button></div>
+      <div id="gwfTxMsg"></div>`, { width: 560 });
+    wrap.querySelector("[data-gwf-tx-save]").addEventListener("click", async () => {
+      const btn = wrap.querySelector("[data-gwf-tx-save]");
+      btn.disabled = true;
+      try {
+        const reason = $(`[name="reason"]`, wrap).value || (p.title + " \u00b7 " + from + " \u2192 " + targetStatus + " (Government action)");
+        await api("/pilots/" + pilotId + "/transition", { method: "POST", body: { status: targetStatus, reason } });
+        toast("Pilot transitioned to " + targetStatus + ".", "ok");
+        await refreshOverview();
+        wrap.remove();
+        renderWorkspace(document.getElementById("govWorkflowBody"));
+      } catch (err) {
+        $("#gwfTxMsg", wrap).innerHTML = `<div class="gwf-log-bad">${esc(err.message)}</div>`;
+        btn.disabled = false;
+      }
+    });
+  }
+
+  /* ───────────── pilot evidence collection & verification ───────────── */
+  async function evidenceModal(pilotId) {
+    const v = vm();
+    const p = (v.pilots || []).find((x) => x.id === pilotId);
+    if (!p) { toast("Pilot not found.", "warn"); return; }
+    const wrap = modal("Evidence \u2014 " + (p.title || "Pilot"), `<div class="gcc-state gcc-state-loading"><div class="gcc-spinner"></div><div class="gcc-state-msg">Loading evidence\u2026</div></div>`, { width: 760 });
+    const body = wrap.querySelector(".gwf-modal-body");
+
+    const setStatus = async (id, status) => {
+      try {
+        await api("/evidence-links/" + id, { method: "PATCH", body: { status } });
+        toast("Evidence " + status.toLowerCase() + ".", "ok");
+        render();
+      } catch (err) { toast("Update failed \u2014 " + (err.message || String(err)), "warn"); }
+    };
+
+    const render = async () => {
+      let links = [];
+      try { const r = await api("/evidence-links?entityType=PILOT&entityId=" + encodeURIComponent(pilotId)); links = (r.evidence || []); } catch (_) {}
+      if (p.result && p.result.id) {
+        try { const r = await api("/evidence-links?entityType=PILOT_RESULT&entityId=" + encodeURIComponent(p.result.id)); links = links.concat(r.evidence || []); } catch (_) {}
+      }
+      const kpiOpts = [["", "\u2014 General pilot evidence \u2014"]].concat((p.kpis || []).map((k) => [k.id || k.name, k.name || "KPI"]));
+      const rows = links.map((e) => ({
+        section: esc(e.section || "\u2014"),
+        reference: esc((e.referenceId || "") + (e.referenceType ? ` (${esc(e.referenceType)})` : "")),
+        citation: esc((e.citation || "").slice(0, 90)),
+        confidence: badge(e.confidence || "low"),
+        status: badge(e.status || "PENDING"),
+        comment: esc((e.comment || "\u2014").slice(0, 90)),
+        act: { html: `
+          <button type="button" class="btn btn-secondary btn-sm" data-gwf-ev-status="${esc(e.id)}|VERIFIED">Verify</button>
+          <button type="button" class="btn btn-secondary btn-sm" data-gwf-ev-status="${esc(e.id)}|INSUFFICIENT">Insufficient</button>
+          <button type="button" class="btn btn-secondary btn-sm" data-gwf-ev-status="${esc(e.id)}|REQUIRES_REVIEW">Note</button>`, sort: "" },
+        fuse: [e.section, e.referenceId, e.citation, e.status].join(" "),
+      }));
+      body.innerHTML = `
+        <div class="gwf-form-grid">
+          ${fieldWrap("Link to (KPI / section)", selInput("section", kpiOpts, ""))}
+          ${fieldWrap("Reference type", selInput("referenceType", [["DOCUMENT", "DOCUMENT"], ["RULE", "RULE"], ["REGULATION", "REGULATION"], ["POLICY", "POLICY"], ["RECORD", "RECORD"], ["MEASUREMENT", "MEASUREMENT"]], ""))}
+          ${fieldWrap("Reference id *", textInput("referenceId", "document / record / measurement id", ""))}
+          ${fieldWrap("Citation / summary", textInput("citation", "what does this evidence show?", ""))}
+          ${fieldWrap("Confidence", selInput("confidence", [["low", "low"], ["medium", "medium"], ["high", "high"]], ""))}
+        </div>
+        <div class="gwf-modal-actions"><button type="button" class="btn btn-primary" data-gwf-ev-add>Link evidence</button></div>
+        <div id="gwfEvMsg"></div>
+        <h4 class="gwf-subhead" style="margin-top:16px">Linked evidence (${num(links.length)})</h4>
+        ${rows.length ? dataTable([
+          { key: "section", label: "Section / KPI" }, { key: "reference", label: "Reference" }, { key: "citation", label: "Citation" },
+          { key: "confidence", label: "Confidence" }, { key: "status", label: "Status" }, { key: "comment", label: "Comment" }, { key: "act", label: "Actions" },
+        ], rows) : empty("No evidence linked yet. Link documents, records or measurements collected during the pilot run.")}`;
+      body.querySelector("[data-gwf-ev-add]").addEventListener("click", async () => {
+        const f = (n) => $(`[name="${n}"]`, wrap).value;
+        if (!f("referenceId")) { $("#gwfEvMsg", wrap).innerHTML = `<div class="gwf-log-bad">Reference id is required.</div>`; return; }
+        const hasResult = !!(p.result && p.result.id);
+        const btn = body.querySelector("[data-gwf-ev-add]");
+        btn.disabled = true;
+        const payload = {
+          entityType: f("section") && hasResult ? "PILOT_RESULT" : "PILOT",
+          entityId: f("section") && hasResult ? p.result.id : pilotId,
+          section: f("section") || "GENERAL",
+          referenceType: f("referenceType") || "DOCUMENT",
+          referenceId: f("referenceId"),
+          citation: f("citation") || "",
+          confidence: f("confidence") || "low",
+          status: "PENDING",
+        };
+        try {
+          await api("/evidence-links", { method: "POST", body: payload });
+          await refreshOverview();
+          render();
+        } catch (err) {
+          $("#gwfEvMsg", wrap).innerHTML = `<div class="gwf-log-bad">${esc(err.message)}</div>`;
+          btn.disabled = false;
+        }
+      });
+      body.querySelectorAll("[data-gwf-ev-status]").forEach((b) => {
+        b.addEventListener("click", () => {
+          const i = String(b.dataset.gwfEvStatus || "").split("|");
+          if (i.length === 2) setStatus(i[0], i[1]);
+        });
+      });
+    };
+    await render();
+  }
+
+  /* ───────────── procurement decision (readiness-gated, AI is advisory) ───────────── */
+  async function procurementDecisionModal(pilotId) {
+    const v = vm();
+    const p = (v.pilots || []).find((x) => x.id === pilotId);
+    if (!p) { toast("Pilot not found.", "warn"); return; }
+    const ready = p.readiness || {};
+    const outcome = (p.outcome && p.outcome.outcome) || (p.result && p.result.result) || "\u2014";
+    const evCount = (v.evidence || []).filter((e) => e.pilotId === pilotId || e.entityId === pilotId || (p.result && p.result.id && e.entityId === p.result.id)).length;
+    const wrap = modal("Procurement decision \u2014 " + (p.title || "Pilot"), `
+      <div class="gwf-readiness">
+        <div class="gwf-sol-row"><strong>Readiness</strong> ${badge(ready.status || "NOT_READY")} \u00b7 risk ${badge(ready.riskLevel || "\u2014")} \u00b7 <strong>Outcome</strong> ${badge(outcome)} \u00b7 <strong>Evidence items</strong> ${num(evCount)}</div>
+        <div class="gwf-sol-row gcc-cell-sub">Technical ${esc(ready.technicalReadiness || "\u2014")} \u00b7 Operational ${esc(ready.operationalReadiness || "\u2014")} \u00b7 Evidence ${esc(ready.evidenceStrength || "\u2014")} \u00b7 Cost ${esc(ready.costEffectiveness || "\u2014")}</div>
+        ${ready.recommendation ? `<div class="gwf-sol-row"><strong>Recommendation</strong> ${badge(ready.recommendation)}</div>` : ""}
+        ${(ready.conditions || []).length ? `<div class="gwf-sol-row"><strong>Readiness conditions</strong><ul class="gwf-sol-list">${ready.conditions.map((c) => `<li>${esc(c)}</li>`).join("")}</ul></div>` : ""}
+        ${String(ready.summary || "").trim() ? `<div class="gwf-sol-row"><strong>Readiness summary</strong> ${esc(ready.summary)}</div>` : ""}
+      </div>
+      ${fieldWrap("Decision", selInput("decision", [
+        ["ACCEPT_RECOMMENDATION", "ACCEPT RECOMMENDATION"],
+        ["ACCEPT_WITH_CONDITIONS", "ACCEPT WITH CONDITIONS"],
+        ["REQUEST_FURTHER_VALIDATION", "REQUEST FURTHER VALIDATION"],
+        ["REJECT", "REJECT"],
+      ], "required"))}
+      ${fieldWrap("Reason (required)", `<textarea class="textarea input" name="reason" rows="3" placeholder="Government justification \u2014 recorded in the audit trail"></textarea>`)}
+      ${fieldWrap("Conditions (one per line)", `<textarea class="textarea input" name="conditions" rows="3" placeholder="Conditions attached to this decision (optional)"></textarea>`)}
+      <div class="gwf-modal-actions"><button type="button" class="btn btn-primary" data-gwf-proc-save>Record procurement decision</button></div>
+      <div id="gwfProcMsg"></div>`, { width: 640 });
+    wrap.querySelector("[data-gwf-proc-save]").addEventListener("click", async () => {
+      const f = (n) => $(`[name="${n}"]`, wrap).value;
+      const decision = f("decision"), reason = f("reason");
+      if (!decision || !reason.trim()) { $("#gwfProcMsg", wrap).innerHTML = `<div class="gwf-log-bad">Decision and reason are required.</div>`; return; }
+      const btn = wrap.querySelector("[data-gwf-proc-save]");
+      btn.disabled = true; btn.textContent = "Recording\u2026";
+      try {
+        const out = await api("/pilots/" + pilotId + "/procurement-decision", {
+          method: "POST",
+          body: { decision, reason, conditions: f("conditions").split(/\n+/).map((s) => s.trim()).filter(Boolean) },
+        });
+        const warns = (out.warnings || []).map((w) => `<div class="gwf-log-bad">&#9888; ${esc(w)}</div>`).join("");
+        $("#gwfProcMsg", wrap).innerHTML = `<div class="gwf-log-ok">Government decision recorded.</div>${warns}<div class="gwf-sol-row gcc-cell-sub">Readiness ${esc(out.readiness || "\u2014")} \u00b7 outcome ${esc(out.outcome || "\u2014")} \u00b7 ${esc(num((out.conditions || []).length))} condition(s)</div>`;
+        await refreshOverview();
+        renderWorkspace(document.getElementById("govWorkflowBody"));
+      } catch (err) {
+        $("#gwfProcMsg", wrap).innerHTML = `<div class="gwf-log-bad">${esc(err.message)}</div>`;
+        btn.disabled = false; btn.textContent = "Record procurement decision";
       }
     });
   }

@@ -42,6 +42,8 @@
       explain: "Why this result? (Rule → Fact → Evidence → Verification → Result)",
       trust: "Trust", noSnapshot: "No assessment yet — choose a solution and run Evaluate.",
       conflictsFound: "Potential rule conflict(s) — route to human/policy review",
+      reviewSubmitted: "Submitted for review.", approveDone: "Approved.", rejectDone: "Rejected — returned to draft.",
+      activateDone: "Activated.", deactivateDone: "Deactivated.",
     },
     hi: {
       org: "संगठन", challenge: "चुनौती", pickCh: "चुनौती चुनें", pickChHint: "एक चुनौती चुनें।",
@@ -55,6 +57,8 @@
       explain: "यह परिणाम क्यों?",
       trust: "विश्वास", noSnapshot: "अभी कोई आकलन नहीं।",
       conflictsFound: "संभावित नियम विरोध",
+      reviewSubmitted: "समीक्षा हेतु भेजा गया।", approveDone: "अनुमोदित।", rejectDone: "अस्वीकृत — ड्राफ़्ट पर वापस।",
+      activateDone: "सक्रिय।", deactivateDone: "निष्क्रिय।",
     },
   };
   function tr(key) {
@@ -252,6 +256,20 @@
 
     root.querySelectorAll("[data-rerender]").forEach((b) =>
       b.addEventListener("click", async () => { try { await loadChallengeData(); renderChallenge(root); } catch (e) { toast(e.message); } }));
+
+    root.querySelectorAll("[data-rule-action]").forEach((b) =>
+      b.addEventListener("click", async () => {
+        const action = b.dataset.ruleAction;
+        const ruleId = b.dataset.rule;
+        b.disabled = true;
+        try {
+          await api("POST", `/eligibility/rules/${ruleId}/${action}`, {});
+          const key = action === "submit-review" ? "reviewSubmitted" : action + "Done";
+          toast(tr(key));
+          await loadChallengeData();
+          renderChallenge(root);
+        } catch (e) { toast(e.message); b.disabled = false; }
+      }));
 
     const stSel = $("eligStartup");
     if (stSel) stSel.addEventListener("change", async () => {

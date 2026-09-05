@@ -459,14 +459,10 @@ case "gov-analyzer": renderAnalyzer(pkgReady); break;
     if (search) search.addEventListener("input", () => { S.anzQuery = search.value; renderAnalyzer(pkg); });
     const showAll = $("anzShowAll");
     if (showAll) showAll.addEventListener("click", () => openPolicyModal(sorted[0].code));
-    drawAnzDims(pkg);
   }
   function p_dimBreakdown(p) {
     return `<div class="dim-rows">${(p.dimensions || []).map((dm) => `
       <div class="status-row"><span class="status-name dim">${esc(dm.label)}</span>${bar(dm.score)}<span class="status-count">${dm.score}</span></div>`).join("")}</div>`;
-  }
-  function drawAnzDims(pkg) {
-    // dimension bars are pure DOM (no chart canvas) — kept for clarity
   }
   function anzCard(q, bodyHtml) {
     return `<div class="card anz-card"><h4 class="anz-q">${esc(q)}</h4><div class="anz-a">${bodyHtml}</div></div>`;
@@ -1240,12 +1236,7 @@ case "gov-analyzer": renderAnalyzer(pkgReady); break;
     chips.innerHTML = allQs.map(([key, hint]) =>
       `<button class="chip" data-q="${key}">${esc(T(key))}</button>`).join("");
     chips.querySelectorAll(".chip").forEach((b) =>
-      b.addEventListener("click", () => { input.value = T(key); sendChat(); }));
-    /* Set the last clicked question's key for reference in sendChat */
-    let lastQuestionKey = allQs[0][0];
-    chips.querySelectorAll(".chip").forEach((b) => {
-      b.addEventListener("click", () => { lastQuestionKey = b.dataset.q; input.value = T(b.dataset.q); });
-    });
+      b.addEventListener("click", () => { input.value = T(b.dataset.q); sendChat(); }));
     $("govChatSend").onclick = sendChat;
     $("govChatClear").onclick = () => {
       S.chat = []; S.copMode = ""; renderChat();

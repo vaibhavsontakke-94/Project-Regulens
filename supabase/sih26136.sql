@@ -594,7 +594,7 @@ create index if not exists sih_audit_created_idx on public.sih_audit_events (cre
 create table if not exists public.sih_evidence_links (
   id uuid primary key default gen_random_uuid(),
   entity_type text not null check (entity_type in (
-    'PILOT_RESULT','PROCUREMENT_ASSESSMENT','SCALE_PLAN','MATCH','ELIGIBILITY_CHECK'
+    'PILOT_RESULT','PILOT','PROCUREMENT_ASSESSMENT','SCALE_PLAN','MATCH','ELIGIBILITY_CHECK'
   )),
   entity_id uuid not null,
   reference_type text not null check (reference_type in ('DOCUMENT','RULE','REGULATION','POLICY','RECORD','MEASUREMENT')),
@@ -602,8 +602,12 @@ create table if not exists public.sih_evidence_links (
   section text not null default '',
   citation text not null default '',
   confidence text not null default 'low' check (confidence in ('low','medium','high')),
+  status text not null default 'PENDING' check (status in ('PENDING','VERIFIED','INSUFFICIENT','REQUIRES_REVIEW')),
+  comment text not null default '',
   created_by text not null default '',
-  created_at timestamptz not null default now()
+  updated_by text not null default '',
+  created_at timestamptz not null default now(),
+  updated_at timestamptz not null default now()
 );
 
 create index if not exists sih_evidence_entity_idx on public.sih_evidence_links (entity_type, entity_id);
